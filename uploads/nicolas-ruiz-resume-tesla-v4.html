@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nicolas Ruiz — Product Owner</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;500&display=swap');
+
+  :root {
+    --white:       #FFFFFF;
+    --ash:         #F4F4F4;
+    --cloud:       #EEEEEE;
+    --pale-silver: #D0D1D2;
+    --silver-fog:  #8E8E8E;
+    --pewter:      #5C5E62;
+    --graphite:    #393C41;
+    --carbon:      #171A20;
+    --blue:        #3E6AE1;
+    --frosted:     rgba(255,255,255,0.75);
+    --t:           0.33s cubic-bezier(0.5,0,0,0.75);
+    --font:        'Outfit', -apple-system, Arial, sans-serif;
+  }
+
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+  html { font-size: 16px; -webkit-font-smoothing: antialiased; }
+
+  body {
+    background: var(--white);
+    color: var(--graphite);
+    font-family: var(--font);
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 1.43;
+  }
+
+  /* ── NAV ── */
+  .nav {
+    position: sticky; top: 0; z-index: 200;
+    background: var(--frosted);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border-bottom: 1px solid var(--cloud);
+    height: 52px;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 52px;
+  }
+  .nav-wordmark { font-size: 14px; font-weight: 500; color: var(--carbon); letter-spacing: 0.28em; }
+  .nav-right { display: flex; gap: 8px; }
+  .nav-link {
+    font-size: 14px; font-weight: 500; color: var(--pewter);
+    text-decoration: none; padding: 4px 14px; border-radius: 4px;
+    transition: color var(--t), background-color var(--t);
+  }
+  .nav-link:hover { color: var(--carbon); background: var(--ash); }
+
+  /* ── HERO ── */
+  .hero {
+    padding: 88px 52px 80px;
+    max-width: 1100px; margin: 0 auto;
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 0 80px; align-items: center;
+    border-bottom: 1px solid var(--cloud);
+  }
+
+  .hero-name {
+    font-size: 40px; font-weight: 500; line-height: 1.20;
+    color: var(--carbon); margin-bottom: 8px;
+  }
+  .hero-title {
+    font-size: 17px; font-weight: 500;
+    color: var(--graphite); line-height: 1.18; margin-bottom: 6px;
+  }
+  .hero-sub {
+    font-size: 14px; font-weight: 400;
+    color: var(--pewter); margin-bottom: 36px;
+  }
+  .btn-row { display: flex; gap: 12px; }
+
+  .btn-primary {
+    display: inline-flex; align-items: center; justify-content: center;
+    min-width: 160px; min-height: 40px; padding: 0 24px;
+    background: var(--blue); color: var(--white);
+    font-family: var(--font); font-size: 14px; font-weight: 500;
+    border: 3px solid transparent; border-radius: 4px;
+    text-decoration: none;
+    transition: background-color var(--t);
+  }
+  .btn-primary:hover { background: #2d57cc; }
+
+  .btn-secondary {
+    display: inline-flex; align-items: center; justify-content: center;
+    min-width: 160px; min-height: 40px; padding: 0 24px;
+    background: var(--white); color: var(--graphite);
+    font-family: var(--font); font-size: 14px; font-weight: 500;
+    border: 1px solid var(--pale-silver); border-radius: 4px;
+    text-decoration: none;
+    transition: background-color var(--t), border-color var(--t);
+  }
+  .btn-secondary:hover { background: var(--ash); border-color: var(--graphite); }
+
+  .hero-stats {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 1px; background: var(--cloud);
+    border: 1px solid var(--cloud); border-radius: 12px; overflow: hidden;
+  }
+  .stat { background: var(--white); padding: 32px 28px; }
+  .stat-n { font-size: 40px; font-weight: 500; line-height: 1.20; color: var(--carbon); margin-bottom: 6px; }
+  .stat-l { font-size: 14px; font-weight: 400; color: var(--pewter); line-height: 1.43; }
+
+  /* ── LAYOUT ── */
+  .layout {
+    max-width: 1100px; margin: 0 auto;
+    display: grid; grid-template-columns: 1fr 280px;
+  }
+  .main { border-right: 1px solid var(--cloud); }
+
+  /* ── SECTIONS ── */
+  .section { padding: 48px 52px; border-bottom: 1px solid var(--cloud); }
+  .section:last-child { border-bottom: none; }
+
+  .section-label {
+    font-size: 14px; font-weight: 500; color: var(--silver-fog);
+    margin-bottom: 28px; padding-bottom: 14px;
+    border-bottom: 1px solid var(--cloud);
+  }
+
+  /* ── SUMMARY ── */
+  .summary {
+    font-size: 15px; font-weight: 400;
+    color: var(--graphite); line-height: 1.70;
+  }
+
+  /* ── JOBS ── */
+  .job { margin-bottom: 32px; }
+  .job:last-child { margin-bottom: 0; }
+
+  .job-header {
+    display: flex; justify-content: space-between;
+    align-items: baseline; gap: 16px; margin-bottom: 3px;
+  }
+  .job-company { font-size: 17px; font-weight: 500; color: var(--carbon); }
+  .job-period { font-size: 14px; font-weight: 400; color: var(--silver-fog); white-space: nowrap; flex-shrink: 0; }
+  .job-role { font-size: 14px; font-weight: 400; color: var(--pewter); margin-bottom: 12px; }
+
+  .job-bullets { list-style: none; }
+  .job-bullets li {
+    font-size: 14px; font-weight: 400; color: var(--graphite);
+    line-height: 1.60; padding-left: 16px; position: relative; margin-bottom: 6px;
+  }
+  .job-bullets li:last-child { margin-bottom: 0; }
+  .job-bullets li::before {
+    content: '·'; position: absolute; left: 3px;
+    color: var(--pale-silver); font-size: 20px; line-height: 1.20;
+  }
+
+  /* SAP collapsed block */
+  .sap-block {
+    background: var(--ash);
+    border: 1px solid var(--cloud);
+    border-radius: 4px;
+    padding: 20px 24px;
+  }
+  .sap-block .job-company { font-size: 15px; }
+  .sap-block .job-role { margin-bottom: 10px; }
+
+  /* ── SIDEBAR ── */
+  .side-section { padding: 40px 32px; border-bottom: 1px solid var(--cloud); }
+  .side-section:last-child { border-bottom: none; }
+
+  .side-label {
+    font-size: 14px; font-weight: 500; color: var(--silver-fog);
+    margin-bottom: 20px; padding-bottom: 14px;
+    border-bottom: 1px solid var(--cloud);
+  }
+
+  .skill-group { margin-bottom: 18px; }
+  .skill-group:last-child { margin-bottom: 0; }
+  .skill-group-name { font-size: 12px; font-weight: 400; color: var(--silver-fog); margin-bottom: 8px; }
+  .tags { display: flex; flex-wrap: wrap; gap: 6px; }
+  .tag {
+    font-size: 12px; font-weight: 400; color: var(--graphite);
+    background: var(--ash); border: 1px solid var(--cloud);
+    padding: 4px 10px; border-radius: 4px;
+    transition: background-color var(--t);
+  }
+  .tag.key { background: var(--carbon); color: var(--white); border-color: var(--carbon); }
+
+  .list-item { padding: 12px 0; border-bottom: 1px solid var(--cloud); }
+  .list-item:first-child { padding-top: 0; }
+  .list-item:last-child { border-bottom: none; padding-bottom: 0; }
+  .list-title { font-size: 13px; font-weight: 500; color: var(--carbon); margin-bottom: 2px; }
+  .list-sub { font-size: 12px; font-weight: 400; color: var(--pewter); }
+  .list-meta { font-size: 11px; font-weight: 400; color: var(--silver-fog); margin-top: 2px; }
+
+  .lang-row {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 10px 0; border-bottom: 1px solid var(--cloud);
+  }
+  .lang-row:first-child { padding-top: 0; }
+  .lang-row:last-child { border-bottom: none; padding-bottom: 0; }
+  .lang-name { font-size: 14px; font-weight: 500; color: var(--carbon); }
+  .lang-level { font-size: 13px; font-weight: 400; color: var(--pewter); }
+
+  /* ── FOOTER ── */
+  .footer {
+    border-top: 1px solid var(--cloud); background: var(--ash);
+    padding: 20px 52px;
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .footer-name { font-size: 14px; font-weight: 500; color: var(--carbon); }
+  .footer-links { display: flex; gap: 28px; }
+  .footer-links a {
+    font-size: 14px; font-weight: 400; color: var(--pewter);
+    text-decoration: none; transition: color var(--t);
+  }
+  .footer-links a:hover { color: var(--carbon); }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 900px) {
+    .nav { padding: 0 24px; }
+    .hero { grid-template-columns: 1fr; padding: 56px 24px 48px; gap: 40px; }
+    .hero-name { font-size: 28px; }
+    .layout { grid-template-columns: 1fr; }
+    .main { border-right: none; }
+    .section { padding: 36px 24px; }
+    .side-section { padding: 32px 24px; }
+    .footer { padding: 20px 24px; flex-direction: column; gap: 12px; text-align: center; }
+    .footer-links { flex-wrap: wrap; justify-content: center; }
+  }
+
+  @media print {
+    .nav { display: none; }
+    .hero { padding: 40px; }
+    .section { padding: 32px 40px; }
+    .side-section { padding: 28px 24px; }
+    .footer { padding: 16px 40px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav">
+  <div class="nav-wordmark">Nicolas&nbsp;&nbsp;Ruiz</div>
+  <div class="nav-right">
+    <a class="nav-link" href="mailto:nicolasruiz@gmail.com">contact</a>
+    <a class="nav-link" href="https://www.linkedin.com/in/nicolasmruiz" target="_blank">linkedin</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div>
+    <h1 class="hero-name">Nicolas Ruiz</h1>
+    <p class="hero-title">Sr. Product Owner — Payments</p>
+    <p class="hero-sub">Tangerine · Milton, Ontario · +1 647 883 2626</p>
+    <p style="font-size:14px;font-weight:400;color:var(--pewter);line-height:1.60;margin:-24px 0 36px;max-width:400px;">17 years of product delivery across banking and fintech, combined with hands-on AI development — building products, operating models, and the tools that accelerate both.</p>
+    <div class="btn-row">
+      <a class="btn-primary" href="mailto:nicolasruiz@gmail.com">get in touch</a>
+      <a class="btn-secondary" href="https://www.linkedin.com/in/nicolasmruiz" target="_blank">view linkedin</a>
+    </div>
+  </div>
+
+  <div class="hero-stats">
+    <div class="stat">
+      <div class="stat-n">$47M</div>
+      <div class="stat-l">in savings identified through data analysis</div>
+    </div>
+    <div class="stat">
+      <div class="stat-n">50%</div>
+      <div class="stat-l">reduction in delivery time &amp; cost deviations</div>
+    </div>
+    <div class="stat">
+      <div class="stat-n">90%+</div>
+      <div class="stat-l">customer satisfaction delivered</div>
+    </div>
+    <div class="stat">
+      <div class="stat-n">$10M+</div>
+      <div class="stat-l">in multi-country programs led</div>
+    </div>
+  </div>
+</section>
+
+<!-- BODY -->
+<div class="layout">
+
+  <main class="main">
+
+    <div class="section">
+      <div class="section-label">profile</div>
+      <p class="summary">Senior Product Owner with 17 years of cross-industry delivery across Canada and Latin America. Where others see complexity, I identify patterns — in data, in processes, in how organizations actually work versus how they think they work. That ability to read environments quickly is what allows me to bridge business and technology, build roadmaps grounded in evidence, and design operating models that outlast the project that created them. The Scotiabank IB data consolidation model, the Technisys delivery methodology, the Claro Colombia procurement redesign — all still in use today. A decade in SAP consulting across six countries built the foundation — structured thinking, process discipline, and the ability to operate in environments where failure is not an option — that now defines how I approach product ownership.</p>
+    </div>
+
+    <div class="section" style="padding-bottom:0;">
+      <div class="section-label" style="color:var(--blue);border-bottom-color:var(--blue);opacity:1;">AI & emerging tools</div>
+      <div style="border-left:3px solid var(--blue);padding-left:24px;">
+        <p style="font-size:14px;font-weight:500;color:var(--carbon);line-height:1.70;margin-bottom:14px;">Hands-on AI practitioner with production experience across software development, analysis, automation, and content creation.</p>
+        <p style="font-size:14px;font-weight:400;color:var(--graphite);line-height:1.70;margin-bottom:20px;"><strong style="font-weight:500;color:var(--carbon);">Development:</strong> native iOS and web applications, financial analysis dashboards computing from raw input files, and a health-insight tool that interprets bloodwork and proposes next steps — built with Claude Code and prototyped in Claude Design. <strong style="font-weight:500;color:var(--carbon);">Automation:</strong> schedule management, email triage, and document workflows through AI agents and scheduled tasks. <strong style="font-weight:500;color:var(--carbon);">Content:</strong> executive presentations, image assets, and short-form video production using AI tools including Higgsfield. Proficient in API integration, prompt engineering, and building reusable AI skills and artifacts.</p>
+        <div style="display:flex;flex-wrap:wrap;gap:6px;">
+          <span style="font-size:12px;font-weight:500;color:var(--blue);background:rgba(62,106,225,0.08);border:1px solid rgba(62,106,225,0.25);padding:4px 12px;border-radius:4px;">Claude Code</span>
+          <span style="font-size:12px;font-weight:500;color:var(--blue);background:rgba(62,106,225,0.08);border:1px solid rgba(62,106,225,0.25);padding:4px 12px;border-radius:4px;">Claude Design</span>
+          <span style="font-size:12px;font-weight:500;color:var(--blue);background:rgba(62,106,225,0.08);border:1px solid rgba(62,106,225,0.25);padding:4px 12px;border-radius:4px;">Claude API</span>
+          <span style="font-size:12px;font-weight:500;color:var(--blue);background:rgba(62,106,225,0.08);border:1px solid rgba(62,106,225,0.25);padding:4px 12px;border-radius:4px;">iOS development</span>
+          <span style="font-size:12px;font-weight:500;color:var(--blue);background:rgba(62,106,225,0.08);border:1px solid rgba(62,106,225,0.25);padding:4px 12px;border-radius:4px;">AI agents</span>
+          <span style="font-size:12px;font-weight:500;color:var(--blue);background:rgba(62,106,225,0.08);border:1px solid rgba(62,106,225,0.25);padding:4px 12px;border-radius:4px;">prompt engineering</span>
+          <span style="font-size:12px;font-weight:500;color:var(--blue);background:rgba(62,106,225,0.08);border:1px solid rgba(62,106,225,0.25);padding:4px 12px;border-radius:4px;">image &amp; video AI</span>
+          <span style="font-size:12px;font-weight:500;color:var(--blue);background:rgba(62,106,225,0.08);border:1px solid rgba(62,106,225,0.25);padding:4px 12px;border-radius:4px;">artifacts &amp; skills</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-label">experience</div>
+
+      <div class="job">
+        <div class="job-header">
+          <div class="job-company">Tangerine</div>
+          <div class="job-period">Mar 2025 – present</div>
+        </div>
+        <div class="job-role">Sr. Product Owner — Payments</div>
+        <ul class="job-bullets">
+          <li>Leading payments product strategy and delivery for Tangerine's digital banking platform — applying AI-assisted analysis and prototyping to accelerate discovery, documentation, and stakeholder alignment.</li>
+        </ul>
+      </div>
+
+      <div class="job">
+        <div class="job-header">
+          <div class="job-company">Scotiabank</div>
+          <div class="job-period">Mar 2023 – Mar 2025</div>
+        </div>
+        <div class="job-role">Sr. Product Owner — Data &amp; Analytics</div>
+        <ul class="job-bullets">
+          <li>Delivered a data consolidation initiative — previously attempted and abandoned multiple times — successfully integrating retail data from 9 Latin American countries into Canada and designing the operating model now being adopted as the standard across International Banking.</li>
+          <li>Initiative drove the creation of new Retail analytics departments and is actively expanding into Risk, Wealth, and Commercial; analysis surfaced CAD 47M (4%) in expense reductions incorporated into the F25 Plan and shareholder reports.</li>
+        </ul>
+      </div>
+
+      <div class="job">
+        <div class="job-header">
+          <div class="job-company">Technisys</div>
+          <div class="job-period">Jul 2021 – Feb 2023</div>
+        </div>
+        <div class="job-role">Product Owner — Agile Delivery Methodology</div>
+        <ul class="job-bullets">
+          <li>Designed and documented the organization's end-to-end delivery methodology — including reusable artifacts, guidelines, and flexible agile frameworks adopted company-wide — compressing client Discovery from 5 months to 2–3 weeks and reducing per-project costs by USD 30K/quarter.</li>
+          <li>Methodology drove customer satisfaction from baseline to 90%+ while a multi-country estimation model cut time and cost deviations by 50%, giving leadership a reliable forecasting tool for the first time.</li>
+        </ul>
+      </div>
+
+      <div class="job">
+        <div class="job-header">
+          <div class="job-company">Scotiabank</div>
+          <div class="job-period">May 2017 – Jul 2021</div>
+        </div>
+        <div class="job-role">Product Owner &amp; Scrum Master — Retail CRM</div>
+        <ul class="job-bullets">
+          <li>As Scrum Master, joined a high-potential team with strong leadership support and became instrumental in elevating its agile practice — through deep conviction and hands-on coaching — earning top-5 recognition among all agile teams at Scotiabank.</li>
+          <li>As Product Owner, conceived and led a next-generation CRM vision — cross-channel lead management, AI-driven next best action, and customer-centric flows with full behavioural insights — years ahead of industry adoption. Secured CAD 3M in funding through executive roadshows, deployed in Chile and actively expanding across the region.</li>
+        </ul>
+      </div>
+
+      <div class="sap-block">
+        <div class="job-header" style="margin-bottom:3px;">
+          <div class="job-company">SAP Consulting</div>
+          <div class="job-period">2006 – 2017</div>
+        </div>
+        <div class="job-role" style="margin-bottom:12px;">Business Consultant &amp; CoE Supervisor</div>
+        <p style="font-size:13px;font-weight:400;color:var(--pewter);line-height:1.60;margin-bottom:14px;">10 years of ERP implementations across telecoms, pharma, food processing, and financial services in Argentina, Colombia, Peru, Mexico, Chile, and Uruguay — every project delivered successfully.</p>
+        <ul class="job-bullets">
+          <li>Re-engineered procurement and reverse logistics at Claro Colombia — cut procurement times by 66%, saving $750K USD/year in logistics and $180K USD in warehouse costs.</li>
+          <li>Built and led a high-performing SAP support team, growing CSAT from 70% to 90% and eliminating a 2-year open backlog within months.</li>
+        </ul>
+        <p style="font-size:13px;font-weight:400;color:var(--silver-fog);line-height:1.60;margin-top:14px;font-style:italic;">A decade operating in environments where failed implementations halt supply chains — the foundation for how I evaluate risk, scope, and delivery as a Product Owner.</p>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- SIDEBAR -->
+  <aside>
+
+    <div class="side-section">
+      <div class="side-label">skills</div>
+
+      <div class="skill-group">
+        <div class="skill-group-name">product</div>
+        <div class="tags">
+          <span class="tag key">product ownership</span>
+          <span class="tag key">roadmapping</span>
+          <span class="tag">backlog management</span>
+          <span class="tag">design thinking</span>
+          <span class="tag">UX discovery</span>
+          <span class="tag">impact mapping</span>
+        </div>
+      </div>
+
+      <div class="skill-group" style="margin-top:16px;">
+        <div class="skill-group-name">analysis &amp; data</div>
+        <div class="tags">
+          <span class="tag key">Power BI</span>
+          <span class="tag key">Excel / VBA</span>
+          <span class="tag">KPI design</span>
+          <span class="tag">process optimisation</span>
+          <span class="tag">financial modelling</span>
+        </div>
+      </div>
+
+      <div class="skill-group" style="margin-top:16px;">
+        <div class="skill-group-name">agile</div>
+        <div class="tags">
+          <span class="tag key">scrum</span>
+          <span class="tag key">kanban</span>
+          <span class="tag">scaled scrum</span>
+          <span class="tag">agile coaching</span>
+        </div>
+      </div>
+
+      <div class="skill-group" style="margin-top:16px;">
+        <div class="skill-group-name">tools</div>
+        <div class="tags">
+          <span class="tag key">Jira</span>
+          <span class="tag key">Confluence</span>
+          <span class="tag key">Claude AI</span>
+          <span class="tag">Figma</span>
+          <span class="tag">SharePoint</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-section">
+      <div class="side-label">certifications</div>
+      <div class="list-item">
+        <div class="list-title">Professional Agile Leadership</div>
+        <div class="list-sub">Scrum.org — PAL</div>
+      </div>
+      <div class="list-item">
+        <div class="list-title">Professional Scrum Master</div>
+        <div class="list-sub">Scrum.org — PSM I</div>
+      </div>
+      <div class="list-item">
+        <div class="list-title">Scaled Professional Scrum</div>
+        <div class="list-sub">Scrum.org — SPS</div>
+      </div>
+      <div class="list-item">
+        <div class="list-title">SAP Certified Associate</div>
+        <div class="list-sub">Procurement &amp; Materials</div>
+      </div>
+    </div>
+
+    <div class="side-section">
+      <div class="side-label">education</div>
+      <div class="list-item">
+        <div class="list-title">Business Process Management</div>
+        <div class="list-sub">University of Toronto</div>
+        <div class="list-meta">2016 – 2018</div>
+      </div>
+      <div class="list-item">
+        <div class="list-title">Accounting &amp; Finance</div>
+        <div class="list-sub">Universidad del Rosario</div>
+        <div class="list-meta">2016</div>
+      </div>
+      <div class="list-item">
+        <div class="list-title">B.Eng. Computer Science</div>
+        <div class="list-sub">Universidad EAN</div>
+        <div class="list-meta">2009 – 2012</div>
+      </div>
+    </div>
+
+    <div class="side-section">
+      <div class="side-label">languages</div>
+      <div class="lang-row">
+        <span class="lang-name">English</span>
+        <span class="lang-level">full professional</span>
+      </div>
+      <div class="lang-row">
+        <span class="lang-name">Spanish</span>
+        <span class="lang-level">native</span>
+      </div>
+    </div>
+
+  </aside>
+</div>
+
+<footer class="footer">
+  <div class="footer-name">Nicolas Ruiz</div>
+  <div class="footer-links">
+    <a href="tel:+16478832626">+1 647 883 2626</a>
+    <a href="mailto:nicolasruiz@gmail.com">nicolasruiz@gmail.com</a>
+    <a href="https://www.linkedin.com/in/nicolasmruiz" target="_blank">linkedin</a>
+  </div>
+</footer>
+
+</body>
+</html>

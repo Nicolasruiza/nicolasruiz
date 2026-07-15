@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Health Dashboard — Nicolas Ruiz</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+:root {
+  --green: #15803d; --green-bg: #f0fdf4; --green-border: #86efac;
+  --amber: #d97706; --amber-bg: #fffbeb; --amber-border: #fcd34d;
+  --red: #dc2626; --red-bg: #fef2f2; --red-border: #fca5a5;
+  --blue: #1d4ed8; --blue-bg: #eff6ff;
+  --purple: #6d28d9;
+  --border: #e5e7eb; --text: #111827; --muted: #6b7280;
+  --bg: #f9fafb; --surface: #ffffff;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif; background: var(--bg); color: var(--text); font-size: 15px; line-height: 1.6; }
+
+.topbar { background: var(--surface); border-bottom: 1px solid var(--border); padding: 16px 32px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100; box-shadow: 0 1px 3px rgba(0,0,0,0.06); }
+.topbar h1 { font-size: 16px; font-weight: 600; }
+.topbar-meta { font-size: 13px; color: var(--muted); }
+
+.tab-nav { background: var(--surface); border-bottom: 1px solid var(--border); padding: 0 32px; display: flex; overflow-x: auto; scrollbar-width: none; }
+.tab-nav::-webkit-scrollbar { display: none; }
+.tab-btn { padding: 13px 16px; font-size: 14px; font-weight: 500; color: var(--muted); background: none; border: none; border-bottom: 2px solid transparent; cursor: pointer; white-space: nowrap; font-family: inherit; transition: all 0.15s; }
+.tab-btn:hover { color: var(--text); }
+.tab-btn.active { color: var(--text); border-bottom-color: var(--text); }
+
+.content { max-width: 1020px; margin: 0 auto; padding: 32px; }
+.tab-pane { display: none; }
+.tab-pane.active { display: block; }
+
+.sec { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.8px; color: var(--muted); margin-bottom: 12px; padding-bottom: 8px; border-bottom: 1px solid var(--border); margin-top: 28px; }
+.sec:first-child { margin-top: 0; }
+
+.pills { display: flex; gap: 10px; margin-bottom: 24px; flex-wrap: wrap; align-items: center; }
+.pill { display: flex; align-items: center; gap: 7px; padding: 7px 16px; border-radius: 100px; font-size: 14px; font-weight: 500; border: 1px solid; }
+.pill .n { font-size: 20px; font-weight: 700; }
+.p-ok { background: var(--green-bg); border-color: var(--green-border); color: var(--green); }
+.p-warn { background: var(--amber-bg); border-color: var(--amber-border); color: var(--amber); }
+.p-flag { background: var(--red-bg); border-color: var(--red-border); color: var(--red); }
+.pill-info { margin-left: auto; font-size: 13px; color: var(--muted); }
+
+.cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(175px, 1fr)); gap: 12px; margin-bottom: 28px; }
+.mc { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 14px 16px; border-top: 3px solid; }
+.mc.ok { border-top-color: var(--green); }
+.mc.warn { border-top-color: var(--amber); }
+.mc.flag { border-top-color: var(--red); }
+.mc-lbl { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; color: var(--muted); margin-bottom: 6px; }
+.mc-val { font-size: 24px; font-weight: 700; line-height: 1; }
+.mc-unit { font-size: 11px; color: var(--muted); margin-top: 4px; }
+.mc-badge { display: inline-flex; padding: 2px 8px; border-radius: 100px; font-size: 10px; font-weight: 600; margin-top: 10px; }
+.b-ok { background: var(--green-bg); color: var(--green); }
+.b-warn { background: var(--amber-bg); color: var(--amber); }
+.b-flag { background: var(--red-bg); color: var(--red); }
+.mc-note { font-size: 12px; color: var(--muted); margin-top: 6px; line-height: 1.4; }
+.mc-exp { font-size: 11px; color: #9ca3af; margin-top: 5px; line-height: 1.4; font-style: italic; }
+
+.wins { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 12px; margin-bottom: 28px; }
+.wc { background: var(--surface); border: 1px solid var(--border); border-top: 3px solid var(--green); border-radius: 10px; padding: 14px 16px; }
+.wc-n { font-size: 22px; font-weight: 700; color: var(--green); margin-bottom: 4px; }
+.wc-b { font-size: 13px; color: var(--muted); line-height: 1.5; }
+
+.insight { background: var(--surface); border: 1px solid var(--border); border-left: 4px solid; border-radius: 0 10px 10px 0; padding: 16px 20px; margin-bottom: 16px; }
+.insight.ok { border-left-color: var(--green); }
+.insight.warn { border-left-color: var(--amber); }
+.insight.flag { border-left-color: var(--red); }
+.insight.info { border-left-color: var(--blue); }
+.insight-title { font-size: 15px; font-weight: 600; margin-bottom: 8px; }
+.ins-badge { display: inline-flex; padding: 2px 8px; border-radius: 100px; font-size: 10px; font-weight: 600; vertical-align: middle; margin-left: 8px; }
+.insight-body { font-size: 14px; color: #374151; line-height: 1.7; }
+.insight-body strong { color: var(--text); }
+.ins-val { font-size: 22px; font-weight: 700; margin-bottom: 4px; }
+
+.charts { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; margin-bottom: 28px; }
+.chart-box { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 20px; }
+.chart-title { font-size: 14px; font-weight: 600; margin-bottom: 2px; }
+.chart-sub { font-size: 12px; color: var(--muted); margin-bottom: 12px; }
+.chart-legend { display: flex; flex-wrap: wrap; gap: 14px; margin-bottom: 12px; font-size: 12px; color: var(--muted); }
+.li { display: flex; align-items: center; gap: 5px; }
+.ld { width: 10px; height: 10px; border-radius: 2px; display: inline-block; }
+
+.actions { display: flex; flex-direction: column; gap: 12px; margin-bottom: 28px; }
+.ai { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 16px 20px; display: flex; gap: 14px; align-items: flex-start; }
+.ai-badge { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; padding: 4px 10px; border-radius: 100px; white-space: nowrap; flex-shrink: 0; margin-top: 2px; }
+.ah { background: var(--red-bg); color: var(--red); }
+.am { background: var(--amber-bg); color: var(--amber); }
+.al { background: var(--green-bg); color: var(--green); }
+.ai-title { font-size: 15px; font-weight: 600; margin-bottom: 5px; }
+.ai-body { font-size: 13px; color: var(--muted); line-height: 1.6; }
+
+.energy-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 12px; margin-bottom: 28px; }
+.ec { background: var(--surface); border: 1px solid var(--border); border-left: 4px solid; border-radius: 0 10px 10px 0; padding: 14px 16px; }
+.ec.suspect { border-left-color: var(--amber); }
+.ec.clear { border-left-color: var(--green); }
+.ec.unknown { border-left-color: #9ca3af; }
+.ec-name { font-size: 13px; font-weight: 600; margin-bottom: 2px; }
+.ec-val { font-size: 18px; font-weight: 700; margin-bottom: 6px; }
+.ev-suspect { color: var(--amber); font-size: 12px; font-weight: 600; }
+.ev-clear { color: var(--green); font-size: 12px; font-weight: 600; }
+.ev-unknown { color: #9ca3af; font-size: 12px; font-weight: 600; }
+.ec-exp { font-size: 12px; color: var(--muted); margin-top: 4px; line-height: 1.4; }
+
+.lmhr-tbl { width: 100%; border-collapse: collapse; font-size: 14px; margin-bottom: 20px; background: var(--surface); border-radius: 10px; overflow: hidden; border: 1px solid var(--border); }
+.lmhr-tbl th { background: var(--bg); padding: 10px 14px; text-align: left; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; color: var(--muted); border-bottom: 1px solid var(--border); }
+.lmhr-tbl td { padding: 12px 14px; border-bottom: 1px solid var(--border); }
+.lmhr-tbl tr:last-child td { border-bottom: none; }
+.lmhr-tbl .ok { color: var(--green); font-weight: 600; }
+.lmhr-tbl .fail { color: var(--red); font-weight: 600; }
+
+@media(max-width:640px){
+  .content { padding: 20px 16px; }
+  .topbar, .tab-nav { padding-left: 16px; padding-right: 16px; }
+  .cards { grid-template-columns: 1fr 1fr; }
+  .charts { grid-template-columns: 1fr; }
+  .pills .pill-info { display: none; }
+}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <h1>Health Dashboard</h1>
+  <div class="topbar-meta">Nicolas Ruiz · 41 · Latest panel: Mar 16, 2026</div>
+</div>
+
+<div class="tab-nav">
+  <button class="tab-btn active" onclick="go('overview',this)">Overview</button>
+  <button class="tab-btn" onclick="go('lipids',this)">Lipids</button>
+  <button class="tab-btn" onclick="go('glycemic',this)">Glycemic</button>
+  <button class="tab-btn" onclick="go('organs',this)">Organs</button>
+  <button class="tab-btn" onclick="go('nutrients',this)">Nutrients & Hormones</button>
+  <button class="tab-btn" onclick="go('lmhr',this)">LMHR Status</button>
+  <button class="tab-btn" onclick="go('energy',this)">Low Energy</button>
+  <button class="tab-btn" onclick="go('action',this)">Action Plan</button>
+  <button class="tab-btn" onclick="go('plan',this)">The Plan</button>
+</div>
+
+<div class="content">
+
+<!-- ═══ OVERVIEW ═══ -->
+<div id="tab-overview" class="tab-pane active">
+  <div class="pills">
+    <div class="pill p-ok"><span class="n">12</span> Optimal</div>
+    <div class="pill p-warn"><span class="n">2</span> Watch</div>
+    <div class="pill p-flag"><span class="n">3</span> Flagged</div>
+    <div class="pill-info">Weight: 88 kg · Diet: keto/zero-carb · Training: paused ~2 months</div>
+  </div>
+  <div class="sec">All markers — latest values</div>
+  <div class="cards" id="overviewCards"></div>
+  <div class="sec">Key improvements since going keto</div>
+  <div class="wins">
+    <div class="wc"><div class="wc-n">+49%</div><div class="wc-b">Testosterone 12.5 → 18.6 nmol/L<br>Sep 2022 → Jul 2024</div></div>
+    <div class="wc"><div class="wc-n">+66%</div><div class="wc-b">Vitamin D 76.0 → 126.4 nmol/L<br>Oct 2023 → Mar 2026</div></div>
+    <div class="wc"><div class="wc-n">HDL ↑</div><div class="wc-b">Below reference (0.90) in Jul 2022 → Optimal (1.38) by Mar 2026</div></div>
+    <div class="wc"><div class="wc-n">Kidneys ↑</div><div class="wc-b">eGFR 101 → 105 on high-protein diet despite no gym</div></div>
+  </div>
+  <div class="sec">Honest picture</div>
+  <div class="insight info">
+    <div class="insight-title">You eat like an LMHR but don't fully qualify as one right now</div>
+    <div class="insight-body">The LMHR phenotype needs three things: very low TG, very high HDL (≥2.07 mmol/L), and lean body composition. Your TG (0.53) is excellent. Your HDL (1.38) falls short of the threshold. At 88 kg with low training volume, the mechanism that makes elevated LDL benign in lean, trained LMHR individuals doesn't fully apply to you yet. <strong>This doesn't put you at high risk</strong> — your TG/HDL of 0.38 is genuinely excellent — but it does mean you can't deflect the LDL conversation with LMHR logic at your next appointment. See the LMHR Status tab for how to get there.</div>
+  </div>
+</div>
+
+<!-- ═══ LIPIDS ═══ -->
+<div id="tab-lipids" class="tab-pane">
+  <div class="charts">
+    <div class="chart-box">
+      <div class="chart-title">LDL & Total Cholesterol</div>
+      <div class="chart-sub">mmol/L · ref LDL &lt;3.50, TC &lt;5.20</div>
+      <div class="chart-legend">
+        <span class="li"><span class="ld" style="background:#dc2626"></span>LDL</span>
+        <span class="li"><span class="ld" style="background:#d97706"></span>Total Chol</span>
+        <span class="li"><span style="display:inline-block;width:18px;height:0;border-top:2px dashed #15803d;vertical-align:middle;margin-right:4px;"></span>Reference</span>
+      </div>
+      <div style="position:relative;height:240px"><canvas id="cLdl"></canvas></div>
+    </div>
+    <div class="chart-box">
+      <div class="chart-title">HDL & Triglycerides</div>
+      <div class="chart-sub">mmol/L · HDL ≥1.00 ref · TG &lt;1.70 ref</div>
+      <div class="chart-legend">
+        <span class="li"><span class="ld" style="background:#15803d"></span>HDL</span>
+        <span class="li"><span class="ld" style="background:#2563eb"></span>Triglycerides</span>
+      </div>
+      <div style="position:relative;height:240px"><canvas id="cHdl"></canvas></div>
+    </div>
+  </div>
+  <div class="sec">What these numbers mean</div>
+  <div class="insight flag">
+    <div class="insight-title">LDL — 6.04 mmol/L <span class="ins-badge b-flag">Flagged</span></div>
+    <div class="insight-body"><strong>What it is:</strong> LDL is the main carrier of cholesterol in your blood. Elevated LDL over time is associated with a higher risk of plaque buildup in arteries.<br><br><strong>Why it's flagged:</strong> Standard reference is &lt;3.50. Yours is nearly double that. The trend is also unusually volatile — swinging from 3.57 to 6.96 and back across 3 years — which isn't typical of genetic hypercholesterolemia. Keto diets reliably raise LDL, especially with high saturated fat intake. Without lean body composition and the full LMHR triad, this elevation needs attention rather than being explained away.<br><br><strong>What matters more than the number:</strong> LDL-C is an imperfect proxy. ApoB (particle count), CAC score (actual plaque), and TG/HDL ratio (metabolic context) together give a far more complete picture of real risk.</div>
+  </div>
+  <div class="insight ok">
+    <div class="insight-title">TG/HDL Ratio — 0.38 <span class="ins-badge b-ok">Excellent</span></div>
+    <div class="insight-body"><strong>What it is:</strong> The ratio of triglycerides to HDL is one of the best single proxies for insulin sensitivity and cardiovascular metabolic health. It reflects how efficiently your body processes fat and regulates blood sugar.<br><br><strong>Ideal is &lt;0.87. Yours is 0.38</strong> — this is a top-tier reading. It tells you that at the metabolic level, your body is handling fat efficiently. This is real protection regardless of the LDL flag, and it's the number most aligned with how your body actually functions on keto.</div>
+  </div>
+  <div class="insight ok">
+    <div class="insight-title">Lp(a) — &lt;10 nmol/L <span class="ins-badge b-ok">Excellent</span></div>
+    <div class="insight-body"><strong>What it is:</strong> Lipoprotein(a) is a genetically determined LDL variant that's an independent risk factor for heart disease — meaning it raises risk on top of everything else, regardless of diet or lifestyle. It never changes with diet or exercise.<br><br><strong>Reference is &lt;100 nmol/L. You're at &lt;10</strong> — bottom decile. This is your genetic cardiovascular lottery win. No drug, no diet, no intervention gives you this. It's just your baseline, and it's excellent.</div>
+  </div>
+  <div class="insight warn">
+    <div class="insight-title">ApoB — 1.41 g/L (Oct 2024) <span class="ins-badge b-warn">Needs Retest</span></div>
+    <div class="insight-body"><strong>What it is:</strong> ApoB counts the actual number of atherogenic (plaque-forming) particles in your blood — each LDL particle carries exactly one ApoB molecule. It's more directly tied to cardiovascular risk than LDL-C alone, because two people with the same LDL-C can have very different particle counts.<br><br><strong>Reference is &lt;1.05 g/L. Yours was 1.41</strong> — 34% above the cutoff. That reading is now 18 months old and was never retested. Given your LDL volatility, this is the most important blood test to repeat before any treatment decision is made.</div>
+  </div>
+</div>
+
+<!-- ═══ GLYCEMIC ═══ -->
+<div id="tab-glycemic" class="tab-pane">
+  <div class="chart-box" style="margin-bottom:24px">
+    <div class="chart-title">A1C trend (2021–2026)</div>
+    <div class="chart-sub">% · Normal &lt;5.5 · At risk 5.5–5.9 · Diabetic ≥6.0</div>
+    <div class="chart-legend">
+      <span class="li"><span class="ld" style="background:#d97706"></span>A1C</span>
+      <span class="li"><span style="display:inline-block;width:18px;height:0;border-top:2px dashed #15803d;vertical-align:middle;margin-right:4px;"></span>Normal limit 5.5%</span>
+      <span class="li"><span style="display:inline-block;width:18px;height:0;border-top:2px dashed #dc2626;vertical-align:middle;margin-right:4px;"></span>Diabetic threshold 6.0%</span>
+    </div>
+    <div style="position:relative;height:260px"><canvas id="cA1c"></canvas></div>
+  </div>
+  <div class="sec">What these numbers mean</div>
+  <div class="insight warn">
+    <div class="insight-title">A1C — 5.6% <span class="ins-badge b-warn">Watch</span></div>
+    <div class="insight-body"><strong>What it is:</strong> A1C measures what percentage of your red blood cells are coated in glucose over the past ~3 months. It's the standard long-term blood sugar surveillance tool.<br><br><strong>Why you're in "watch":</strong> Diabetes Canada classifies 5.5–5.9% as "pre-diabetic." Yours has hovered between 5.4 and 5.7 for 5 years without crossing into the diabetic range.<br><br><strong>The keto caveat — why this probably isn't a real concern:</strong> On very low carb diets, red blood cells tend to live longer than average. This means they accumulate more glucose coating over time even when blood sugar is well controlled — artificially inflating A1C by roughly 0.3–0.5%. Your fasting glucose of 4.3 mmol/L (a direct measurement with no RBC lifespan artifact) is perfectly normal and actually trending down. These two together strongly suggest your A1C is a diet-related measurement artifact, not an actual metabolic problem.</div>
+  </div>
+  <div class="insight ok">
+    <div class="insight-title">Fasting Glucose — 4.3 mmol/L <span class="ins-badge b-ok">Optimal</span></div>
+    <div class="insight-body"><strong>What it is:</strong> Your blood sugar level after not eating for at least 8 hours. It's the most direct, unambiguous snapshot of blood sugar regulation.<br><br><strong>4.3 mmol/L is excellent</strong> (normal range 3.9–5.6 mmol/L) and trending down from 4.7 in August 2025. This is the number that best reflects your actual glycemic control on a keto diet. On its own it tells a good story.</div>
+  </div>
+</div>
+
+<!-- ═══ ORGANS ═══ -->
+<div id="tab-organs" class="tab-pane">
+  <div class="charts">
+    <div class="chart-box">
+      <div class="chart-title">eGFR — kidney function</div>
+      <div class="chart-sub">mL/min/1.73m² · Reference ≥60</div>
+      <div class="chart-legend"><span class="li"><span class="ld" style="background:#15803d"></span>eGFR</span></div>
+      <div style="position:relative;height:220px"><canvas id="cEgfr"></canvas></div>
+    </div>
+    <div class="chart-box">
+      <div class="chart-title">CBC hematology — Mar 2026</div>
+      <div class="chart-sub">All values within reference range</div>
+      <div class="chart-legend"><span class="li"><span class="ld" style="background:#2563eb"></span>Value (raw)</span></div>
+      <div style="position:relative;height:220px"><canvas id="cCbc"></canvas></div>
+    </div>
+  </div>
+  <div class="sec">What these numbers mean</div>
+  <div class="insight ok">
+    <div class="insight-title">eGFR — 105 mL/min <span class="ins-badge b-ok">Excellent</span></div>
+    <div class="insight-body"><strong>What it is:</strong> Estimated Glomerular Filtration Rate — how much blood your kidneys filter per minute. The standard minimum is 60 mL/min for healthy adult kidney function.<br><br><strong>Why this is notable:</strong> The common concern with high-protein diets (especially carnivore) is that they strain the kidneys over time. Your eGFR is 105 — well above normal — and it's trending up (101 → 105 from Aug 2025 to Mar 2026). Also your urine albumin/creatinine ratio (0.5 mg/mmol, Oct 2023) was normal, meaning no protein leakage. Your kidneys are handling a high-protein diet without any signs of stress.</div>
+  </div>
+  <div class="insight flag">
+    <div class="insight-title">CK — 477 U/L (Oct 2024) <span class="ins-badge b-flag">Follow Up Needed</span></div>
+    <div class="insight-body"><strong>What it is:</strong> Creatine Kinase is an enzyme released when muscle tissue breaks down. Reference range is 44–275 U/L for men.<br><br><strong>Why it's flagged:</strong> Elevated CK happens normally after intense training (it's expected and harmless). But if this reading was taken at rest, it signals muscle damage that warrants investigation. This was measured in October 2024 and <strong>was never retested</strong>. If you trained the day before the draw, it was almost certainly a training artifact. Retest after 48 hours off the gym to find out definitively.</div>
+  </div>
+  <div class="insight ok">
+    <div class="insight-title">CBC — all markers normal <span class="ins-badge b-ok">Clean Sweep</span></div>
+    <div class="insight-body"><strong>What it is:</strong> Complete Blood Count checks every aspect of your blood cells — immune cells, oxygen-carrying capacity, and clotting function.<br><br><strong>All within range:</strong> WBC 6.4 (immune function, no active infection), Hemoglobin 145 g/L (oxygen delivery — no anemia), Hematocrit 44.6% (blood cell proportion — normal), Platelets 278 (clotting — normal). Nothing here is contributing to any symptoms or concerns.</div>
+  </div>
+</div>
+
+<!-- ═══ NUTRIENTS & HORMONES ═══ -->
+<div id="tab-nutrients" class="tab-pane">
+  <div class="charts">
+    <div class="chart-box">
+      <div class="chart-title">Testosterone</div>
+      <div class="chart-sub">nmol/L · Reference 8.4–28.8</div>
+      <div class="chart-legend"><span class="li"><span class="ld" style="background:#2563eb"></span>Testosterone</span></div>
+      <div style="position:relative;height:220px"><canvas id="cTesto"></canvas></div>
+    </div>
+    <div class="chart-box">
+      <div class="chart-title">TSH — thyroid</div>
+      <div class="chart-sub">mIU/L · Reference 0.32–4.00</div>
+      <div class="chart-legend"><span class="li"><span class="ld" style="background:#7c3aed"></span>TSH</span></div>
+      <div style="position:relative;height:220px"><canvas id="cTsh"></canvas></div>
+    </div>
+    <div class="chart-box">
+      <div class="chart-title">Vitamin D</div>
+      <div class="chart-sub">nmol/L · Reference 75–250</div>
+      <div class="chart-legend"><span class="li"><span class="ld" style="background:#d97706"></span>Vitamin D</span></div>
+      <div style="position:relative;height:220px"><canvas id="cVitd"></canvas></div>
+    </div>
+    <div class="chart-box">
+      <div class="chart-title">B12 & Ferritin</div>
+      <div class="chart-sub">Comparison: Aug 2025 vs Mar 2026</div>
+      <div class="chart-legend">
+        <span class="li"><span class="ld" style="background:#15803d;opacity:0.4"></span>Aug 2025</span>
+        <span class="li"><span class="ld" style="background:#15803d"></span>Mar 2026</span>
+      </div>
+      <div style="position:relative;height:220px"><canvas id="cB12"></canvas></div>
+    </div>
+  </div>
+  <div class="sec">What these numbers mean</div>
+  <div class="insight warn">
+    <div class="insight-title">Testosterone — 18.6 nmol/L (Jul 2024) <span class="ins-badge b-warn">Reading is 2 years old</span></div>
+    <div class="insight-body"><strong>What it is:</strong> The primary male sex hormone. Controls energy, motivation, muscle mass, recovery, mood, and libido. Normal adult range is 8.4–28.8 nmol/L.<br><br><strong>The problem:</strong> Your reading of 18.6 nmol/L is from July 2024 — almost 2 years ago, at a point when you were training regularly. Testosterone responds directly to training volume. Two months off plus inconsistent frequency before that means this has likely dropped. Even a drop to 12–14 nmol/L (still "normal" by lab reference) is clinically enough to cause persistent fatigue, reduced motivation to exercise, and difficulty waking up. <strong>This is the most important retest on your list for the energy issue.</strong></div>
+  </div>
+  <div class="insight ok">
+    <div class="insight-title">TSH — 1.39 mIU/L <span class="ins-badge b-ok">Stable</span></div>
+    <div class="insight-body"><strong>What it is:</strong> TSH (thyroid stimulating hormone) is the signal your brain sends to your thyroid to produce more or less thyroid hormone. High TSH = underactive thyroid (sluggish metabolism, fatigue). Low TSH = overactive thyroid (anxiety, weight loss).<br><br><strong>Yours is 1.39</strong> — centered in the normal range (0.32–4.0) and stable across three readings over 2 years. Thyroid dysfunction is unlikely to be driving your fatigue. That said, TSH alone doesn't catch everything — free T3 and free T4 would give a more complete picture if fatigue persists after addressing testosterone and lifestyle.</div>
+  </div>
+  <div class="insight ok">
+    <div class="insight-title">Vitamin D — 126.4 nmol/L <span class="ins-badge b-ok">Optimal</span></div>
+    <div class="insight-body"><strong>What it is:</strong> Despite the name, Vitamin D is a hormone produced in your skin from sun exposure (or supplements). It affects immune function, bone health, mood regulation, and energy levels. Deficiency is extremely common in Canada — especially from October to April.<br><br><strong>Your improvement (+66% since Oct 2023) is significant.</strong> You've gone from borderline deficiency (76.0 nmol/L) to solidly optimal (126.4 nmol/L). Vitamin D deficiency causes fatigue — but since yours is now optimal, this is not what's draining your energy today.</div>
+  </div>
+  <div class="insight ok">
+    <div class="insight-title">B12 — 595 pmol/L &nbsp;|&nbsp; Ferritin — 267 ug/L <span class="ins-badge b-ok">Both Optimal</span></div>
+    <div class="insight-body"><strong>B12:</strong> Essential for nerve function and energy production at the cellular level. Deficiency causes a specific type of deep, neurological fatigue. Common in vegetarians — but you're eating mostly meat, which is the richest dietary source of B12. Your reading of 595 pmol/L is excellent and trending up.<br><br><strong>Ferritin:</strong> Measures your iron stores (not just circulating iron). Low ferritin is one of the most commonly missed causes of fatigue, especially in active people. Reference for men is typically 12–300 ug/L. Yours at 267 is in the upper third of the optimal range. Iron is not your problem.</div>
+  </div>
+</div>
+
+<!-- ═══ LMHR STATUS ═══ -->
+<div id="tab-lmhr" class="tab-pane">
+  <div class="insight info" style="margin-bottom:24px">
+    <div class="insight-title">What is LMHR?</div>
+    <div class="insight-body">Lean Mass Hyper-Responder (LMHR) is a phenotype observed in people on low-carb/keto diets who show a specific triad: very elevated LDL, very high HDL, and very low triglycerides. The hypothesis — developed by Dave Feldman and now being studied in a formal trial — is that in lean, glycogen-depleted people, the liver upregulates LDL production to shuttle energy to tissues. The key claim is that this LDL elevation is mechanistically different from, and less dangerous than, the LDL elevation caused by metabolic dysfunction. But the "lean" and "trained" components are central to that argument — without them, the protective mechanism doesn't apply.</div>
+  </div>
+  <div class="sec">Your status vs LMHR criteria</div>
+  <table class="lmhr-tbl">
+    <thead>
+      <tr><th>Criterion</th><th>LMHR threshold</th><th>Your value</th><th>Status</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>LDL cholesterol</td><td>≥5.17 mmol/L (≥200 mg/dL)</td><td><strong>6.04 mmol/L</strong></td><td class="ok">✓ Meets criteria</td></tr>
+      <tr><td>Triglycerides</td><td>≤0.79 mmol/L (≤70 mg/dL)</td><td><strong>0.53 mmol/L</strong></td><td class="ok">✓ Meets criteria</td></tr>
+      <tr><td>HDL cholesterol</td><td>≥2.07 mmol/L (≥80 mg/dL)</td><td><strong>1.38 mmol/L</strong></td><td class="fail">✗ Below threshold</td></tr>
+      <tr><td>Lean body composition</td><td>Lean/athletic, BMI typically &lt;25</td><td><strong>88 kg, low training volume</strong></td><td class="fail">✗ Not currently met</td></tr>
+      <tr><td>Active keto/low-carb diet</td><td>Ketogenic or zero-carb</td><td><strong>Zero-carb / keto</strong></td><td class="ok">✓ Meets criteria</td></tr>
+    </tbody>
+  </table>
+  <div class="insight warn">
+    <div class="insight-title">Current verdict: partial LMHR pattern, not full phenotype</div>
+    <div class="insight-body">You meet 3 of 5 criteria. The two you don't meet — HDL and body composition — are the mechanistically important ones. The LMHR protective argument rests on the lean, trained physique driving the LDL upregulation. Without it, elevated LDL and ApoB should be taken seriously rather than dismissed on dietary grounds alone.</div>
+  </div>
+  <div class="sec" style="margin-top:28px">Will you get back to LMHR status?</div>
+  <div class="insight ok">
+    <div class="insight-title">Yes — and two months off is not a big setback</div>
+    <div class="insight-body">Your keto diet is already doing the metabolic work — TG/HDL of 0.38 proves that. The missing piece is lean mass and getting HDL from 1.38 toward ≥2.07 mmol/L.<br><br><strong>What consistent resistance training does for LMHR status:</strong><br>
+    — Raises HDL (typically +0.1–0.3 mmol/L with consistent lifting)<br>
+    — Reduces body fat, shifting body composition toward lean<br>
+    — Raises testosterone — which directly improves energy and training consistency<br>
+    — Combined with keto, often stabilizes LDL at a lower set point<br><br>
+    <strong>Realistic timeline:</strong> 3–4 months of consistent lifting on keto and you should be moving clearly into LMHR territory. Your Jul 2024 testosterone reading (18.6 nmol/L, +49% from 2022) suggests you were in significantly better shape then — you're not starting from zero. The diet foundation is solid. The gym is the missing variable.</div>
+  </div>
+</div>
+
+<!-- ═══ LOW ENERGY ═══ -->
+<div id="tab-energy" class="tab-pane">
+  <div class="insight info" style="margin-bottom:24px">
+    <div class="insight-title">You mentioned waking up is hard and energy is consistently low</div>
+    <div class="insight-body">Looking across all 8 panels from 2021–2026, here's what the data can and can't tell us. Several of the classic deficiency causes of fatigue have been tested. Some important hormonal markers haven't. Here's the breakdown.</div>
+  </div>
+  <div class="sec">Markers checked against the energy question</div>
+  <div class="energy-grid">
+    <div class="ec suspect">
+      <div class="ec-name">Testosterone</div>
+      <div class="ec-val">18.6 nmol/L</div>
+      <div class="ev-suspect">⚠ Most likely suspect</div>
+      <div class="ec-exp">Reading from Jul 2024 — almost 2 years ago. Testosterone drops with reduced training, poor sleep, and stress. Low T is a primary driver of low energy, low motivation, and morning difficulty. This must be retested now.</div>
+    </div>
+    <div class="ec unknown">
+      <div class="ec-name">Cortisol</div>
+      <div class="ec-val">Not tested</div>
+      <div class="ev-unknown">? Never measured</div>
+      <div class="ec-exp">Cortisol is your morning hormone — it creates the drive to wake up and start the day. If the cortisol awakening response is blunted (from chronic stress, poor sleep quality, or sedentary lifestyle), mornings feel like pushing through concrete. Never tested.</div>
+    </div>
+    <div class="ec unknown">
+      <div class="ec-name">Free T3 / Free T4</div>
+      <div class="ec-val">Not tested</div>
+      <div class="ev-unknown">? Never measured</div>
+      <div class="ec-exp">TSH (1.39) is normal but doesn't catch everything. Free T3 is the active thyroid hormone. Subclinical hypothyroidism with normal TSH but low free T3 causes classic fatigue. Worth testing if fatigue persists after addressing testosterone.</div>
+    </div>
+    <div class="ec clear">
+      <div class="ec-name">Vitamin D</div>
+      <div class="ec-val">126.4 nmol/L</div>
+      <div class="ev-clear">✓ Not the cause</div>
+      <div class="ec-exp">Deficiency causes fatigue. Yours improved 66% since 2023 and is now solidly optimal. This is not limiting your energy.</div>
+    </div>
+    <div class="ec clear">
+      <div class="ec-name">B12</div>
+      <div class="ec-val">595 pmol/L</div>
+      <div class="ev-clear">✓ Not the cause</div>
+      <div class="ec-exp">B12 deficiency causes deep, neurological fatigue. Excellent levels from carnivore diet. Not your issue.</div>
+    </div>
+    <div class="ec clear">
+      <div class="ec-name">Ferritin (iron stores)</div>
+      <div class="ec-val">267 ug/L</div>
+      <div class="ev-clear">✓ Not the cause</div>
+      <div class="ec-exp">Low ferritin is one of the most common missed causes of fatigue. Yours is in the upper third of normal. Iron is not limiting your energy.</div>
+    </div>
+    <div class="ec clear">
+      <div class="ec-name">TSH (thyroid)</div>
+      <div class="ec-val">1.39 mIU/L</div>
+      <div class="ev-clear">✓ Unlikely cause</div>
+      <div class="ec-exp">Hypothyroidism is a primary fatigue cause. TSH stable and well-centred over 2 years. Unlikely — but free T3/T4 would fully confirm.</div>
+    </div>
+    <div class="ec clear">
+      <div class="ec-name">Hemoglobin / CBC</div>
+      <div class="ec-val">145 g/L</div>
+      <div class="ev-clear">✓ Not the cause</div>
+      <div class="ec-exp">Anemia causes fatigue at a cellular level — reduced oxygen delivery. Your hemoglobin is normal and all CBC markers are clean. No anemia.</div>
+    </div>
+  </div>
+  <div class="sec">What's most likely driving the low energy</div>
+  <div class="insight warn">
+    <div class="insight-title">1. Testosterone has almost certainly dropped — needs a fresh reading</div>
+    <div class="insight-body">Your last reading (18.6 nmol/L, July 2024) coincided with your most consistent training period — it was a +49% jump from your 2022 baseline. Testosterone responds directly to training volume. Two months off, plus irregular frequency before that, means it has very likely decreased. Low-normal testosterone (e.g. 10–13 nmol/L — still "within range" but functionally low for an active 41-year-old) is enough to cause persistent fatigue, reduced motivation to exercise, and difficulty waking up — exactly what you describe. <strong>This is the highest-priority blood test for your energy question.</strong></div>
+  </div>
+  <div class="insight warn">
+    <div class="insight-title">2. Deconditioning — not just "being lazy," this is physiological</div>
+    <div class="insight-body">When you stop training, mitochondrial density in muscle cells decreases within weeks. Mitochondria are your cellular energy factories — fewer mitochondria means less energy produced per unit of effort. Your cells are literally less efficient right now. The result is a feedback loop: low energy → don't want to train → lower mitochondrial density → even lower energy. <strong>The exit is re-engaging, not waiting to feel better first.</strong> Even 2–3 sessions a week of resistance training breaks the loop within 2–3 weeks. You don't need a 5am schedule — any time that doesn't create a friction barrier works.</div>
+  </div>
+  <div class="insight info">
+    <div class="insight-title">3. Morning cortisol rhythm — untested and relevant</div>
+    <div class="insight-body">The specific symptom of difficulty waking up — not just tiredness, but that heavy, reluctant morning feeling — is a hallmark of blunted cortisol awakening response (CAR). Normally, cortisol spikes sharply within 30–45 minutes of waking, creating the physiological drive to get up and function. This spike is suppressed by: poor sleep quality, sedentary lifestyle, chronic low-grade stress, and disrupted sleep patterns. None of these require dramatic events — a gradual drift is enough. If testosterone comes back normal and fatigue persists, an AM cortisol test (drawn between 8–9 AM) is the next logical step.</div>
+  </div>
+  <div class="insight ok">
+    <div class="insight-title">What's almost certainly not the cause</div>
+    <div class="insight-body">All your classic deficiency markers are excellent: Vitamin D (126.4), B12 (595), Ferritin (267), Hemoglobin (145), TSH (1.39). These are the first tests most GPs order when a patient reports fatigue — and they're all clean. That actually narrows the picture usefully: the cause is hormonal (testosterone, cortisol) and lifestyle (deconditioning, sleep) — not nutritional deficiency. The keto diet is not depleting you of anything measurable.</div>
+  </div>
+</div>
+
+<!-- ═══ ACTION PLAN ═══ -->
+<div id="tab-action" class="tab-pane">
+  <div class="sec">Before your next appointment</div>
+  <div class="actions">
+    <div class="ai"><span class="ai-badge ah">High</span><div><div class="ai-title">CAC score (coronary artery calcium)</div><div class="ai-body">The only test that directly shows whether elevated LDL is causing actual arterial plaque. A score of 0 fundamentally changes the risk conversation — at any LDL level. Self-pay in Ontario ~$400–600 CAD. Ask Dr. Bajwa for a referral. Non-negotiable before agreeing to any lipid-lowering medication.</div></div></div>
+    <div class="ai"><span class="ai-badge ah">High</span><div><div class="ai-title">Retest ApoB</div><div class="ai-body">The Oct 2024 reading (1.41 g/L, flagged high) is 18 months old. Given LDL volatility across 5 readings, ApoB needs a current baseline. Together with CAC, these two tests give a complete atherogenic risk picture.</div></div></div>
+    <div class="ai"><span class="ai-badge ah">High</span><div><div class="ai-title">Retest testosterone</div><div class="ai-body">Last tested July 2024 — before reduced training. Most likely the primary driver of your current low energy and morning difficulty. Request total testosterone + free testosterone + SHBG for a complete picture. Should be on your annual physical panel permanently at your age.</div></div></div>
+    <div class="ai"><span class="ai-badge am">Medium</span><div><div class="ai-title">Add fasting insulin</div><div class="ai-body">Directly confirms insulin sensitivity and decodes the A1C reading. Combined with fasting glucose (4.3), calculates HOMA-IR. Expected to be very low given TG/HDL 0.38 — but one confirmed reading puts that question to bed for good.</div></div></div>
+    <div class="ai"><span class="ai-badge am">Medium</span><div><div class="ai-title">Add hs-CRP (high-sensitivity C-reactive protein)</div><div class="ai-body">No inflammation data on any panel to date. Systemic inflammation is the real cardiovascular driver — independent of LDL. One reading contextualizes the entire lipid picture. Carnivore diets typically suppress CRP significantly — this would almost certainly be a strong data point in your favor.</div></div></div>
+    <div class="ai"><span class="ai-badge am">Medium</span><div><div class="ai-title">AM cortisol (if energy persists after testosterone retest)</div><div class="ai-body">If testosterone comes back normal and fatigue continues, morning cortisol is the next candidate. Test between 8–9 AM on a non-stressed morning. Normal is 400–650 nmol/L. Low morning cortisol = blunted cortisol awakening response = the "can't wake up" pattern you describe.</div></div></div>
+    <div class="ai"><span class="ai-badge am">Medium</span><div><div class="ai-title">Retest CK after 48h rest from training</div><div class="ai-body">The Oct 2024 elevation (477 U/L, ref 44–275) was never followed up. Retest after 2 full days off from lifting. If it normalizes, confirmed training artifact. If still elevated, investigate for persistent myopathy — especially relevant before starting any statin if that conversation comes up.</div></div></div>
+    <div class="ai"><span class="ai-badge al">Low</span><div><div class="ai-title">Add homocysteine (baseline)</div><div class="ai-body">Independent cardiovascular risk factor. Never tested. B12 at 595 is protective but B6 and folate gaps can still elevate homocysteine independently. One baseline reading before the lipid conversation with Dr. Bajwa is complete.</div></div></div>
+  </div>
+  <div class="sec">The highest-ROI action right now</div>
+  <div class="insight ok">
+    <div class="insight-title">Getting back to the gym addresses three problems at once</div>
+    <div class="insight-body"><strong>1. Testosterone:</strong> Even 2–3 sessions/week of compound lifts (squats, deadlifts, bench, rows) reliably raises testosterone within 4–6 weeks. This is the most direct intervention available for your energy issue.<br><br><strong>2. LMHR progress:</strong> Resistance training raises HDL and reduces body fat — the two specific things keeping you from the LMHR phenotype. Your keto diet is already doing its part. The gym completes the picture.<br><br><strong>3. Energy and cortisol rhythm:</strong> Exercise is the single most effective intervention for restoring healthy morning cortisol patterns and increasing mitochondrial density. The "too tired to go" feeling typically breaks within 2 weeks of restarting.<br><br><strong>You don't need to go at 5am.</strong> The early wake-up is creating a psychological friction barrier on top of a physiological one. Start at a time that doesn't require a battle. The schedule can shift later when energy recovers.</div>
+  </div>
+</div>
+
+<!-- ═══ THE PLAN ═══ -->
+<div id="tab-plan" class="tab-pane">
+
+  <div class="insight info" style="margin-bottom:28px">
+    <div class="insight-title">Context: Mar 2026 panel was taken at 85 kg while still training</div>
+    <div class="insight-body">That means the numbers on record — LDL 6.04, HDL 1.38 — represent your better state, not your current one. At 88 kg with two months off, the picture is likely worse than what any panel shows. Getting back to 85 kg is not the goal. It just gets you back to where you already were. The LMHR threshold requires meaningful leanness — probably 78–82 kg with consistent training. That's the real target.</div>
+  </div>
+
+  <div class="sec">Phase 1 — This week</div>
+
+  <div class="actions">
+    <div class="ai"><span class="ai-badge ah">Now</span><div>
+      <div class="ai-title">Doctor appointment: ask for the right tests before agreeing to anything</div>
+      <div class="ai-body">Your only ask: "Before we discuss any treatment, I want a CAC score, current ApoB, testosterone panel, fasting insulin, and hs-CRP." Don't debate LDL theory. Just get the data before agreeing to anything — especially statins. The CAC score alone changes the entire conversation.</div>
+    </div></div>
+    <div class="ai"><span class="ai-badge ah">Now</span><div>
+      <div class="ai-title">Start the gym this week — not when you feel better</div>
+      <div class="ai-body">Three days, compound movements only: squat, deadlift, bench, row. 45 minutes. Pick a time that isn't 5am — the barrier is real, remove it. The energy to go won't come before you go. It comes after, within 10–14 days of restarting consistently.</div>
+    </div></div>
+    <div class="ai"><span class="ai-badge ah">Now</span><div>
+      <div class="ai-title">Add a daily 30-minute walk</div>
+      <div class="ai-body">This is your HDL lever. Zone 2 cardio (conversational pace, slightly elevated heart rate) does more for HDL than resistance training does. You already move in daily life — make one of those sessions intentional. Morning or evening, doesn't matter.</div>
+    </div></div>
+  </div>
+
+  <div class="sec">Phase 2 — Weeks 2 to 8</div>
+
+  <div class="actions">
+    <div class="ai"><span class="ai-badge am">Week 2–8</span><div>
+      <div class="ai-title">Hold 3x gym + daily walk — no complexity, just show up</div>
+      <div class="ai-body">Don't add new variables yet. The only goal in this phase is consistency. Two months of inconsistency created the current state — two months of consistency reverses it. Progressive overload matters, but right now attendance is the only metric that counts.</div>
+    </div></div>
+    <div class="ai"><span class="ai-badge am">Week 6–8</span><div>
+      <div class="ai-title">Retest testosterone</div>
+      <div class="ai-body">After 6–8 weeks of consistent training, retest testosterone. This tells you whether the energy issue is hormonal or purely deconditioning. If it comes back low-normal despite 8 weeks of lifting, that's a clinical conversation — not a lifestyle fix. That data point determines what happens next.</div>
+    </div></div>
+    <div class="ai"><span class="ai-badge am">Week 2–8</span><div>
+      <div class="ai-title">Mild caloric reduction — target 85–86 kg by week 8</div>
+      <div class="ai-body">Keto is already working metabolically (TG/HDL 0.38 proves it). The easiest lever on your current diet is reducing olive oil and avocado slightly — both are high-calorie, easy to over-consume, and the simplest adjustment without changing what you eat. Nothing dramatic. 85–86 kg by week 8 just gets you back to your March 2026 baseline.</div>
+    </div></div>
+  </div>
+
+  <div class="sec">Phase 3 — Months 3 to 6</div>
+
+  <div class="actions">
+    <div class="ai"><span class="ai-badge al">Month 3–6</span><div>
+      <div class="ai-title">Target weight: 80–82 kg — this is where LMHR becomes real</div>
+      <div class="ai-body">At 85 kg while training, HDL was 1.38 — still 50% below the LMHR threshold of 2.07. The gym alone won't close that gap. You need to be meaningfully leaner. At 80–82 kg with consistent lifting and daily walking, HDL should be tracking toward 1.6–1.8 mmol/L. Combined with keto, that puts LMHR within reach.</div>
+    </div></div>
+    <div class="ai"><span class="ai-badge al">Month 6</span><div>
+      <div class="ai-title">Full panel retest — compare against Mar 2026</div>
+      <div class="ai-body">Retest: LDL, ApoB, HDL, TG, testosterone, hs-CRP. This gives you a 6-month trajectory. If ApoB has dropped and HDL has risen, the plan is working and you have data to show your doctor. If not, you have the CAC score from Phase 1 to anchor any further conversation about intervention.</div>
+    </div></div>
+    <div class="ai"><span class="ai-badge al">Month 6</span><div>
+      <div class="ai-title">LMHR re-assessment</div>
+      <div class="ai-body">The LMHR question doesn't get answered by thinking about it — it gets answered by the blood work after you've done the work. At month 6, with the new panel in hand, you'll know whether you're genuinely tracking toward the phenotype or whether the LDL elevation is structural and needs a different approach.</div>
+    </div></div>
+  </div>
+
+  <div class="sec">Priority order — the honest version</div>
+  <div class="insight ok">
+    <div class="insight-title">Doctor this week → gym this week → body composition over 6 months → LMHR re-assessment at month 6</div>
+    <div class="insight-body">The only real wildcard is testosterone. If it comes back significantly lower than 18.6 even after 8 weeks of consistent training, that becomes a clinical conversation — not something lifestyle fixes alone will resolve. Everything else is within your control and follows directly from showing up consistently.<br><br>
+    <strong>The 5am problem:</strong> Don't go at 5am. That's a friction barrier on top of a physiological one. Start at whatever time creates zero resistance. The schedule can shift once energy recovers — which it will, within 2–3 weeks of restarting.</div>
+  </div>
+
+</div>
+
+</div><!-- /content -->
+
+<script>
+function go(name, btn) {
+  document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-' + name).classList.add('active');
+  btn.classList.add('active');
+}
+
+// Build overview cards
+const cards = [
+  { l:'LDL Cholesterol', v:'6.04', u:'mmol/L · Mar 2026', s:'flag', n:'Volatile trend', e:'Main cholesterol carrier. High = plaque risk over time.' },
+  { l:'Total Cholesterol', v:'7.56', u:'mmol/L · Mar 2026', s:'flag', n:'Up from 5.70 (Aug 25)', e:'Sum of all cholesterol types.' },
+  { l:'HDL', v:'1.38', u:'mmol/L · Mar 2026', s:'ok', n:'↑ from 0.90 (Jul 2022)', e:'"Good" cholesterol. Higher = better CV protection.' },
+  { l:'Triglycerides', v:'0.53', u:'mmol/L · Mar 2026', s:'ok', n:'Excellent (ref <1.70)', e:'Blood fats. Low = good fat metabolism and insulin sensitivity.' },
+  { l:'Lp(a)', v:'<10', u:'nmol/L · Mar 2026', s:'ok', n:'Very low genetic CV risk', e:'Genetic risk particle. Doesn\'t change with diet or lifestyle.' },
+  { l:'TG/HDL Ratio', v:'0.38', u:'ratio · Mar 2026', s:'ok', n:'Excellent insulin proxy', e:'Best single marker of metabolic health. Ideal <0.87.' },
+  { l:'ApoB', v:'1.41', u:'g/L · Oct 2024', s:'flag', n:'⚠ 18 months old — retest', e:'Counts atherogenic particles directly. More precise than LDL.' },
+  { l:'A1C', v:'5.6', u:'% · Mar 2026', s:'warn', n:'Keto RBC artifact likely', e:'3-month blood sugar average. Reads high on keto diet.' },
+  { l:'Fasting Glucose', v:'4.3', u:'mmol/L · Mar 2026', s:'ok', n:'↓ from 4.7 (Aug 25)', e:'Direct blood sugar measurement. More reliable than A1C on keto.' },
+  { l:'eGFR', v:'105', u:'mL/min · Mar 2026', s:'ok', n:'↑ from 101 (Aug 25)', e:'Kidney filtration rate. Higher is better. Ref ≥60.' },
+  { l:'CK', v:'477', u:'U/L · Oct 2024', s:'warn', n:'⚠ Never retested', e:'Muscle breakdown marker. Elevated after training or from myopathy.' },
+  { l:'Vitamin D', v:'126.4', u:'nmol/L · Mar 2026', s:'ok', n:'+66% since Oct 2023', e:'Hormone affecting energy, immunity, and mood. Now optimal.' },
+  { l:'Testosterone', v:'18.6', u:'nmol/L · Jul 2024', s:'ok', n:'⚠ Reading is 2 years old', e:'Energy, muscle, mood. Almost certainly lower now. Retest.' },
+  { l:'TSH (Thyroid)', v:'1.39', u:'mIU/L · Mar 2026', s:'ok', n:'Stable across 3 readings', e:'Controls metabolism and energy. Well-centred in normal range.' },
+  { l:'B12', v:'595', u:'pmol/L · Mar 2026', s:'ok', n:'↑ from 543 (Aug 25)', e:'Nerve function and cellular energy. Excellent from carnivore diet.' },
+  { l:'Ferritin', v:'267', u:'ug/L · Mar 2026', s:'ok', n:'Optimal range', e:'Iron stores. Low = fatigue. Upper-third of optimal range.' },
+];
+const bm = { ok:'Optimal', warn:'Watch', flag:'Flagged' };
+const g = document.getElementById('overviewCards');
+cards.forEach(c => {
+  g.innerHTML += `<div class="mc ${c.s}"><div class="mc-lbl">${c.l}</div><div class="mc-val">${c.v}</div><div class="mc-unit">${c.u}</div><span class="mc-badge b-${c.s}">${bm[c.s]}</span><div class="mc-note">${c.n}</div><div class="mc-exp">${c.e}</div></div>`;
+});
+
+// Charts
+const gc = 'rgba(0,0,0,0.05)', tc = '#9ca3af';
+const bo = (mn, mx) => ({
+  responsive:true, maintainAspectRatio:false,
+  plugins:{legend:{display:false},tooltip:{backgroundColor:'#1f2937',titleColor:'#f9fafb',bodyColor:'#d1d5db'}},
+  scales:{x:{grid:{color:gc},ticks:{color:tc,font:{size:11}}},y:{min:mn,max:mx,grid:{color:gc},ticks:{color:tc,font:{size:11}}}}
+});
+const ld = (lbl,data,color,dash) => ({
+  label:lbl,data,borderColor:color,backgroundColor:color+'18',
+  borderDash:dash||[],borderWidth:dash?1.5:2.5,
+  pointRadius:dash?0:5,pointBackgroundColor:color,tension:0.35,fill:!dash
+});
+
+new Chart(document.getElementById('cLdl'),{type:'line',data:{labels:['Oct 2023','Jul 2024','Oct 2024','Aug 2025','Mar 2026'],datasets:[ld('LDL',[3.57,6.96,5.74,4.19,6.04],'#dc2626'),ld('Total Chol',[null,8.59,7.49,5.70,7.56],'#d97706'),ld('LDL ref',[3.5,3.5,3.5,3.5,3.5],'#15803d',[5,4]),ld('TC ref',[5.2,5.2,5.2,5.2,5.2],'#d97706',[5,4])]},options:bo(0,10)});
+
+new Chart(document.getElementById('cHdl'),{type:'line',data:{labels:['Jul 2022','Mar 2026'],datasets:[ld('HDL',[0.90,1.38],'#15803d'),ld('TG',[null,0.53],'#2563eb'),ld('HDL ref',[1.0,1.0],'#15803d',[5,4])]},options:bo(0,2.5)});
+
+new Chart(document.getElementById('cA1c'),{type:'line',data:{labels:['Aug 2021','Jul 2022','Oct 2023','Oct 2024','Aug 2025','Mar 2026'],datasets:[ld('A1C',[5.7,5.5,5.4,5.7,5.5,5.6],'#d97706'),ld('5.5%',[5.5,5.5,5.5,5.5,5.5,5.5],'#15803d',[5,4]),ld('6.0%',[6.0,6.0,6.0,6.0,6.0,6.0],'#dc2626',[5,4])]},options:bo(4.8,6.5)});
+
+new Chart(document.getElementById('cEgfr'),{type:'line',data:{labels:['Aug 2025','Mar 2026'],datasets:[ld('eGFR',[101,105],'#15803d')]},options:bo(85,115)});
+
+new Chart(document.getElementById('cCbc'),{type:'bar',data:{labels:['WBC (4–11)','Hgb/10','HCT%','Plt/10'],datasets:[{data:[6.4,14.5,44.6,27.8],backgroundColor:'#2563eb30',borderColor:'#2563eb',borderWidth:1.5,borderRadius:5}]},options:{...bo(0,60),plugins:{legend:{display:false}},scales:{x:{grid:{color:gc},ticks:{color:tc,font:{size:10}}},y:{display:false}}}});
+
+new Chart(document.getElementById('cTesto'),{type:'line',data:{labels:['Sep 2022','Jul 2024'],datasets:[ld('T',[12.5,18.6],'#2563eb'),ld('min 8.4',[8.4,8.4],'#dc2626',[5,4]),ld('max 28.8',[28.8,28.8],'#15803d',[5,4])]},options:bo(0,32)});
+
+new Chart(document.getElementById('cTsh'),{type:'line',data:{labels:['Jul 2024','Aug 2025','Mar 2026'],datasets:[ld('TSH',[1.34,1.60,1.39],'#7c3aed'),ld('max 4.0',[4,4,4],'#d97706',[5,4])]},options:bo(0,5)});
+
+new Chart(document.getElementById('cVitd'),{type:'line',data:{labels:['Oct 2023','Mar 2026'],datasets:[ld('Vit D',[76,126.4],'#d97706'),ld('min 75',[75,75],'#15803d',[5,4])]},options:bo(50,160)});
+
+new Chart(document.getElementById('cB12'),{type:'bar',data:{labels:['B12 (pmol/L)','Ferritin (ug/L)'],datasets:[{label:'Aug 2025',data:[543,241],backgroundColor:'#15803d40',borderColor:'#15803d',borderWidth:1.5,borderRadius:4},{label:'Mar 2026',data:[595,267],backgroundColor:'#15803d90',borderColor:'#15803d',borderWidth:1.5,borderRadius:4}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{color:gc},ticks:{color:tc}},y:{grid:{color:gc},ticks:{color:tc}}}}});
+</script>
+</body>
+</html>

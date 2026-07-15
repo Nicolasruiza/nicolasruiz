@@ -1,0 +1,1009 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Initiative Cost Estimator</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Outfit:wght@300;400;500;600;700;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#070b12;--surface:#0e1521;--surface2:#151f30;--surface3:#1c2a40;
+  --border:#1e2d42;--border-lt:#0f1a28;
+  --text:#e8edf5;--muted:#8896a8;--sub:#5a6e82;--dim:#3a4d61;
+  --accent:#00d4aa;--aglow:rgba(0,212,170,.13);
+  /* Semantic palette — no green overlap with UI accent */
+  --c-ex:#4f9cf9;         /* Existing Team  → blue */
+  --c-nw:#e879f9;         /* New Members    → fuchsia */
+  --c-vn:#f59e0b;         /* Vendors        → amber */
+  --c-sp:#f97316;         /* Team Support   → orange */
+  --c-cap:#818cf8;        /* CAPEX          → indigo */
+  --c-opx:#fb7185;        /* OPEX           → rose */
+  --c-fte:#38bdf8;        /* FTE            → sky */
+  --c-con:#c084fc;        /* Contractor     → violet */
+  --danger:#ef4444;
+  --mono:'JetBrains Mono',monospace;--sans:'Outfit',sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--sans);background:var(--bg);color:var(--text);min-height:100vh;font-size:13px}
+::-webkit-scrollbar{width:5px;height:5px}
+::-webkit-scrollbar-track{background:var(--bg)}
+::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
+
+/* ── HEADER ── */
+.hdr{background:var(--surface);border-bottom:1px solid var(--border);padding:0 18px;display:flex;align-items:center;gap:12px;position:sticky;top:0;z-index:200;height:68px}
+.hdr-badge{font-size:9px;font-weight:800;letter-spacing:.22em;text-transform:uppercase;color:var(--accent);white-space:nowrap;line-height:1.4}
+.hdr-div{width:1px;height:34px;background:var(--border);flex-shrink:0}
+.proj-inp{font-family:var(--sans);font-size:16px;font-weight:700;background:transparent;border:none;border-bottom:2px solid transparent;color:var(--text);outline:none;padding-bottom:2px;width:170px;transition:border-color .2s}
+.proj-inp:focus{border-bottom-color:var(--accent)}
+.hdr-fields{display:flex;align-items:center;gap:12px}
+.hf{display:flex;flex-direction:column;gap:3px}
+.hf-lbl{font-size:8px;font-weight:700;color:var(--sub);letter-spacing:.1em;text-transform:uppercase}
+.hf-inp{font-family:var(--mono);font-size:12px;font-weight:600;background:var(--surface2);border:1px solid var(--border);color:var(--text);padding:5px 8px;border-radius:5px;outline:none;transition:border-color .2s}
+.hf-inp:focus{border-color:var(--accent)}
+.hf-inp.date{width:134px}
+input[type="date"]::-webkit-datetime-edit{color:var(--sub)}
+input[type="date"].hv::-webkit-datetime-edit{color:var(--text)}
+input[type="date"]::-webkit-calendar-picker-indicator{filter:invert(.5) sepia(1) saturate(2) hue-rotate(130deg);cursor:pointer;opacity:.7}
+.kpi-group{display:flex;gap:8px}
+.kpi{display:flex;flex-direction:column;align-items:center;background:var(--aglow);border:1px solid rgba(0,212,170,.3);border-radius:8px;padding:6px 16px;min-width:62px}
+.kpi-val{font-family:var(--mono);font-size:20px;font-weight:700;color:var(--accent);line-height:1}
+.kpi-lbl{font-size:8px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--accent);opacity:.7;margin-top:2px}
+.hdr-actions{margin-left:auto;display:flex;gap:7px}
+.btn{font-family:var(--sans);font-size:11px;font-weight:600;padding:6px 13px;border-radius:6px;border:1px solid var(--border);background:var(--surface2);color:var(--muted);cursor:pointer;transition:all .15s;display:inline-flex;align-items:center;gap:4px;white-space:nowrap}
+.btn:hover{background:var(--surface3);color:var(--text)}
+.btn-accent{background:var(--aglow);border-color:var(--accent);color:var(--accent)}
+.btn-accent:hover{background:rgba(0,212,170,.22)}
+.btn-sm{font-size:10px;padding:2px 8px}
+.btn-xs{font-size:9px;padding:1px 6px;border-radius:4px}
+.btn-kill{background:transparent;border-color:transparent;color:var(--dim)}
+.btn-kill:hover{background:rgba(239,68,68,.12);border-color:rgba(239,68,68,.3);color:var(--danger)}
+
+/* ── SETTINGS ── */
+.sett{background:var(--surface);border-bottom:1px solid var(--border);overflow:hidden;transition:max-height .35s ease;max-height:0}
+.sett.open{max-height:520px}
+.sett-inner{padding:16px 18px;display:grid;grid-template-columns:220px 1fr;gap:22px}
+.sg h4{font-size:9px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid var(--border)}
+.sr{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;gap:8px}
+.sr label{font-size:12px;color:var(--muted)}
+.si{font-family:var(--mono);font-size:11px;background:var(--surface2);border:1px solid var(--border);color:var(--text);padding:4px 7px;border-radius:4px;width:72px;text-align:right;outline:none}
+.si:focus{border-color:var(--accent)}
+.role-wrap{overflow-y:auto;max-height:330px}
+.role-wrap::-webkit-scrollbar{width:4px}
+.role-wrap::-webkit-scrollbar-thumb{background:var(--border)}
+.rtbl{width:100%;border-collapse:collapse}
+.rtbl th{font-size:8px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--sub);padding:5px 8px;border-bottom:1px solid var(--border);background:var(--surface2);position:sticky;top:0;z-index:1}
+.rtbl th:first-child{text-align:left}
+.rtbl th:not(:first-child){text-align:right}
+.rtbl td{padding:3px 7px;border-bottom:1px solid var(--border-lt)}
+.rtbl tr:last-child td{border-bottom:none}
+.rtbl td:first-child{font-size:11px;color:var(--muted)}
+.role-add{margin-top:8px;display:flex;gap:6px}
+.role-add input{font-family:var(--sans);font-size:11px;background:var(--surface2);border:1px solid var(--border);color:var(--text);padding:4px 8px;border-radius:4px;outline:none;flex:1}
+.role-add input:focus{border-color:var(--accent)}
+.role-add input::placeholder{color:var(--sub)}
+
+/* ── MAIN ── */
+.main{padding:14px 18px;display:grid;gap:14px;padding-bottom:248px}
+.sec{background:var(--surface);border:1px solid var(--border);border-radius:8px;overflow:hidden}
+.sec-hdr{padding:10px 14px;display:flex;align-items:center;gap:8px;border-bottom:1px solid var(--border);background:var(--surface2)}
+.sec-title{font-size:13px;font-weight:600}
+.sec-count{font-size:9px;color:var(--muted);background:var(--surface3);padding:2px 8px;border-radius:9px}
+.sec-tot{margin-left:auto;font-family:var(--mono);font-size:13px;font-weight:700;color:var(--accent)}
+.chart-toggles{display:flex;gap:4px;margin-left:auto}
+.ctgl{font-family:var(--sans);font-size:10px;font-weight:600;padding:3px 11px;border-radius:4px;border:1px solid var(--border);background:transparent;color:var(--sub);cursor:pointer;transition:all .15s;user-select:none}
+.ctgl:hover{color:var(--text);border-color:var(--muted)}
+.ctgl.active{background:var(--aglow);border-color:var(--accent);color:var(--accent)}
+
+/* ── TABS ── */
+.tabs{display:flex;border-bottom:1px solid var(--border);background:var(--surface2)}
+.tab-btn{font-family:var(--sans);font-size:11px;font-weight:600;padding:8px 14px;background:transparent;border:none;color:var(--sub);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px;transition:all .15s}
+.tab-btn:hover{color:var(--text)}
+.tab-btn.active{color:var(--accent);border-bottom-color:var(--accent)}
+.tab-pane{display:none}.tab-pane.active{display:block}
+.pane-note{font-size:10px;color:var(--sub);padding:5px 14px;background:var(--bg);border-bottom:1px solid var(--border-lt)}
+
+/* ── TABLE ── */
+.dt{width:100%;border-collapse:collapse}
+.dt th{font-size:9px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--sub);padding:7px 8px;text-align:left;background:var(--surface2);border-bottom:1px solid var(--border);white-space:nowrap}
+.dt th.r{text-align:right}
+.dt td{padding:4px 8px;border-bottom:1px solid var(--border-lt);vertical-align:middle}
+.dt tr:last-child td{border-bottom:none}
+.dt tr:hover td{background:rgba(255,255,255,.01)}
+.ti{font-family:var(--sans);font-size:12px;background:transparent;border:1px solid transparent;color:var(--text);padding:3px 4px;border-radius:4px;width:100%;outline:none;transition:all .12s}
+.ti:hover{border-color:var(--border);background:var(--surface2)}
+.ti:focus{border-color:var(--accent);background:var(--surface2)}
+.ti.m{font-family:var(--mono);font-size:11px}
+.tsel{font-family:var(--sans);font-size:12px;background:var(--surface2);border:1px solid var(--border);color:var(--text);padding:3px 4px;border-radius:4px;outline:none;width:100%;cursor:pointer}
+.tsel:focus{border-color:var(--accent)}
+.vc{color:var(--c-cap);font-family:var(--mono);font-size:11px;font-weight:600;display:block;text-align:right}
+.vo{color:var(--c-opx);font-family:var(--mono);font-size:11px;font-weight:600;display:block;text-align:right}
+.vt{color:var(--text);font-family:var(--mono);font-size:11px;font-weight:700;display:block;text-align:right}
+.ov{color:#f97316;font-size:8px;vertical-align:super;margin-left:1px;cursor:help}
+.add-row{width:100%;padding:8px;background:transparent;border:none;border-top:1px dashed var(--border);color:var(--sub);cursor:pointer;font-family:var(--sans);font-size:11px;font-weight:500;transition:all .15s;display:flex;align-items:center;justify-content:center;gap:4px}
+.add-row:hover{background:var(--aglow);color:var(--accent)}
+
+/* ── CHART ── */
+.chart-area{padding:14px 16px 10px}
+.chart-legend{display:flex;gap:16px;margin-bottom:12px;flex-wrap:wrap}
+.legend-item{display:flex;align-items:center;gap:5px;font-size:10px;color:var(--muted)}
+.legend-dot{width:10px;height:10px;border-radius:2px;flex-shrink:0}
+#chartWrap{width:100%;min-height:220px}
+
+/* ── FOOTER ── */
+.foot{position:fixed;bottom:0;left:0;right:0;background:var(--surface);border-top:1px solid var(--border);padding:9px 18px 8px;z-index:300}
+.foot-r1{display:grid;grid-template-columns:1fr auto 1fr auto 1fr auto 1fr auto 1fr;align-items:stretch;gap:0;margin-bottom:7px}
+.foot-r2{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:7px}
+.fsep{display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:700;color:var(--sub);padding:0 5px;user-select:none}
+.fsep.eq{color:var(--accent)}
+.fc{background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:7px 11px;margin:0 2px}
+.fc.grand{background:var(--aglow);border-color:rgba(0,212,170,.4)}
+.fc-tag{font-size:7px;font-weight:800;letter-spacing:.18em;text-transform:uppercase;margin-bottom:2px}
+.fc-main{font-family:var(--mono);font-size:15px;font-weight:700;line-height:1;margin-bottom:4px}
+.fc-subs{display:flex;gap:10px}
+.fc-sub{display:flex;flex-direction:column;gap:1px}
+.fc-sub-lbl{font-size:7px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.08em}
+.fc-sub-val{font-family:var(--mono);font-size:11px;font-weight:600;color:var(--text)}
+/* colour classes */
+.c-ex .fc-tag,.c-ex .fc-main{color:var(--c-ex)}
+.c-nw .fc-tag,.c-nw .fc-main{color:var(--c-nw)}
+.c-vn .fc-tag,.c-vn .fc-main{color:var(--c-vn)}
+.c-sp .fc-tag,.c-sp .fc-main{color:var(--c-sp)}
+.c-gr .fc-tag,.c-gr .fc-main{color:var(--accent);font-size:19px}
+.c-ca .fc-tag,.c-ca .fc-main{color:var(--c-cap)}
+.c-op .fc-tag,.c-op .fc-main{color:var(--c-opx)}
+.c-ft .fc-tag,.c-ft .fc-main{color:var(--c-fte)}
+.c-cn .fc-tag,.c-cn .fc-main{color:var(--c-con)}
+.c-gr .fc-sub-val{color:var(--accent)}
+</style>
+</head>
+<body>
+
+<!-- ═══ HEADER ═══ -->
+<header class="hdr">
+  <div class="hdr-badge">Cost<br>Estimator</div>
+  <div class="hdr-div"></div>
+  <input class="proj-inp" id="projName" value="New Initiative" placeholder="Project name…">
+  <div class="hdr-div"></div>
+  <div class="hdr-fields">
+    <div class="hf">
+      <span class="hf-lbl">Start Date</span>
+      <input class="hf-inp date" id="cfgStart" type="date" onchange="onDateChange(this)">
+    </div>
+    <div class="hf">
+      <span class="hf-lbl">End Date</span>
+      <input class="hf-inp date" id="cfgEnd" type="date" onchange="onDateChange(this)">
+    </div>
+    <div class="hdr-div"></div>
+    <div class="kpi-group">
+      <div class="kpi"><div class="kpi-val" id="kSprints">8</div><div class="kpi-lbl">Sprints</div></div>
+      <div class="kpi"><div class="kpi-val" id="kWeeks">16.0</div><div class="kpi-lbl">Weeks</div></div>
+      <div class="kpi"><div class="kpi-val" id="kMonths">3.7</div><div class="kpi-lbl">Months</div></div>
+      <div class="kpi" style="min-width:80px;border-color:rgba(249,115,22,.4);background:rgba(249,115,22,.1)">
+        <div class="kpi-val" id="kAvgMonth" style="color:#f97316;font-size:14px">$0</div>
+        <div class="kpi-lbl" style="color:#f97316">Avg/Month*</div>
+      </div>
+    </div>
+  </div>
+  <div class="hdr-actions">
+    <button class="btn" onclick="toggleSett()">⚙ Settings</button>
+    <button class="btn btn-accent" onclick="doDownload()">↓ Download</button>
+  </div>
+</header>
+
+<!-- ═══ SETTINGS ═══ -->
+<div class="sett" id="settPanel">
+  <div class="sett-inner">
+    <div class="sg">
+      <h4>General</h4>
+      <div class="sr"><label>Days / Sprint</label><input class="si" id="cfgDays" type="number" value="10" min="1" max="30" onclick="this.select()" onchange="onDaysChange()"></div>
+      <div class="sr"><label>FTE hrs / day</label><input class="si" id="sFteHpd" type="number" value="7.5" step="0.5" onclick="this.select()" onchange="settChanged()"></div>
+      <div class="sr"><label>Contractor hrs / day</label><input class="si" id="sConHpd" type="number" value="8" step="0.5" onclick="this.select()" onchange="settChanged()"></div>
+      <div class="sr"><label>FTE base rate ($/hr)</label><input class="si" id="sFteRate" type="number" value="73.92" step="0.01" onclick="this.select()" onchange="settChanged()"></div>
+      <p style="font-size:10px;color:var(--sub);line-height:1.6;margin-top:14px">FTE rate applies globally. Contractors use role-specific rates.<br>Double-click any $/hr or Capex % in the table to reset to the role default.</p>
+    </div>
+    <div class="sg">
+      <h4>Role Defaults — Contractor Rate &amp; Capex Ratio</h4>
+      <div class="role-wrap">
+        <table class="rtbl">
+          <thead><tr>
+            <th style="text-align:left;width:100px">Role</th>
+            <th style="width:110px">$/hr (Contractor)</th>
+            <th style="width:90px">Capex %</th>
+            <th style="width:30px"></th>
+          </tr></thead>
+          <tbody id="roleBody"></tbody>
+        </table>
+      </div>
+      <div class="role-add">
+        <input id="newRoleName" placeholder="New role name…" onkeydown="if(event.key==='Enter')doAddRole()">
+        <button class="btn btn-sm btn-accent" onclick="doAddRole()">+ Add Role</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ MAIN ═══ -->
+<main class="main">
+
+  <!-- RESOURCES -->
+  <div class="sec">
+    <div class="sec-hdr">
+      <span class="sec-title">Resources</span>
+      <span class="sec-count" id="res-count">0 members</span>
+      <span class="sec-tot" id="resTot">$0</span>
+    </div>
+    <div class="tabs">
+      <button class="tab-btn active" onclick="switchTab('res','existing',this)">Existing Team</button>
+      <button class="tab-btn" onclick="switchTab('res','new',this)">New Members</button>
+    </div>
+    <div class="tab-pane active" id="res-existing">
+      <div class="pane-note">Headcount already on the team — set % allocated to this initiative. Sprints = full project duration. <em style="color:var(--accent)">CAPEX / OPEX / Total include 13% HST.</em></div>
+      <table class="dt"><thead><tr>
+        <th style="width:108px">Name / TBD</th><th style="width:92px">Role</th><th style="width:88px">Contract</th>
+        <th class="r" style="width:54px">Alloc %</th><th class="r" style="width:62px">$/hr (net)</th>
+        <th class="r" style="width:56px">Capex %</th>
+        <th class="r" style="width:50px" title="Fixed to project duration">Sprints</th>
+        <th class="r" style="width:80px">CAPEX*</th><th class="r" style="width:80px">OPEX*</th>
+        <th class="r" style="width:80px">Total*</th><th style="min-width:88px">Notes</th><th style="width:26px"></th>
+      </tr></thead><tbody id="tb-existing"></tbody></table>
+      <button class="add-row" onclick="addRes('existing')">+ Add Existing Member</button>
+    </div>
+    <div class="tab-pane" id="res-new">
+      <div class="pane-note">Net-new headcount required for this initiative. <em style="color:var(--accent)">CAPEX / OPEX / Total include 13% HST.</em></div>
+      <table class="dt"><thead><tr>
+        <th style="width:108px">Name / TBD</th><th style="width:92px">Role</th><th style="width:88px">Contract</th>
+        <th class="r" style="width:54px">Alloc %</th><th class="r" style="width:62px">$/hr (net)</th>
+        <th class="r" style="width:56px">Capex %</th><th class="r" style="width:50px">Sprints</th>
+        <th class="r" style="width:80px">CAPEX*</th><th class="r" style="width:80px">OPEX*</th>
+        <th class="r" style="width:80px">Total*</th><th style="min-width:88px">Notes</th><th style="width:26px"></th>
+      </tr></thead><tbody id="tb-new"></tbody></table>
+      <button class="add-row" onclick="addRes('new')">+ Add New Member</button>
+    </div>
+  </div>
+
+  <!-- EXTERNAL COSTS -->
+  <div class="sec">
+    <div class="sec-hdr">
+      <span class="sec-title">External Costs</span>
+      <span class="sec-count" id="ext-count">0 items</span>
+      <span class="sec-tot" id="extTot">$0</span>
+    </div>
+    <div class="tabs">
+      <button class="tab-btn active" onclick="switchTab('ext','vendors',this)">Vendors</button>
+      <button class="tab-btn" onclick="switchTab('ext','oteams',this)">Other Team Support</button>
+    </div>
+    <div class="tab-pane active" id="ext-vendors">
+      <div class="pane-note">Third-party costs. Choose Per Sprint or One-time — one-time amounts are divided over project sprints in the forecast. Capex % remainder is Opex. <em style="color:var(--accent)">Totals include 13% HST.</em></div>
+      <table class="dt"><thead><tr>
+        <th style="width:116px">Vendor</th><th style="min-width:110px">Description</th>
+        <th style="width:82px">Billing</th>
+        <th class="r" style="width:82px">Amount (net)</th>
+        <th class="r" style="width:72px">$/Sprint</th>
+        <th class="r" style="width:50px">Sprints</th>
+        <th class="r" style="width:56px">Capex %</th>
+        <th class="r" style="width:80px">CAPEX*</th><th class="r" style="width:80px">OPEX*</th>
+        <th class="r" style="width:80px">Total*</th><th style="min-width:88px">Notes</th><th style="width:26px"></th>
+      </tr></thead><tbody id="tb-vendors"></tbody></table>
+      <button class="add-row" onclick="addVen()">+ Add Vendor</button>
+    </div>
+    <div class="tab-pane" id="ext-oteams">
+      <div class="pane-note">Internal teams supporting this initiative — hourly contribution per sprint. <em style="color:var(--accent)">CAPEX / OPEX / Total include 13% HST.</em></div>
+      <table class="dt"><thead><tr>
+        <th style="width:116px">Team</th><th style="width:92px">Role</th><th style="width:88px">Contract</th>
+        <th class="r" style="width:62px">$/hr (net)</th><th class="r" style="width:56px">Capex %</th>
+        <th class="r" style="width:66px">Hrs/Sprint</th><th class="r" style="width:50px">Sprints</th>
+        <th class="r" style="width:80px">CAPEX*</th><th class="r" style="width:80px">OPEX*</th>
+        <th class="r" style="width:80px">Total*</th><th style="min-width:88px">Notes</th><th style="width:26px"></th>
+      </tr></thead><tbody id="tb-oteams"></tbody></table>
+      <button class="add-row" onclick="addOT()">+ Add Team</button>
+    </div>
+  </div>
+
+  <!-- FORECAST CHART -->
+  <div class="sec">
+    <div class="sec-hdr">
+      <span class="sec-title">Expense Forecast</span>
+      <div class="chart-toggles">
+        <button class="ctgl active" onclick="setChartPeriod('sprint',this)">Sprint</button>
+        <button class="ctgl" onclick="setChartPeriod('week',this)">Week</button>
+        <button class="ctgl" onclick="setChartPeriod('month',this)">Month</button>
+        <button class="ctgl" onclick="setChartPeriod('quarter',this)">Quarter</button>
+      </div>
+    </div>
+    <div class="chart-area">
+      <div class="chart-legend">
+        <div class="legend-item"><div class="legend-dot" style="background:var(--c-ex)"></div>Existing Team</div>
+        <div class="legend-item"><div class="legend-dot" style="background:var(--c-nw)"></div>New Members</div>
+        <div class="legend-item"><div class="legend-dot" style="background:var(--c-vn)"></div>Vendors</div>
+        <div class="legend-item"><div class="legend-dot" style="background:var(--c-sp)"></div>Team Support</div>
+        <div style="margin-left:auto;font-size:9px;color:var(--accent);font-style:italic;align-self:center">* All amounts include 13% HST</div>
+      </div>
+      <div id="chartWrap"></div>
+    </div>
+  </div>
+
+</main>
+
+<!-- ═══ FOOTER ═══ -->
+<footer class="foot">
+  <div style="font-size:9px;color:var(--accent);font-style:italic;margin-bottom:6px;letter-spacing:.03em">* All totals include 13% HST. Input rates and amounts are net (pre-tax).</div>
+  <div class="foot-r1">
+    <div class="fc c-ex" style="margin-left:0">
+      <div class="fc-tag">Existing Team</div>
+      <div class="fc-main" id="f-ex-tot">$0</div>
+      <div class="fc-subs">
+        <div class="fc-sub"><span class="fc-sub-lbl">/Month</span><span class="fc-sub-val" id="f-ex-mo">$0</span></div>
+        <div class="fc-sub"><span class="fc-sub-lbl">/Week</span><span class="fc-sub-val" id="f-ex-wk">$0</span></div>
+      </div>
+    </div>
+    <div class="fsep">+</div>
+    <div class="fc c-nw">
+      <div class="fc-tag">New Members</div>
+      <div class="fc-main" id="f-nw-tot">$0</div>
+      <div class="fc-subs">
+        <div class="fc-sub"><span class="fc-sub-lbl">/Month</span><span class="fc-sub-val" id="f-nw-mo">$0</span></div>
+        <div class="fc-sub"><span class="fc-sub-lbl">/Week</span><span class="fc-sub-val" id="f-nw-wk">$0</span></div>
+      </div>
+    </div>
+    <div class="fsep">+</div>
+    <div class="fc c-vn">
+      <div class="fc-tag">Vendors</div>
+      <div class="fc-main" id="f-vn-tot">$0</div>
+      <div class="fc-subs">
+        <div class="fc-sub"><span class="fc-sub-lbl">/Month</span><span class="fc-sub-val" id="f-vn-mo">$0</span></div>
+        <div class="fc-sub"><span class="fc-sub-lbl">/Week</span><span class="fc-sub-val" id="f-vn-wk">$0</span></div>
+      </div>
+    </div>
+    <div class="fsep">+</div>
+    <div class="fc c-sp">
+      <div class="fc-tag">Team Support</div>
+      <div class="fc-main" id="f-sp-tot">$0</div>
+      <div class="fc-subs">
+        <div class="fc-sub"><span class="fc-sub-lbl">/Month</span><span class="fc-sub-val" id="f-sp-mo">$0</span></div>
+        <div class="fc-sub"><span class="fc-sub-lbl">/Week</span><span class="fc-sub-val" id="f-sp-wk">$0</span></div>
+      </div>
+    </div>
+    <div class="fsep eq">=</div>
+    <div class="fc c-gr grand" style="margin-right:0">
+      <div class="fc-tag">Total</div>
+      <div class="fc-main" id="f-gr-tot">$0</div>
+      <div class="fc-subs">
+        <div class="fc-sub"><span class="fc-sub-lbl">/Month</span><span class="fc-sub-val" id="f-gr-mo">$0</span></div>
+        <div class="fc-sub"><span class="fc-sub-lbl">/Week</span><span class="fc-sub-val" id="f-gr-wk">$0</span></div>
+      </div>
+    </div>
+  </div>
+  <div class="foot-r2">
+    <div class="fc c-ca" style="margin:0">
+      <div class="fc-tag">CAPEX</div>
+      <div class="fc-main" id="f-ca-tot">$0</div>
+      <div class="fc-subs">
+        <div class="fc-sub"><span class="fc-sub-lbl">/Month</span><span class="fc-sub-val" id="f-ca-mo">$0</span></div>
+        <div class="fc-sub"><span class="fc-sub-lbl">/Week</span><span class="fc-sub-val" id="f-ca-wk">$0</span></div>
+        <div class="fc-sub"><span class="fc-sub-lbl">FTE</span><span class="fc-sub-val" id="f-ca-fte">$0</span></div>
+        <div class="fc-sub"><span class="fc-sub-lbl">Contractor</span><span class="fc-sub-val" id="f-ca-con">$0</span></div>
+      </div>
+    </div>
+    <div class="fc c-op" style="margin:0">
+      <div class="fc-tag">OPEX</div>
+      <div class="fc-main" id="f-op-tot">$0</div>
+      <div class="fc-subs">
+        <div class="fc-sub"><span class="fc-sub-lbl">/Month</span><span class="fc-sub-val" id="f-op-mo">$0</span></div>
+        <div class="fc-sub"><span class="fc-sub-lbl">/Week</span><span class="fc-sub-val" id="f-op-wk">$0</span></div>
+        <div class="fc-sub"><span class="fc-sub-lbl">FTE</span><span class="fc-sub-val" id="f-op-fte">$0</span></div>
+        <div class="fc-sub"><span class="fc-sub-lbl">Contractor</span><span class="fc-sub-val" id="f-op-con">$0</span></div>
+      </div>
+    </div>
+    <div class="fc c-ft" style="margin:0">
+      <div class="fc-tag">FTE Total</div>
+      <div class="fc-main" id="f-ft-tot">$0</div>
+      <div class="fc-subs">
+        <div class="fc-sub"><span class="fc-sub-lbl">/Month</span><span class="fc-sub-val" id="f-ft-mo">$0</span></div>
+        <div class="fc-sub"><span class="fc-sub-lbl">/Week</span><span class="fc-sub-val" id="f-ft-wk">$0</span></div>
+        <div class="fc-sub"><span class="fc-sub-lbl">CAPEX</span><span class="fc-sub-val" id="f-ft-cap">$0</span></div>
+        <div class="fc-sub"><span class="fc-sub-lbl">OPEX</span><span class="fc-sub-val" id="f-ft-opx">$0</span></div>
+      </div>
+    </div>
+    <div class="fc c-cn" style="margin:0">
+      <div class="fc-tag">Contractor Total</div>
+      <div class="fc-main" id="f-cn-tot">$0</div>
+      <div class="fc-subs">
+        <div class="fc-sub"><span class="fc-sub-lbl">/Month</span><span class="fc-sub-val" id="f-cn-mo">$0</span></div>
+        <div class="fc-sub"><span class="fc-sub-lbl">/Week</span><span class="fc-sub-val" id="f-cn-wk">$0</span></div>
+        <div class="fc-sub"><span class="fc-sub-lbl">CAPEX</span><span class="fc-sub-val" id="f-cn-cap">$0</span></div>
+        <div class="fc-sub"><span class="fc-sub-lbl">OPEX</span><span class="fc-sub-val" id="f-cn-opx">$0</span></div>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+// ════ PALETTE (mirrors CSS vars for chart) ════
+const CLR={ex:'#4f9cf9',nw:'#e879f9',vn:'#f59e0b',sp:'#f97316',cap:'#818cf8',opx:'#fb7185',fte:'#38bdf8',con:'#c084fc'};
+
+// ════ ROLES ════
+let ROLES=['Dev','Sr Dev','BA','QE','TL','PO','SA','PM','DM','DevOps','UX','Data','Arch'];
+const S={
+  conRates:{Dev:110,'Sr Dev':130,BA:110,QE:110,TL:120,PO:110,SA:120,PM:110,DM:110,DevOps:120,UX:105,Data:115,Arch:130},
+  capRatios:{Dev:80,'Sr Dev':80,BA:80,QE:60,TL:80,PO:0,SA:80,PM:0,DM:0,DevOps:80,UX:60,Data:80,Arch:80}
+};
+
+let resources=[],vendors=[],oteams=[];
+let _id=1; const nid=()=>_id++;
+let chartPeriod='sprint';
+const TAX=1.13; // 13% HST — applied to all displayed totals; inputs remain net
+
+// ════ CONFIG ════
+const cfgDays   =()=>+(document.getElementById('cfgDays').value)||10;
+const cfgFteHpd =()=>+(document.getElementById('sFteHpd').value)||7.5;
+const cfgConHpd =()=>+(document.getElementById('sConHpd').value)||8;
+const cfgFteRate=()=>+(document.getElementById('sFteRate').value)||73.92;
+const cfgSprints=()=>+(document.getElementById('kSprints').textContent)||8;
+const cfgWeeks  =()=>+(document.getElementById('kWeeks').textContent)||16;
+
+// ════ TIME ════
+function syncKpis(sprints){
+  const w=+(sprints*cfgDays()/5).toFixed(1);
+  const m=+(w/4.33).toFixed(1);
+  setText('kSprints',sprints);setText('kWeeks',w);setText('kMonths',m);
+}
+function onDateChange(el){
+  if(el.value)el.classList.add('hv');else el.classList.remove('hv');
+  const s=document.getElementById('cfgStart').value;
+  const e=document.getElementById('cfgEnd').value;
+  if(s&&e){
+    const ms=new Date(e)-new Date(s);
+    if(ms>0){syncKpis(Math.max(1,Math.round(ms/864e5*5/7/cfgDays())));refreshAll();return;}
+  }
+  refreshAll();
+}
+function onDaysChange(){onDateChange(document.getElementById('cfgStart'));}
+
+// ════ CALCULATIONS ════
+function calcRes(r){
+  const isCon=r.type==='Contractor';
+  const defRate=isCon?(S.conRates[r.role]||110):cfgFteRate();
+  const defCap=S.capRatios[r.role]??0;
+  const rate=r.rateOv!=null?r.rateOv:defRate;
+  const capPct=r.capOv!=null?r.capOv:defCap;
+  const hpd=isCon?cfgConHpd():cfgFteHpd();
+  const sprs=r.sprints!=null?r.sprints:cfgSprints();
+  const total=rate*hpd*cfgDays()*(r.alloc/100)*sprs;
+  return{total,capex:total*capPct/100,opex:total*(1-capPct/100),rate,capPct,isCon,sprs};
+}
+function calcVen(v){
+  const sprs=v.sprints!=null?v.sprints:cfgSprints();
+  // one-time: total = amount (not × sprints); per-sprint: total = amount × sprints
+  const total=v.billing==='one-time'?(v.amount||0):(v.amount||0)*sprs;
+  const perSprint=sprs>0?total/sprs:0; // used for chart spreading
+  const c=v.capPct??100;
+  return{total,capex:total*c/100,opex:total*(1-c/100),sprs,perSprint};
+}
+function calcOT(t){
+  const sprs=t.sprints!=null?t.sprints:cfgSprints();
+  const total=(t.rate||0)*(t.hps||0)*sprs;
+  const c=t.capPct??0;
+  return{total,capex:total*c/100,opex:total*(1-c/100),sprs};
+}
+
+// ════ ROLE OPTIONS ════
+function roleOpts(cur){
+  let o=ROLES.map(r=>`<option${r===cur?' selected':''}>${r}</option>`).join('');
+  if(cur&&!ROLES.includes(cur))o=`<option selected>${cur} ⚠</option>`+o;
+  return o;
+}
+
+// ════ ROW BUILDERS ════
+function buildResRow(r){
+  const{rate,capPct,isCon}=calcRes(r);
+  const isExisting=r.grp==='existing';
+  const spVal=r.sprints!=null?r.sprints:'';
+  const maxSp=cfgSprints();
+  const sprintCell=isExisting
+    // existing: show total sprints as read-only badge (not editable)
+    ? `<td style="text-align:center"><span style="font-size:10px;color:var(--sub);background:var(--surface3);padding:2px 7px;border-radius:4px">${maxSp}</span></td>`
+    // new members: editable, capped at project sprints
+    : `<td><input class="ti m" style="width:40px;text-align:right" type="number" value="${spVal}" placeholder="${maxSp}" min="1" max="${maxSp}" onclick="this.select()" onchange="sRes(${r.id},'sprints',this.value===''?null:Math.min(+this.value,${maxSp}));this.value=this.value===''?'':Math.min(+this.value,${maxSp});updateRC(${r.id})"></td>`;
+  return`
+  <td><input class="ti" placeholder="Name/TBD" value="${esc(r.name)}" onchange="sRes(${r.id},'name',this.value)"></td>
+  <td><select class="tsel" onchange="sRes(${r.id},'role',this.value);onRCh(${r.id})">${roleOpts(r.role)}</select></td>
+  <td><select class="tsel" onchange="sRes(${r.id},'type',this.value);onTCh(${r.id})">
+    <option${!isCon?' selected':''}>FTE</option><option${isCon?' selected':''}>Contractor</option>
+  </select></td>
+  <td><input class="ti m" style="width:44px;text-align:right" type="number" value="${r.alloc}" min="1" max="100" onclick="this.select()" onchange="sRes(${r.id},'alloc',+this.value);updateRC(${r.id})"></td>
+  <td><input class="ti m" id="ri-${r.id}-rate" style="width:52px;text-align:right" type="number" value="${rate}" step="0.5" onclick="this.select()" title="Auto from role. Dbl-click to reset." onchange="sRes(${r.id},'rateOv',+this.value);updateRC(${r.id})" ondblclick="resetOv(${r.id},'rate')">${r.rateOv!=null?'<span class="ov" title="Overridden — dbl-click to reset">✱</span>':''}</td>
+  <td><input class="ti m" id="ri-${r.id}-cap" style="width:46px;text-align:right" type="number" value="${capPct}" step="5" min="0" max="100" onclick="this.select()" title="Auto from role. Dbl-click to reset." onchange="sRes(${r.id},'capOv',+this.value);updateRC(${r.id})" ondblclick="resetOv(${r.id},'cap')">${r.capOv!=null?'<span class="ov" title="Overridden — dbl-click to reset">✱</span>':''}</td>
+  ${sprintCell}
+  <td><span class="vc" id="rc-${r.id}-cap">-</span></td>
+  <td><span class="vo" id="rc-${r.id}-opx">-</span></td>
+  <td><span class="vt" id="rc-${r.id}-tot">-</span></td>
+  <td><input class="ti" placeholder="Note…" value="${esc(r.notes)}" onchange="sRes(${r.id},'notes',this.value)"></td>
+  <td><button class="btn btn-sm btn-kill" onclick="delRes(${r.id})">✕</button></td>`;
+}
+function buildVenRow(v){
+  const isOT=v.billing==='one-time';
+  const{perSprint,sprs}=calcVen(v);
+  const perSprintTip=isOT&&sprs>0?` title="One-time ÷ ${sprs} sprints = ${fmt(perSprint)}/sprint (net)"`:' title="Amount charged each sprint (net)"';
+  return`
+  <td><input class="ti" placeholder="Vendor" value="${esc(v.name)}" onchange="sVen(${v.id},'name',this.value)"></td>
+  <td><input class="ti" placeholder="Description" value="${esc(v.desc)}" onchange="sVen(${v.id},'desc',this.value)"></td>
+  <td><select class="tsel" style="font-size:11px" onchange="sVen(${v.id},'billing',this.value);renderVen();refreshAll()">
+    <option${!isOT?' selected':''} value="per-sprint">Per Sprint</option>
+    <option${isOT?' selected':''} value="one-time">One-time</option>
+  </select></td>
+  <td><input class="ti m" style="width:78px;text-align:right" type="number" value="${v.amount}" step="100" onclick="this.select()"${perSprintTip} onchange="sVen(${v.id},'amount',+this.value);updateVC(${v.id})"></td>
+  <td style="text-align:right;font-size:10px;color:var(--sub)">${isOT?`<span title="Spread evenly over ${sprs} sprints">${fmt(perSprint)}<br><span style="font-size:8px;opacity:.7">/sprint</span></span>`:'—'}</td>
+  <td><input class="ti m" style="width:40px;text-align:right" type="number" value="${v.sprints!=null?v.sprints:''}" placeholder="${cfgSprints()}" min="1" max="${cfgSprints()}" onclick="this.select()" onchange="const cap=${cfgSprints()};const val=this.value===''?null:Math.min(+this.value,cap);if(val!==null)this.value=val;sVen(${v.id},'sprints',val);updateVC(${v.id})"></td>
+  <td><input class="ti m" style="width:46px;text-align:right" type="number" value="${v.capPct}" step="5" min="0" max="100" onclick="this.select()" onchange="sVen(${v.id},'capPct',+this.value);updateVC(${v.id})"></td>
+  <td><span class="vc" id="vc-${v.id}-cap">-</span></td>
+  <td><span class="vo" id="vc-${v.id}-opx">-</span></td>
+  <td><span class="vt" id="vc-${v.id}-tot">-</span></td>
+  <td><input class="ti" placeholder="Note…" value="${esc(v.notes)}" onchange="sVen(${v.id},'notes',this.value)"></td>
+  <td><button class="btn btn-sm btn-kill" onclick="delVen(${v.id})">✕</button></td>`;
+}
+function buildOTRow(t){
+  return`
+  <td><input class="ti" placeholder="Team name" value="${esc(t.name)}" onchange="sOT(${t.id},'name',this.value)"></td>
+  <td><select class="tsel" onchange="sOT(${t.id},'role',this.value);onOTCh(${t.id})">${roleOpts(t.role)}</select></td>
+  <td><select class="tsel" onchange="sOT(${t.id},'ctype',this.value);onOTCh(${t.id})">
+    <option${t.ctype==='FTE'?' selected':''}>FTE</option><option${t.ctype==='Contractor'?' selected':''}>Contractor</option>
+  </select></td>
+  <td><input class="ti m" id="oti-${t.id}-rate" style="width:52px;text-align:right" type="number" value="${t.rate}" step="0.5" onclick="this.select()" onchange="sOT(${t.id},'rate',+this.value);updateTC(${t.id})"></td>
+  <td><input class="ti m" id="oti-${t.id}-cap" style="width:46px;text-align:right" type="number" value="${t.capPct}" step="5" min="0" max="100" onclick="this.select()" onchange="sOT(${t.id},'capPct',+this.value);updateTC(${t.id})"></td>
+  <td><input class="ti m" style="width:52px;text-align:right" type="number" value="${t.hps}" step="1" onclick="this.select()" onchange="sOT(${t.id},'hps',+this.value);updateTC(${t.id})"></td>
+  <td><input class="ti m" style="width:40px;text-align:right" type="number" value="${t.sprints!=null?t.sprints:''}" placeholder="${cfgSprints()}" max="${cfgSprints()}" onclick="this.select()" onchange="const cap=${cfgSprints()};const val=this.value===''?null:Math.min(+this.value,cap);if(val!==null)this.value=val;sOT(${t.id},'sprints',val);updateTC(${t.id})"></td>
+  <td><span class="vc" id="tc-${t.id}-cap">-</span></td>
+  <td><span class="vo" id="tc-${t.id}-opx">-</span></td>
+  <td><span class="vt" id="tc-${t.id}-tot">-</span></td>
+  <td><input class="ti" placeholder="Note…" value="${esc(t.notes||'')}" onchange="sOT(${t.id},'notes',this.value)"></td>
+  <td><button class="btn btn-sm btn-kill" onclick="delOT(${t.id})">✕</button></td>`;
+}
+
+// ════ RENDER ════
+function renderTab(grp){
+  const tb=document.getElementById('tb-'+grp);tb.innerHTML='';
+  resources.filter(r=>r.grp===grp).forEach(r=>{
+    const tr=document.createElement('tr');tr.id='rrow-'+r.id;tr.innerHTML=buildResRow(r);tb.appendChild(tr);
+  });
+}
+function renderVen(){
+  const tb=document.getElementById('tb-vendors');tb.innerHTML='';
+  vendors.forEach(v=>{const tr=document.createElement('tr');tr.id='vrow-'+v.id;tr.innerHTML=buildVenRow(v);tb.appendChild(tr);});
+}
+function renderOT(){
+  const tb=document.getElementById('tb-oteams');tb.innerHTML='';
+  oteams.forEach(t=>{const tr=document.createElement('tr');tr.id='trow-'+t.id;tr.innerHTML=buildOTRow(t);tb.appendChild(tr);});
+}
+
+// ════ COMPUTED CELL UPDATES — all displayed totals include HST ════
+function updateRC(id){
+  const r=resources.find(x=>x.id===id);if(!r)return;
+  const{capex,opex,total}=calcRes(r);
+  setText('rc-'+id+'-cap',fmt(capex*TAX));setText('rc-'+id+'-opx',fmt(opex*TAX));setText('rc-'+id+'-tot',fmt(total*TAX));
+  updateSummary();
+}
+function updateVC(id){
+  const v=vendors.find(x=>x.id===id);if(!v)return;
+  const{capex,opex,total}=calcVen(v);
+  setText('vc-'+id+'-cap',fmt(capex*TAX));setText('vc-'+id+'-opx',fmt(opex*TAX));setText('vc-'+id+'-tot',fmt(total*TAX));
+  updateSummary();
+}
+function updateTC(id){
+  const t=oteams.find(x=>x.id===id);if(!t)return;
+  const{capex,opex,total}=calcOT(t);
+  setText('tc-'+id+'-cap',fmt(capex*TAX));setText('tc-'+id+'-opx',fmt(opex*TAX));setText('tc-'+id+'-tot',fmt(total*TAX));
+  updateSummary();
+}
+
+// ════ CHANGE HANDLERS ════
+function onRCh(id){
+  const r=resources.find(x=>x.id===id);if(!r)return;
+  if(r.rateOv==null){const el=document.getElementById('ri-'+id+'-rate');if(el)el.value=r.type==='Contractor'?(S.conRates[r.role]||110):cfgFteRate();}
+  if(r.capOv==null){const el=document.getElementById('ri-'+id+'-cap');if(el)el.value=S.capRatios[r.role]??0;}
+  updateRC(id);
+}
+function onTCh(id){onRCh(id);}
+function onOTCh(id){
+  const t=oteams.find(x=>x.id===id);if(!t)return;
+  t.rate=t.ctype==='Contractor'?(S.conRates[t.role]||110):cfgFteRate();
+  t.capPct=S.capRatios[t.role]??0;
+  const ri=document.getElementById('oti-'+id+'-rate');if(ri)ri.value=t.rate;
+  const ci=document.getElementById('oti-'+id+'-cap');if(ci)ci.value=t.capPct;
+  updateTC(id);
+}
+function resetOv(id,field){
+  const r=resources.find(x=>x.id===id);if(!r)return;
+  if(field==='rate')r.rateOv=null;else r.capOv=null;
+  const row=document.getElementById('rrow-'+id);if(row)row.innerHTML=buildResRow(r);
+  updateRC(id);
+}
+
+// ════ CRUD ════
+function addRes(g){resources.push({id:nid(),grp:g,name:'',role:ROLES[0]||'Dev',type:'Contractor',alloc:100,rateOv:null,capOv:null,sprints:null,notes:''});renderTab(g);refreshAll();}
+function delRes(id){const r=resources.find(x=>x.id===id);resources=resources.filter(x=>x.id!==id);renderTab(r.grp);refreshAll();}
+function sRes(id,k,v){const r=resources.find(x=>x.id===id);if(r)r[k]=v;}
+function addVen(){vendors.push({id:nid(),name:'',desc:'',amount:0,billing:'per-sprint',capPct:100,sprints:null,notes:''});renderVen();refreshAll();}
+function delVen(id){vendors=vendors.filter(v=>v.id!==id);renderVen();refreshAll();}
+function sVen(id,k,v){const x=vendors.find(i=>i.id===id);if(x)x[k]=v;}
+function addOT(){oteams.push({id:nid(),name:'',role:ROLES[0]||'Dev',ctype:'FTE',rate:cfgFteRate(),capPct:80,hps:10,sprints:null,notes:''});renderOT();refreshAll();}
+function delOT(id){oteams=oteams.filter(t=>t.id!==id);renderOT();refreshAll();}
+function sOT(id,k,v){const x=oteams.find(t=>t.id===id);if(x)x[k]=v;}
+
+// ════ ROLES ════
+function doAddRole(){
+  const inp=document.getElementById('newRoleName');
+  const name=(inp.value||'').trim();
+  if(!name||ROLES.includes(name)){inp.focus();return;}
+  ROLES.push(name);S.conRates[name]=110;S.capRatios[name]=0;
+  buildRoleTable();renderTab('existing');renderTab('new');renderOT();
+  inp.value='';refreshAll();
+}
+function doRemoveRole(role){
+  const inUse=resources.some(r=>r.role===role)||oteams.some(t=>t.role===role);
+  if(inUse&&!confirm(`"${role}" is in use. Remove anyway?`))return;
+  ROLES=ROLES.filter(r=>r!==role);
+  delete S.conRates[role];delete S.capRatios[role];
+  buildRoleTable();renderTab('existing');renderTab('new');renderOT();refreshAll();
+}
+function buildRoleTable(){
+  const tb=document.getElementById('roleBody');tb.innerHTML='';
+  ROLES.forEach(role=>{
+    const tr=document.createElement('tr');
+    tr.innerHTML=`<td>${role}</td>
+      <td style="text-align:right"><input class="si" type="number" value="${S.conRates[role]||110}" step="5" onclick="this.select()" onchange="S.conRates['${role}']=+this.value;settChanged()"></td>
+      <td style="text-align:right"><input class="si" type="number" value="${S.capRatios[role]??0}" step="5" min="0" max="100" onclick="this.select()" onchange="S.capRatios['${role}']=+this.value;settChanged()"></td>
+      <td><button class="btn btn-xs btn-kill" onclick="doRemoveRole('${role}')">✕</button></td>`;
+    tb.appendChild(tr);
+  });
+}
+function settChanged(){renderTab('existing');renderTab('new');renderOT();refreshAll();}
+
+// ════ SUMMARY — all displayed values include 13% HST ════
+function updateSummary(){
+  const weeks=cfgWeeks(),months=+(weeks/4.33);
+  const pw=n=>weeks>0?n/weeks:0,pm=n=>months>0?n/months:0;
+  let ex=0,nw=0,vn=0,sp=0,caFte=0,caCon=0,opFte=0,opCon=0;
+  resources.forEach(r=>{const{capex,opex,total,isCon}=calcRes(r);
+    if(r.grp==='existing')ex+=total;else nw+=total;
+    if(!isCon){caFte+=capex;opFte+=opex;}else{caCon+=capex;opCon+=opex;}
+  });
+  vendors.forEach(v=>{const{capex,opex,total}=calcVen(v);vn+=total;caCon+=capex;opCon+=opex;});
+  oteams.forEach(t=>{const{capex,opex,total}=calcOT(t);sp+=total;
+    if(t.ctype==='FTE'){caFte+=capex;opFte+=opex;}else{caCon+=capex;opCon+=opex;}
+  });
+  // Apply TAX to all aggregates before display
+  const T=TAX;
+  const grand=(ex+nw+vn+sp)*T,tCap=(caFte+caCon)*T,tOpx=(opFte+opCon)*T,tFte=(caFte+opFte)*T,tCon=(caCon+opCon)*T;
+  ex*=T;nw*=T;vn*=T;sp*=T;caFte*=T;caCon*=T;opFte*=T;opCon*=T;
+  setText('resTot',fmt(ex+nw));setText('extTot',fmt(vn+sp));
+  setText('res-count',`${resources.length} member${resources.length!==1?'s':''}`);
+  setText('ext-count',`${vendors.length+oteams.length} item${(vendors.length+oteams.length)!==1?'s':''}`);
+  // avg/month KPI in header
+  const avgMo=months>0?grand/months:0;
+  setText('kAvgMonth',fmtK(avgMo));
+  const sg=(p,tot)=>{setText(`f-${p}-tot`,fmt(tot));setText(`f-${p}-mo`,fmt(pm(tot)));setText(`f-${p}-wk`,fmt(pw(tot)));};
+  sg('ex',ex);sg('nw',nw);sg('vn',vn);sg('sp',sp);sg('gr',grand);
+  sg('ca',tCap);sg('op',tOpx);sg('ft',tFte);sg('cn',tCon);
+  setText('f-ca-fte',fmt(caFte));setText('f-ca-con',fmt(caCon));
+  setText('f-op-fte',fmt(opFte));setText('f-op-con',fmt(opCon));
+  setText('f-ft-cap',fmt(caFte));setText('f-ft-opx',fmt(opFte));
+  setText('f-cn-cap',fmt(caCon));setText('f-cn-opx',fmt(opCon));
+  drawChart();
+}
+
+function refreshAll(){
+  resources.forEach(r=>updateRC(r.id));
+  vendors.forEach(v=>updateVC(v.id));
+  oteams.forEach(t=>updateTC(t.id));
+  updateSummary();
+}
+
+// ════ CHART ════
+// The chart always reads from #chartWrap's clientWidth for sizing.
+// It writes a fresh SVG string via innerHTML — no stale element references.
+
+function setChartPeriod(period, btn){
+  chartPeriod=period;
+  document.querySelectorAll('.ctgl').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  drawChart();
+}
+
+function getDailyTotals(){
+  const totalDays=cfgSprints()*cfgDays();
+  const days=Array.from({length:totalDays},()=>({ex:0,nw:0,vn:0,sp:0}));
+  const spread=(key,total,activeDays)=>{
+    if(!activeDays||!total)return;
+    const d=total/activeDays;
+    for(let i=0;i<Math.min(activeDays,totalDays);i++)days[i][key]+=d;
+  };
+  resources.forEach(r=>{const{total,sprs}=calcRes(r);spread(r.grp==='existing'?'ex':'nw',total*TAX,sprs*cfgDays());});
+  // vendors: one-time spread over ALL project sprints; per-sprint spread over their active sprints
+  vendors.forEach(v=>{
+    const{total,sprs,perSprint}=calcVen(v);
+    if(v.billing==='one-time'){spread('vn',total*TAX,cfgSprints()*cfgDays());}
+    else{spread('vn',total*TAX,sprs*cfgDays());}
+  });
+  oteams.forEach(t=>{const{total,sprs}=calcOT(t);spread('sp',total*TAX,sprs*cfgDays());});
+  return days;
+}
+
+function bucketDays(days,period){
+  const dpb={sprint:cfgDays(),week:5,month:21,quarter:63}[period]||cfgDays();
+  const out=[];
+  for(let i=0;i<days.length;i+=dpb){
+    const sl=days.slice(i,i+dpb);
+    const b={ex:0,nw:0,vn:0,sp:0};
+    sl.forEach(d=>{b.ex+=d.ex;b.nw+=d.nw;b.vn+=d.vn;b.sp+=d.sp;});
+    out.push(b);
+  }
+  return out;
+}
+
+function periodLabel(i){
+  const s=document.getElementById('cfgStart').value;
+  if(chartPeriod==='month'&&s){
+    const d=new Date(s+'T00:00:00');d.setMonth(d.getMonth()+i);
+    return d.toLocaleString('en',{month:'short',year:'2-digit'});
+  }
+  return {sprint:'S',week:'W',month:'M',quarter:'Q'}[chartPeriod]+(i+1);
+}
+
+function fmtY(n){
+  if(n>=1e6)return'$'+(n/1e6).toFixed(1)+'M';
+  if(n>=1e3)return'$'+Math.round(n/1e3)+'k';
+  return'$'+Math.round(n);
+}
+
+function drawChart(){
+  const wrap=document.getElementById('chartWrap');
+  if(!wrap)return;
+  const W=Math.max(300,wrap.clientWidth||800);
+  const H=220;
+  const ml=58,mr=14,mt=12,mb=34;
+  const cW=W-ml-mr,cH=H-mt-mb;
+
+  const days=getDailyTotals();
+  const buckets=bucketDays(days,chartPeriod);
+  const hasData=buckets.some(b=>b.ex+b.nw+b.vn+b.sp>0);
+
+  if(!hasData||!buckets.length){
+    wrap.innerHTML=`<svg viewBox="0 0 ${W} ${H}" style="width:100%;height:${H}px">
+      <text x="${W/2}" y="${H/2}" text-anchor="middle" fill="#3a4d61" font-family="Outfit,sans-serif" font-size="13">Add data to see the forecast</text>
+    </svg>`;
+    return;
+  }
+
+  const maxVal=Math.max(...buckets.map(b=>b.ex+b.nw+b.vn+b.sp))||1;
+  const scaleY=v=>(v/maxVal)*cH;
+  const KEYS=['ex','nw','vn','sp'];
+  const COLORS={ex:CLR.ex,nw:CLR.nw,vn:CLR.vn,sp:CLR.sp};
+
+  const barW=Math.max(6,Math.min(44,cW/buckets.length*0.7));
+  const slotW=cW/buckets.length;
+
+  // Y-axis grid (5 steps)
+  let grid='';
+  for(let i=0;i<=4;i++){
+    const y=mt+cH-scaleY(maxVal/4*i);
+    const val=maxVal/4*i;
+    grid+=`<line x1="${ml}" y1="${y}" x2="${ml+cW}" y2="${y}" stroke="#1e2d42" stroke-width="1"/>`;
+    grid+=`<text x="${ml-6}" y="${y+4}" text-anchor="end" fill="#5a6e82" font-family="JetBrains Mono,monospace" font-size="9">${fmtY(val)}</text>`;
+  }
+
+  // Bars
+  let bars='';
+  buckets.forEach((b,i)=>{
+    const x=ml+i*slotW+(slotW-barW)/2;
+    let stackY=mt+cH;
+    KEYS.forEach(k=>{
+      const h=scaleY(b[k]);
+      if(h>0.5){
+        stackY-=h;
+        const label=`${periodLabel(i)}: ${fmtY(b[k])}`;
+        bars+=`<rect x="${x.toFixed(1)}" y="${stackY.toFixed(1)}" width="${barW}" height="${h.toFixed(1)}" fill="${COLORS[k]}" rx="1" opacity="0.9"><title>${label}</title></rect>`;
+      }
+    });
+  });
+
+  // X-axis labels — thin if too many
+  const step=Math.max(1,Math.ceil(buckets.length/18));
+  let xLabels='';
+  buckets.forEach((b,i)=>{
+    if(i%step!==0&&i!==buckets.length-1)return;
+    const x=ml+i*slotW+slotW/2;
+    xLabels+=`<text x="${x.toFixed(1)}" y="${H-8}" text-anchor="middle" fill="#5a6e82" font-family="Outfit,sans-serif" font-size="9">${periodLabel(i)}</text>`;
+  });
+
+  // Axes
+  const axes=`
+    <line x1="${ml}" y1="${mt}" x2="${ml}" y2="${mt+cH}" stroke="#1e2d42" stroke-width="1"/>
+    <line x1="${ml}" y1="${mt+cH}" x2="${ml+cW}" y2="${mt+cH}" stroke="#1e2d42" stroke-width="1"/>`;
+
+  wrap.innerHTML=`<svg viewBox="0 0 ${W} ${H}" style="width:100%;height:${H}px;overflow:visible">
+    <defs><clipPath id="bclip"><rect x="${ml}" y="${mt}" width="${cW}" height="${cH}"/></clipPath></defs>
+    ${grid}
+    <g clip-path="url(#bclip)">${bars}</g>
+    ${xLabels}${axes}
+  </svg>`;
+}
+
+// ════ TABS ════
+function switchTab(ns,tab,btn){
+  const sec=btn.closest('.sec');
+  sec.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  sec.querySelectorAll('.tab-pane').forEach(p=>p.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById(ns+'-'+tab).classList.add('active');
+}
+
+// ════ SETTINGS ════
+function toggleSett(){document.getElementById('settPanel').classList.toggle('open');}
+
+// ════ DOWNLOAD — Tangerine branded export ════
+function doDownload(){
+  const proj=document.getElementById('projName').value||'Initiative';
+  const start=document.getElementById('cfgStart').value;
+  const end=document.getElementById('cfgEnd').value;
+  const sprints=cfgSprints(),weeks=cfgWeeks(),months=+(weeks/4.33).toFixed(1);
+  const f=n=>'$'+Math.round(n).toLocaleString('en-CA');
+  const fk=n=>{if(!n||isNaN(n))return'$0';if(n>=1e6)return'$'+(n/1e6).toFixed(1)+'M';if(n>=1e3)return'$'+Math.round(n/1e3)+'k';return'$'+Math.round(n);};
+  const weeks_=cfgWeeks(),m_=+(weeks_/4.33);
+  const pw=n=>weeks_>0?n/weeks_:0,pm_=n=>m_>0?n/m_:0;
+  let ex=0,nw=0,vn=0,sp=0,caFte=0,caCon=0,opFte=0,opCon=0;
+  resources.forEach(r=>{const{capex,opex,total,isCon}=calcRes(r);if(r.grp==='existing')ex+=total;else nw+=total;if(!isCon){caFte+=capex;opFte+=opex;}else{caCon+=capex;opCon+=opex;}});
+  vendors.forEach(v=>{const{capex,opex,total}=calcVen(v);vn+=total;caCon+=capex;opCon+=opex;});
+  oteams.forEach(t=>{const{capex,opex,total}=calcOT(t);sp+=total;if(t.ctype==='FTE'){caFte+=capex;opFte+=opex;}else{caCon+=capex;opCon+=opex;}});
+  const T=TAX;
+  ex*=T;nw*=T;vn*=T;sp*=T;caFte*=T;caCon*=T;opFte*=T;opCon*=T;
+  const grand=ex+nw+vn+sp,tCap=caFte+caCon,tOpx=opFte+opCon,tFte=caFte+opFte,tCon=caCon+opCon;
+  const avgMo=m_>0?grand/m_:0;
+  const now=new Date();
+  const DD=String(now.getDate()).padStart(2,'0');
+  const MMM=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][now.getMonth()];
+  const YYYY=now.getFullYear();
+  const exportDate=`${DD}-${MMM}-${YYYY}`;
+  const exportDateLong=`${DD} ${MMM} ${YYYY}`;
+  const fileName=`Cost Estimation for ${proj} - ${exportDate}`.replace(/[^a-z0-9\-\s]/gi,'').replace(/\s+/g,'-')+'.html';
+
+  // Tangerine brand palette
+  const OG='#EA7024',OGD='#B95212',OGL='#FFF0E6',OGLB='#FFE0C8',YEL='#FFBA4D';
+  const DARK='#333333',MID='#6B6B6B',LITE='#A6A6A6',BDR='#E8E0D8',HDRBG='#F9F4EF';
+
+  // Tangerine logo SVG
+  const logoSVG=`<svg width="140" height="42" viewBox="0 0 140 42" xmlns="http://www.w3.org/2000/svg"><text x="0" y="26" font-family="'Lato','Helvetica Neue',Arial,sans-serif" font-weight="900" font-size="22" fill="${OG}">Tangerine</text><text x="1" y="38" font-family="'Lato','Helvetica Neue',Arial,sans-serif" font-weight="400" font-size="9" fill="${OGD}" letter-spacing="1.8">FORWARD BANKING</text><polygon points="121,4 134,4 121,17" fill="${OG}"/></svg>`;
+  const logoWht=`<svg width="140" height="42" viewBox="0 0 140 42" xmlns="http://www.w3.org/2000/svg"><text x="0" y="26" font-family="'Lato','Helvetica Neue',Arial,sans-serif" font-weight="900" font-size="22" fill="#fff">Tangerine</text><text x="1" y="38" font-family="'Lato','Helvetica Neue',Arial,sans-serif" font-weight="400" font-size="9" fill="rgba(255,255,255,.75)" letter-spacing="1.8">FORWARD BANKING</text><polygon points="121,4 134,4 121,17" fill="#fff"/></svg>`;
+
+  // Badge helpers
+  const typeBadge=t=>{const isCon=t==='Contractor';return`<span style="display:inline-block;font-size:9px;font-weight:700;padding:2px 8px;border-radius:10px;background:${isCon?OGD:OG};color:#fff;letter-spacing:.04em">${t}</span>`;};
+  const billingBadge=b=>{const isOT=b==='one-time';return`<span style="display:inline-block;font-size:9px;font-weight:700;padding:2px 8px;border-radius:10px;background:${isOT?YEL:OGLB};color:${isOT?DARK:OGD};letter-spacing:.04em">${isOT?'One-time':'Per Sprint'}</span>`;};
+
+  // Card
+  const card=(lbl,ac,tot,mo,wk,s1l,s1v,s2l,s2v)=>`<div style="background:#fff;border:1.5px solid ${ac};border-top:4px solid ${ac};border-radius:8px;padding:12px 14px;flex:1;min-width:110px"><div style="font-size:8px;font-weight:800;letter-spacing:.18em;text-transform:uppercase;color:${ac};margin-bottom:3px">${lbl}</div><div style="font-family:monospace;font-size:19px;font-weight:800;color:${DARK};line-height:1.1;margin-bottom:5px">${f(tot)}</div><div style="display:flex;gap:12px;margin-bottom:${s1l?'4px':'0'}"><div><div style="font-size:8px;color:${LITE};text-transform:uppercase;letter-spacing:.08em">/Month</div><div style="font-family:monospace;font-size:11px;font-weight:600;color:${MID}">${f(mo)}</div></div><div><div style="font-size:8px;color:${LITE};text-transform:uppercase;letter-spacing:.08em">/Week</div><div style="font-family:monospace;font-size:11px;font-weight:600;color:${MID}">${f(wk)}</div></div></div>${s1l&&s1v?`<div style="display:flex;gap:10px"><div><div style="font-size:8px;color:${LITE};text-transform:uppercase">${s1l}</div><div style="font-family:monospace;font-size:10px;font-weight:600;color:${MID}">${f(s1v)}</div></div>${s2l?`<div><div style="font-size:8px;color:${LITE};text-transform:uppercase">${s2l}</div><div style="font-family:monospace;font-size:10px;font-weight:600;color:${MID}">${f(s2v)}</div></div>`:''}</div>`:''}</div>`;
+
+  const TH=`style="background:${HDRBG};padding:7px 10px;font-size:9px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:${MID};border-bottom:2px solid ${OG}"`;
+  const THR=`style="background:${HDRBG};padding:7px 10px;font-size:9px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:${MID};border-bottom:2px solid ${OG};text-align:right"`;
+  const TDS=`padding:6px 10px;border-bottom:1px solid ${BDR}`;
+  const TDR=`padding:6px 10px;border-bottom:1px solid ${BDR};text-align:right`;
+
+  const rr=grp=>resources.filter(r=>r.grp===grp).map(r=>{
+    const{rate,capPct,total,capex,opex,sprs}=calcRes(r);
+    const sd=grp==='existing'?sprints:sprs;
+    return`<tr><td style="${TDS};font-weight:600;color:${DARK}">${r.name||'TBD'}</td><td style="${TDS};color:${MID}">${r.role}</td><td style="${TDS}">${typeBadge(r.type)}</td><td style="${TDR};color:${MID}">${r.alloc}%</td><td style="${TDR};color:${MID};font-family:monospace">${f(rate)}</td><td style="${TDR};color:${MID}">${capPct}%</td><td style="${TDR};color:${MID}">${sd}</td><td style="${TDR};color:${OGD};font-weight:600;font-family:monospace">${f(capex*T)}</td><td style="${TDR};color:${OG};font-weight:600;font-family:monospace">${f(opex*T)}</td><td style="${TDR};color:${DARK};font-weight:700;font-family:monospace">${f(total*T)}</td><td style="${TDS};color:${LITE};font-size:11px">${r.notes||''}</td></tr>`;
+  }).join('')||`<tr><td colspan="11" style="${TDS};text-align:center;color:${LITE}">No entries</td></tr>`;
+
+  const vr=vendors.map(v=>{
+    const{total,capex,opex,sprs,perSprint}=calcVen(v);const isOT=v.billing==='one-time';
+    return`<tr><td style="${TDS};font-weight:600;color:${DARK}">${v.name||'—'}</td><td style="${TDS};color:${MID}">${v.desc||''}</td><td style="${TDS}">${billingBadge(v.billing||'per-sprint')}</td><td style="${TDR};color:${MID};font-family:monospace">${f(v.amount)}</td><td style="${TDR};color:${LITE};font-size:10px;font-family:monospace">${isOT?f(perSprint):'—'}</td><td style="${TDR};color:${MID}">${sprs}</td><td style="${TDR};color:${MID}">${v.capPct}%</td><td style="${TDR};color:${OGD};font-weight:600;font-family:monospace">${f(capex*T)}</td><td style="${TDR};color:${OG};font-weight:600;font-family:monospace">${f(opex*T)}</td><td style="${TDR};color:${DARK};font-weight:700;font-family:monospace">${f(total*T)}</td><td style="${TDS};color:${LITE};font-size:11px">${v.notes||''}</td></tr>`;
+  }).join('')||`<tr><td colspan="11" style="${TDS};text-align:center;color:${LITE}">No entries</td></tr>`;
+
+  const otr=oteams.map(t=>{
+    const{total,capex,opex,sprs}=calcOT(t);
+    return`<tr><td style="${TDS};font-weight:600;color:${DARK}">${t.name||'—'}</td><td style="${TDS};color:${MID}">${t.role}</td><td style="${TDS}">${typeBadge(t.ctype)}</td><td style="${TDR};color:${MID};font-family:monospace">${f(t.rate)}</td><td style="${TDR};color:${MID}">${t.capPct}%</td><td style="${TDR};color:${MID}">${t.hps}h</td><td style="${TDR};color:${MID}">${sprs}</td><td style="${TDR};color:${OGD};font-weight:600;font-family:monospace">${f(capex*T)}</td><td style="${TDR};color:${OG};font-weight:600;font-family:monospace">${f(opex*T)}</td><td style="${TDR};color:${DARK};font-weight:700;font-family:monospace">${f(total*T)}</td><td style="${TDS};color:${LITE};font-size:11px">${t.notes||''}</td></tr>`;
+  }).join('')||`<tr><td colspan="11" style="${TDS};text-align:center;color:${LITE}">No entries</td></tr>`;
+
+  const html=`<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8">
+<title>Cost Estimation for ${proj} — ${exportDate}</title>
+<link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700;900&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Lato','Helvetica Neue',Arial,sans-serif;background:#fff;color:${DARK};font-size:13px;line-height:1.5}
+.page{max-width:1160px;margin:0 auto;padding:0 0 48px}
+.doc-hdr{background:${OG};padding:20px 32px;display:flex;align-items:center;justify-content:space-between}
+.doc-title{color:#fff;font-size:22px;font-weight:900}
+.doc-sub{color:rgba(255,255,255,.75);font-size:11px;margin-top:2px;letter-spacing:.04em}
+.content{padding:28px 32px}
+.meta{display:flex;gap:10px;margin-bottom:28px;flex-wrap:wrap;padding-bottom:20px;border-bottom:2px solid ${OGL}}
+.mc{background:#fff;border:1px solid ${BDR};border-left:3px solid ${OG};border-radius:4px;padding:9px 14px}
+.mc.hi{border-left-color:${OGD};background:${OGL}}.mc.avg{border-left-color:${YEL};background:#FFFBF0}
+.ml{font-size:8px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:${LITE};margin-bottom:2px}
+.mv{font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:700;color:${DARK}}
+.mc.hi .mv{color:${OGD};font-size:19px}.mc.avg .mv{color:#B8860B;font-size:17px}
+h2{font-size:10px;font-weight:900;letter-spacing:.18em;text-transform:uppercase;color:${OG};margin:28px 0 12px;display:flex;align-items:center;gap:8px}
+h2::after{content:'';flex:1;height:1.5px;background:${OGLB}}
+.flow{display:flex;gap:8px;flex-wrap:wrap;align-items:stretch;margin-bottom:10px}
+.fsep{display:flex;align-items:center;font-size:20px;font-weight:900;color:${LITE};padding:0 2px}
+.fsep.eq{color:${OG}}
+table{width:100%;border-collapse:collapse;font-size:12px;margin-bottom:6px}
+table tr:hover td{background:${OGL}}
+.tax-note{font-size:10px;color:${MID};font-style:italic;margin-top:6px;padding:8px 12px;background:${OGL};border-left:3px solid ${OG};border-radius:0 4px 4px 0}
+.doc-ftr{background:${HDRBG};border-top:2px solid ${OGLB};padding:12px 32px;display:flex;align-items:center;justify-content:space-between;margin-top:32px}
+.doc-ftr-note{font-size:10px;color:${LITE}}
+@media print{body{background:#fff}.page{padding:0}}
+</style></head>
+<body><div class="page">
+<div class="doc-hdr">
+  <div><div class="doc-title">Cost Estimation — ${proj}</div>
+  <div class="doc-sub">Exported ${exportDateLong} &nbsp;·&nbsp; All totals include 13% HST &nbsp;·&nbsp; Input rates are net</div></div>
+  ${logoWht}
+</div>
+<div class="content">
+<div class="meta">
+  <div class="mc"><div class="ml">Period</div><div class="mv">${start||'—'} → ${end||'—'}</div></div>
+  <div class="mc"><div class="ml">Sprints</div><div class="mv">${sprints}</div></div>
+  <div class="mc"><div class="ml">Weeks</div><div class="mv">${weeks}</div></div>
+  <div class="mc"><div class="ml">Months</div><div class="mv">${months}</div></div>
+  <div class="mc hi"><div class="ml">Grand Total*</div><div class="mv">${f(grand)}</div></div>
+  <div class="mc avg"><div class="ml">Avg / Month*</div><div class="mv">${fk(avgMo)}</div></div>
+</div>
+<h2>Summary — By Category</h2>
+<div class="flow">
+  ${card('Existing Team',OG,ex,pm_(ex),pw(ex),'','','','')}
+  <div class="fsep">+</div>${card('New Members',OGD,nw,pm_(nw),pw(nw),'','','','')}
+  <div class="fsep">+</div>${card('Vendors','#B8860B',vn,pm_(vn),pw(vn),'','','','')}
+  <div class="fsep">+</div>${card('Team Support','#8B6914',sp,pm_(sp),pw(sp),'','','','')}
+  <div class="fsep eq">=</div>${card('TOTAL*',OG,grand,pm_(grand),pw(grand),'','','','')}
+</div>
+<h2>Summary — By Accounting</h2>
+<div class="flow">
+  ${card('CAPEX*',OGD,tCap,pm_(tCap),pw(tCap),'FTE',caFte,'Contractor',caCon)}
+  ${card('OPEX*',OG,tOpx,pm_(tOpx),pw(tOpx),'FTE',opFte,'Contractor',opCon)}
+  ${card('FTE Total*',OG,tFte,pm_(tFte),pw(tFte),'CAPEX',caFte,'OPEX',opFte)}
+  ${card('Contractor Total*',OGD,tCon,pm_(tCon),pw(tCon),'CAPEX',caCon,'OPEX',opCon)}
+</div>
+<p class="tax-note">* All amounts include 13% HST applied to net input values. Input rates ($/hr, $/sprint) are entered pre-tax.</p>
+<h2>Existing Team</h2>
+<table><thead><tr><th ${TH}>Name</th><th ${TH}>Role</th><th ${TH}>Type</th><th ${THR}>Alloc</th><th ${THR}>$/hr (net)</th><th ${THR}>Capex%</th><th ${THR}>Sprints</th><th ${THR}>CAPEX*</th><th ${THR}>OPEX*</th><th ${THR}>Total*</th><th ${TH}>Notes</th></tr></thead><tbody>${rr('existing')}</tbody></table>
+<h2>New Members</h2>
+<table><thead><tr><th ${TH}>Name</th><th ${TH}>Role</th><th ${TH}>Type</th><th ${THR}>Alloc</th><th ${THR}>$/hr (net)</th><th ${THR}>Capex%</th><th ${THR}>Sprints</th><th ${THR}>CAPEX*</th><th ${THR}>OPEX*</th><th ${THR}>Total*</th><th ${TH}>Notes</th></tr></thead><tbody>${rr('new')}</tbody></table>
+<h2>Vendors</h2>
+<table><thead><tr><th ${TH}>Vendor</th><th ${TH}>Description</th><th ${TH}>Billing</th><th ${THR}>Amount (net)</th><th ${THR}>$/Sprint</th><th ${THR}>Sprints</th><th ${THR}>Capex%</th><th ${THR}>CAPEX*</th><th ${THR}>OPEX*</th><th ${THR}>Total*</th><th ${TH}>Notes</th></tr></thead><tbody>${vr}</tbody></table>
+<h2>Other Team Support</h2>
+<table><thead><tr><th ${TH}>Team</th><th ${TH}>Role</th><th ${TH}>Type</th><th ${THR}>$/hr (net)</th><th ${THR}>Capex%</th><th ${THR}>Hrs/Sprint</th><th ${THR}>Sprints</th><th ${THR}>CAPEX*</th><th ${THR}>OPEX*</th><th ${THR}>Total*</th><th ${TH}>Notes</th></tr></thead><tbody>${otr}</tbody></table>
+</div>
+<div class="doc-ftr">
+  <div class="doc-ftr-note">Tangerine Internal Use — Cost Estimation as of ${exportDateLong}</div>
+  ${logoSVG}
+</div>
+</div></body></html>`;
+
+  const blob=new Blob([html],{type:'text/html'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');
+  a.href=url;a.download=fileName;
+  document.body.appendChild(a);a.click();document.body.removeChild(a);
+  setTimeout(()=>URL.revokeObjectURL(url),1000);
+}
+
+// ════ UTILS ════
+function fmt(n){if(!n||isNaN(n))return'$0';return'$'+Math.round(n).toLocaleString('en-CA');}
+function fmtK(n){if(!n||isNaN(n))return'$0';if(n>=1e6)return'$'+(n/1e6).toFixed(1)+'M';if(n>=1e3)return'$'+Math.round(n/1e3)+'k';return'$'+Math.round(n);}
+function setText(id,v){const el=document.getElementById(id);if(el)el.textContent=v;}
+function esc(s){return(s||'').replace(/"/g,'&quot;');}
+
+// ════ INIT ════
+(function(){
+  buildRoleTable();
+  resources.push({id:nid(),grp:'existing',name:'TL',role:'TL',type:'Contractor',alloc:100,rateOv:null,capOv:null,sprints:null,notes:'Team Lead'});
+  resources.push({id:nid(),grp:'existing',name:'BA',role:'BA',type:'Contractor',alloc:100,rateOv:null,capOv:null,sprints:null,notes:''});
+  resources.push({id:nid(),grp:'existing',name:'QE',role:'QE',type:'FTE',alloc:50,rateOv:null,capOv:null,sprints:null,notes:'Shared resource'});
+  resources.push({id:nid(),grp:'new',name:'Dev 1',role:'Dev',type:'Contractor',alloc:100,rateOv:null,capOv:null,sprints:null,notes:''});
+  resources.push({id:nid(),grp:'new',name:'Dev 2',role:'Dev',type:'Contractor',alloc:100,rateOv:null,capOv:null,sprints:null,notes:''});
+  renderTab('existing');renderTab('new');renderVen();renderOT();
+  syncKpis(8);refreshAll();
+  window.addEventListener('resize',drawChart);
+})();
+</script>
+</body>
+</html>

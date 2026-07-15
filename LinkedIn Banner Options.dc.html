@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="design_doc_mode" content="canvas">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-font-smoothing: antialiased; }
+  body { margin: 0; background: #E9EAEC; font-family: 'Outfit', -apple-system, Arial, sans-serif; }
+  a { color: #3E6AE1; } a:hover { color: #2d57cc; }
+</style>
+</helmet>
+<section style="padding:48px;display:flex;flex-direction:column;gap:40px;">
+  <div style="font-size:13px;color:#8E8E8E;">LinkedIn profile banners — 1584×396. Photo overlaps bottom-left, kept clear.</div>
+
+  <!-- 1a -->
+  <div id="1a">
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;"><span style="font-size:12px;font-weight:600;background:#171A20;color:#fff;border-radius:4px;padding:3px 9px;">1a</span><span style="font-size:13px;color:#5C5E62;">Clean light — matches the site</span></div>
+    <div style="width:1584px;height:396px;background:#fff;position:relative;overflow:hidden;border:1px solid #D0D1D2;">
+      <div style="position:absolute;left:0;right:0;top:0;height:6px;background:#3E6AE1;"></div>
+      <div style="position:absolute;left:460px;top:50%;transform:translateY(-50%);">
+        <div style="font-size:20px;font-weight:500;color:#3E6AE1;letter-spacing:0.16em;text-transform:uppercase;margin-bottom:16px;">Product Owner × AI Builder</div>
+        <div style="font-size:56px;font-weight:500;color:#171A20;line-height:1.15;margin-bottom:18px;">I turn complexity into products<br>people actually use.</div>
+        <div style="font-size:22px;color:#5C5E62;">17 years in banking &amp; fintech · $47M surfaced through data · builds with AI daily</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 1b -->
+  <div id="1b">
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;"><span style="font-size:12px;font-weight:600;background:#171A20;color:#fff;border-radius:4px;padding:3px 9px;">1b</span><span style="font-size:13px;color:#5C5E62;">Bold carbon — high contrast</span></div>
+    <div style="width:1584px;height:396px;background:#171A20;position:relative;overflow:hidden;">
+      <div style="position:absolute;right:-140px;top:-220px;width:640px;height:640px;border-radius:50%;background:radial-gradient(circle,rgba(62,106,225,0.35),rgba(62,106,225,0) 70%);"></div>
+      <div style="position:absolute;left:460px;top:50%;transform:translateY(-50%);">
+        <div style="font-size:64px;font-weight:500;color:#fff;line-height:1.12;margin-bottom:20px;">Complexity in.<br><span style="color:#3E6AE1;">Products out.</span></div>
+        <div style="font-size:23px;color:#D0D1D2;">Sr. Product Owner — Payments · 17 yrs banking &amp; fintech · hands-on AI practitioner</div>
+      </div>
+      <div style="position:absolute;right:64px;bottom:36px;display:flex;gap:12px;">
+        <span style="font-size:18px;color:#8E8E8E;border:1px solid #393C41;border-radius:4px;padding:8px 18px;">Claude Code</span>
+        <span style="font-size:18px;color:#8E8E8E;border:1px solid #393C41;border-radius:4px;padding:8px 18px;">AI agents</span>
+        <span style="font-size:18px;color:#8E8E8E;border:1px solid #393C41;border-radius:4px;padding:8px 18px;">Product strategy</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- 1c -->
+  <div id="1c">
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;"><span style="font-size:12px;font-weight:600;background:#171A20;color:#fff;border-radius:4px;padding:3px 9px;">1c</span><span style="font-size:13px;color:#5C5E62;">Stat grid — evidence forward</span></div>
+    <div style="width:1584px;height:396px;background:#F4F4F4;position:relative;overflow:hidden;border:1px solid #D0D1D2;">
+      <div style="position:absolute;left:460px;top:64px;">
+        <div style="font-size:44px;font-weight:500;color:#171A20;line-height:1.2;">Nicolas Ruiz — Product Owner who builds with AI.</div>
+      </div>
+      <div style="position:absolute;left:460px;right:64px;bottom:56px;display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:#D0D1D2;border:1px solid #D0D1D2;border-radius:10px;overflow:hidden;">
+        <div style="background:#fff;padding:22px 26px;"><div style="font-size:34px;font-weight:500;color:#171A20;">17 yrs</div><div style="font-size:16px;color:#5C5E62;">banking &amp; fintech</div></div>
+        <div style="background:#fff;padding:22px 26px;"><div style="font-size:34px;font-weight:500;color:#171A20;">$47M</div><div style="font-size:16px;color:#5C5E62;">savings surfaced</div></div>
+        <div style="background:#fff;padding:22px 26px;"><div style="font-size:34px;font-weight:500;color:#171A20;">90%+</div><div style="font-size:16px;color:#5C5E62;">customer satisfaction</div></div>
+        <div style="background:#171A20;padding:22px 26px;"><div style="font-size:34px;font-weight:500;color:#fff;">AI</div><div style="font-size:16px;color:#D0D1D2;">ships products daily</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+</x-dc>
+</body>
+</html>

@@ -1,0 +1,790 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Executive Dashboard</title>
+<style>
+  :root {
+    --navy: #0f1623;
+    --orange: #f05a28;
+    --slate: #334155;
+    --muted: #64748b;
+    --border: #e2e8f0;
+    --bg: #f1f5f9;
+    --card: #ffffff;
+    --green: #22c55e;
+    --blue: #3b82f6;
+    --amber: #f59e0b;
+    --red: #ef4444;
+    --purple: #6366f1;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Segoe UI', Arial, sans-serif; background: var(--bg); color: var(--navy); min-height: 100vh; }
+
+  /* HEADER */
+  #header {
+    background: var(--navy);
+    padding: 0 28px;
+    position: sticky; top: 0; z-index: 100;
+    box-shadow: 0 2px 10px rgba(0,0,0,.35);
+    display: flex; align-items: center; justify-content: space-between;
+    height: 60px;
+  }
+  #header-left { display: flex; align-items: center; gap: 14px; }
+  #header-accent { width: 4px; height: 28px; background: var(--orange); border-radius: 2px; }
+  #proj-name { font-size: 14px; font-weight: 800; color: #fff; letter-spacing: .02em; }
+  #sprint-sub { font-size: 11px; color: #64748b; margin-top: 2px; }
+  #header-right { display: flex; gap: 8px; align-items: center; }
+  .tab-group { display: flex; background: #1e293b; border-radius: 8px; padding: 4px; gap: 2px; }
+  .tab-btn {
+    padding: 6px 14px; border-radius: 6px; border: none;
+    background: transparent; color: #94a3b8;
+    font-size: 12px; font-weight: 700; cursor: pointer;
+    transition: all .2s;
+  }
+  .tab-btn.active { background: var(--orange); color: #fff; }
+  .action-btn {
+    padding: 7px 14px; border-radius: 8px; border: none;
+    font-size: 12px; font-weight: 700; cursor: pointer; color: #fff;
+    transition: opacity .2s;
+  }
+  .action-btn:hover { opacity: .85; }
+  .btn-purple { background: var(--purple); }
+  .btn-green { background: var(--green); }
+  .btn-blue { background: var(--blue); }
+
+  /* CONTENT */
+  #content { padding: 28px; max-width: 1140px; margin: 0 auto; }
+
+  /* CARDS */
+  .card {
+    background: var(--card); border-radius: 12px;
+    border: 1px solid var(--border);
+    padding: 20px 24px;
+    box-shadow: 0 1px 3px rgba(0,0,0,.06);
+    margin-bottom: 18px;
+  }
+  .sec-label {
+    font-size: 10px; font-weight: 800;
+    letter-spacing: .1em; color: #94a3b8;
+    text-transform: uppercase; margin-bottom: 14px;
+  }
+  .section-title {
+    font-size: 13px; font-weight: 800;
+    color: var(--orange); margin-bottom: 14px;
+    letter-spacing: .04em;
+  }
+
+  /* STATUS BADGES */
+  .badge {
+    display: inline-flex; align-items: center; gap: 5px;
+    padding: 3px 10px; border-radius: 20px;
+    font-size: 10px; font-weight: 800; letter-spacing: .06em;
+  }
+  .badge-dot { width: 6px; height: 6px; border-radius: 50%; }
+  .badge-achieved { background: #f0fdf4; border: 1px solid #86efac; color: #15803d; }
+  .badge-achieved .badge-dot { background: #22c55e; }
+  .badge-on-track { background: #eff6ff; border: 1px solid #93c5fd; color: #1d4ed8; }
+  .badge-on-track .badge-dot { background: #3b82f6; }
+  .badge-at-risk { background: #fffbeb; border: 1px solid #fcd34d; color: #b45309; }
+  .badge-at-risk .badge-dot { background: #f59e0b; }
+  .badge-blocked { background: #fef2f2; border: 1px solid #fca5a5; color: #b91c1c; }
+  .badge-blocked .badge-dot { background: #ef4444; }
+  .badge-planned { background: #f8fafc; border: 1px solid #cbd5e1; color: #475569; }
+  .badge-planned .badge-dot { background: #94a3b8; }
+
+  /* SPRINT GRID */
+  .sprint-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; margin-bottom: 18px; }
+  .sprint-box {
+    background: #fff; border-radius: 12px;
+    border: 1px solid var(--border); border-top-width: 3px;
+    padding: 18px 20px;
+    box-shadow: 0 1px 3px rgba(0,0,0,.06);
+  }
+  .sprint-box-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
+  .sprint-box-label { font-size: 12px; font-weight: 700; color: var(--navy); letter-spacing: .04em; }
+  .sprint-items { display: flex; flex-direction: column; gap: 6px; }
+  .sprint-item { display: flex; gap: 8px; align-items: flex-start; }
+  .sprint-dot { width: 6px; height: 6px; border-radius: 50%; margin-top: 5px; flex-shrink: 0; }
+  .sprint-text { font-size: 12.5px; color: var(--slate); line-height: 1.55; }
+  .issues-block { margin-top: 14px; padding-top: 12px; border-top: 1px dashed #fecaca; }
+  .issues-label { font-size: 10px; font-weight: 800; color: #b91c1c; letter-spacing: .08em; margin-bottom: 8px; }
+  .issue-item { display: flex; gap: 8px; align-items: flex-start; margin-bottom: 4px; }
+  .issue-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--red); margin-top: 5px; flex-shrink: 0; }
+  .issue-text { font-size: 12px; color: var(--red); line-height: 1.45; }
+
+  /* RECENT UPDATES */
+  .updates-card {
+    background: #fff9f7; border: 1px solid var(--border);
+    border-left: 3px solid var(--orange);
+    border-radius: 12px; padding: 18px 24px;
+    margin-bottom: 18px;
+  }
+
+  /* NARRATIVE */
+  .narrative-card {
+    background: #fff; border: 1px solid var(--border);
+    border-left: 3px solid var(--purple);
+    border-radius: 12px; padding: 20px 24px;
+    margin-bottom: 18px;
+  }
+  .narrative-text { font-size: 13.5px; color: var(--slate); line-height: 1.75; }
+  .narrative-text p { margin-bottom: 14px; }
+  .narrative-text p:last-child { margin-bottom: 0; }
+
+  /* GOV BARS */
+  .gov-row { margin-bottom: 14px; }
+  .gov-row-header { display: flex; justify-content: space-between; margin-bottom: 5px; }
+  .gov-name { font-size: 12px; font-weight: 700; color: var(--navy); }
+  .gov-pct { font-size: 11px; color: var(--muted); }
+  .bar-track { height: 7px; background: #e2e8f0; border-radius: 4px; overflow: hidden; }
+  .bar-fill { height: 100%; border-radius: 4px; transition: width .4s; }
+  .gov-log { font-size: 11px; color: var(--muted); margin-top: 4px; }
+
+  /* RISKS */
+  .risk-item {
+    display: flex; gap: 10px; align-items: flex-start;
+    padding: 10px 14px; background: #fef2f2;
+    border-radius: 8px; border: 1px solid #fecaca;
+    margin-bottom: 10px;
+  }
+  .risk-badge-label {
+    font-size: 10px; font-weight: 800; color: #b91c1c;
+    background: #fca5a5; padding: 2px 8px; border-radius: 4px;
+    letter-spacing: .06em; flex-shrink: 0;
+  }
+  .risk-text { font-size: 13px; color: var(--slate); line-height: 1.5; }
+
+  /* RELEASES */
+  .release-row { display: flex; gap: 12px; margin-bottom: 10px; align-items: flex-start; }
+  .release-month { font-size: 12px; font-weight: 800; color: var(--orange); min-width: 60px; }
+  .release-desc { font-size: 12.5px; color: var(--slate); line-height: 1.5; }
+
+  /* MILESTONES */
+  .milestone-timeline { position: relative; padding-top: 16px; margin-top: 8px; }
+  .milestone-line { position: absolute; top: 51px; left: 5%; right: 5%; height: 2px; background: #e2e8f0; }
+  .milestone-nodes { display: flex; justify-content: space-around; position: relative; z-index: 1; }
+  .milestone-node { display: flex; flex-direction: column; align-items: center; gap: 8px; flex: 1; }
+  .milestone-period { font-size: 10px; font-weight: 700; color: var(--muted); text-align: center; min-height: 14px; letter-spacing: .03em; }
+  .milestone-circle {
+    width: 32px; height: 32px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    border: 2px solid #fff;
+    box-shadow: 0 0 0 3px rgba(255,255,255,.8);
+  }
+  .milestone-info { text-align: center; }
+  .milestone-name { font-size: 11px; font-weight: 700; color: var(--navy); margin-bottom: 4px; }
+  .milestone-legend { display: flex; gap: 16px; flex-wrap: wrap; justify-content: center; margin-top: 20px; }
+  .legend-item { display: flex; align-items: center; gap: 5px; }
+  .legend-dot { width: 10px; height: 10px; border-radius: 2px; }
+  .legend-label { font-size: 10px; color: var(--muted); text-transform: capitalize; }
+
+  /* PROJECT VIEW LAYOUT */
+  .two-col { display: grid; grid-template-columns: 1.5fr 1fr; gap: 16px; margin-bottom: 0; }
+  .gov-layout { display: flex; gap: 32px; flex-wrap: wrap; }
+  .gov-bars { flex: 1; min-width: 220px; }
+  .gov-logs { flex: 1; min-width: 180px; }
+  .gov-logs-title { font-size: 11px; font-weight: 700; color: var(--muted); margin-bottom: 10px; letter-spacing: .06em; text-transform: uppercase; }
+  .gov-log-entry { font-size: 12px; color: var(--slate); margin-bottom: 7px; line-height: 1.5; }
+  .gov-log-key { font-weight: 700; color: var(--navy); }
+
+  /* ── EDIT MODE ── */
+  #edit-view { display: none; }
+  .edit-section { margin-bottom: 24px; }
+  .field-group { margin-bottom: 16px; }
+  .field-label {
+    display: block; font-size: 11px; font-weight: 700;
+    color: #475569; margin-bottom: 5px;
+    letter-spacing: .05em; text-transform: uppercase;
+  }
+  .field-hint { font-size: 10px; color: #94a3b8; margin-bottom: 4px; }
+  input[type=text], input[type=number], textarea, select {
+    width: 100%; padding: 8px 12px; border-radius: 8px;
+    border: 1px solid var(--border); font-size: 13px;
+    color: var(--navy); outline: none; background: #fafbfc;
+    font-family: inherit;
+  }
+  input[type=text]:focus, textarea:focus, select:focus { border-color: #93c5fd; }
+  textarea { resize: vertical; line-height: 1.5; }
+  .edit-row { display: flex; gap: 16px; }
+  .edit-row > * { flex: 1; }
+  .sprint-edit-block { margin-bottom: 20px; padding-bottom: 20px; border-bottom: 1px solid var(--border); }
+  .sprint-edit-block:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+  .sprint-edit-title { font-size: 13px; font-weight: 800; color: var(--navy); margin-bottom: 12px; }
+  .list-edit-row { display: flex; gap: 8px; margin-bottom: 8px; align-items: center; }
+  .list-edit-row input { flex: 1; }
+  .remove-btn {
+    padding: 0 12px; height: 36px; background: #f8fafc;
+    border: 1px solid var(--border); border-radius: 8px;
+    color: #94a3b8; cursor: pointer; font-size: 16px;
+    flex-shrink: 0; display: flex; align-items: center; justify-content: center;
+  }
+  .remove-btn:hover { background: #fef2f2; border-color: #fecaca; color: var(--red); }
+  .add-btn {
+    font-size: 12px; background: none; border-style: dashed;
+    padding: 6px 14px; border-radius: 8px;
+    cursor: pointer; font-weight: 600; margin-top: 4px;
+  }
+  .add-btn-red { color: var(--red); border-color: #fca5a5; }
+  .add-btn-blue { color: var(--blue); border-color: #93c5fd; }
+  .add-btn-purple { color: var(--purple); border-color: #a5b4fc; }
+  .gov-edit-row { display: flex; gap: 10px; margin-bottom: 10px; align-items: center; }
+  .gov-edit-row .name-input { width: 80px; flex-shrink: 0; }
+  .gov-edit-row .pct-label { font-size: 12px; font-weight: 700; min-width: 32px; color: var(--navy); }
+  input[type=range] { width: 110px; }
+  .release-edit-row { display: flex; gap: 10px; margin-bottom: 8px; }
+  .release-edit-row .month-input { width: 90px; flex-shrink: 0; font-weight: 700; }
+  .milestone-edit-row { display: flex; gap: 8px; margin-bottom: 8px; flex-wrap: wrap; align-items: center; }
+  .milestone-edit-row select { width: auto; flex-shrink: 0; }
+  .milestone-edit-row input { min-width: 100px; }
+
+  /* TOAST */
+  #toast {
+    position: fixed; bottom: 24px; right: 24px;
+    background: var(--navy); color: #fff;
+    padding: 12px 20px; border-radius: 10px;
+    font-size: 13px; font-weight: 600;
+    box-shadow: 0 4px 20px rgba(0,0,0,.3);
+    border: 1px solid #334155; z-index: 999;
+    opacity: 0; transition: opacity .3s; pointer-events: none;
+  }
+  #toast.show { opacity: 1; }
+
+  @media print {
+    #header { display: none; }
+    body { background: #fff; }
+    .card, .sprint-box, .updates-card, .narrative-card { box-shadow: none; }
+    #edit-view { display: none !important; }
+    #sprint-view, #project-view { display: block !important; }
+  }
+</style>
+</head>
+<body>
+
+<div id="header">
+  <div id="header-left">
+    <div id="header-accent"></div>
+    <div>
+      <div id="proj-name"></div>
+      <div id="sprint-sub"></div>
+    </div>
+  </div>
+  <div id="header-right">
+    <div class="tab-group">
+      <button class="tab-btn active" onclick="switchTab('sprint')">Sprint View</button>
+      <button class="tab-btn" onclick="switchTab('project')">Project View</button>
+      <button class="tab-btn" onclick="switchTab('edit')">✏ Edit</button>
+    </div>
+    <button class="action-btn btn-purple" onclick="copyClaudePrompt()">⊕ Copy AI Prompt</button>
+    <button class="action-btn btn-green" onclick="exportClean()">↓ Export HTML</button>
+    <button class="action-btn btn-blue" onclick="window.print()">⎙ Print</button>
+  </div>
+</div>
+
+<div id="content">
+  <!-- SPRINT VIEW -->
+  <div id="sprint-view">
+    <div class="sprint-grid" id="sprint-grid"></div>
+    <div class="updates-card" id="updates-card" style="display:none">
+      <div class="sec-label">Recent Updates</div>
+      <div id="updates-content"></div>
+    </div>
+    <div class="narrative-card" id="narrative-card" style="display:none">
+      <div class="sec-label">Executive Narrative</div>
+      <div class="narrative-text" id="narrative-content"></div>
+    </div>
+  </div>
+
+  <!-- PROJECT VIEW -->
+  <div id="project-view" style="display:none">
+    <div class="two-col">
+      <div class="card" id="risks-card">
+        <div class="sec-label">Program Risks &amp; Dependencies</div>
+        <div id="risks-content"></div>
+      </div>
+      <div class="card" id="releases-card">
+        <div class="sec-label">Upcoming Releases</div>
+        <div id="releases-content"></div>
+      </div>
+    </div>
+    <div style="height:16px"></div>
+    <div class="card">
+      <div class="sec-label">Project Governance</div>
+      <div class="gov-layout">
+        <div class="gov-bars" id="gov-bars"></div>
+        <div class="gov-logs">
+          <div class="gov-logs-title">Logs</div>
+          <div id="gov-logs"></div>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="sec-label">Program Milestones</div>
+      <div class="milestone-timeline">
+        <div class="milestone-line"></div>
+        <div class="milestone-nodes" id="milestone-nodes"></div>
+        <div class="milestone-legend" id="milestone-legend"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- EDIT VIEW -->
+  <div id="edit-view">
+    <div class="card">
+      <div class="section-title">📋 Project Info</div>
+      <div class="edit-row">
+        <div class="field-group" style="flex:2">
+          <label class="field-label">Project Name</label>
+          <input type="text" id="e-project-name">
+        </div>
+        <div class="field-group" style="flex:1">
+          <label class="field-label">Sprint #</label>
+          <input type="text" id="e-sprint-number">
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="section-title">🏃 Sprint Narrative</div>
+      <div id="sprint-edit-blocks"></div>
+      <div class="field-group" style="margin-top:16px">
+        <label class="field-label">Recent Updates</label>
+        <textarea id="e-recent-updates" rows="2" placeholder="One update per line…"></textarea>
+      </div>
+      <div class="field-group">
+        <label class="field-label">Narrative (paste from Claude)</label>
+        <textarea id="e-narrative" rows="5" placeholder="Paste your AI-generated or manually written narrative here…"></textarea>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="section-title">⚠️ Risks &amp; Dependencies</div>
+      <div id="risks-edit"></div>
+      <button class="add-btn add-btn-red" onclick="addRisk()">+ Add Risk</button>
+    </div>
+
+    <div class="card">
+      <div class="section-title">📊 Project Governance</div>
+      <div id="gov-edit"></div>
+    </div>
+
+    <div class="card">
+      <div class="section-title">🗓️ Upcoming Releases</div>
+      <div id="releases-edit"></div>
+      <button class="add-btn add-btn-blue" onclick="addRelease()">+ Add Release</button>
+    </div>
+
+    <div class="card">
+      <div class="section-title">🗺️ Program Milestones</div>
+      <div id="milestones-edit"></div>
+      <button class="add-btn add-btn-purple" onclick="addMilestone()">+ Add Milestone</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script>
+// ── DEFAULT DATA ──────────────────────────────────────────────────────────────
+const DEFAULT = {
+  projectName: "Real-Time Payments Program",
+  sprintNumber: "12",
+  previous: {
+    status: "achieved",
+    items: "Send flow: MVP connected to customer profile\nCard rails: database migration completed\nOnboarded new Dev & QE",
+    issues: ""
+  },
+  current: {
+    status: "on-track",
+    items: "Send flow: connectivity with profile service\nSend flow: add validations\nReceive flow: finalize deployment strategy",
+    issues: "Production issue on receive flow impacting team's focus"
+  },
+  next: {
+    status: "on-track",
+    items: "Send flow: add mandatory message fields\nAdd payee logic (get/validate payee)\nGet transaction history\nGet payment options",
+    issues: ""
+  },
+  recentUpdates: "Deferring receive-flow QA to expedite the send flow.",
+  narrative: "",
+  risks: [
+    "Any change in scope by the core engine vendor could lead to rework.",
+    "Additional work on the receive flow could extend timelines. Pending analysis."
+  ],
+  governance: [
+    { name: "Risk Assessment", progress: 100, log: "Raised and submitted" },
+    { name: "Security Review", progress: 70, log: "Initial engagement" },
+    { name: "Tech Review", progress: 50, log: "Ticket raised" },
+    { name: "Ops Readiness", progress: 60, log: "Considering starting sooner" },
+    { name: "Budget", progress: 85, log: "" }
+  ],
+  releases: [
+    { month: "March", description: "–" },
+    { month: "April", description: "Card rails DB migration" },
+    { month: "May", description: "Receive flow DB migration" }
+  ],
+  milestones: [
+    { name: "3.6", phase: "development", status: "on-track", period: "F26 Q2–Q3" },
+    { name: "Network Cert", phase: "certification", status: "planned", period: "FY27 Q1–Q2" },
+    { name: "Rails Cert", phase: "certification", status: "planned", period: "FY27 Q2" },
+    { name: "Wave 3", phase: "development", status: "planned", period: "FY27 Q2–Q3" },
+    { name: "Go-live", phase: "go-live", status: "planned", period: "FY27 Q3–Q4" }
+  ]
+};
+
+const PHASE_COLORS = { development: "#f59e0b", certification: "#6366f1", "go-live": "#22c55e", operations: "#94a3b8" };
+const STATUS_TOP = { achieved: "#22c55e", "on-track": "#3b82f6", "at-risk": "#f59e0b", blocked: "#ef4444", planned: "#94a3b8" };
+
+// ── STATE ─────────────────────────────────────────────────────────────────────
+let D = {};
+let currentTab = "sprint";
+
+function load() {
+  try {
+    const saved = localStorage.getItem("demo_dash_v1");
+    D = saved ? JSON.parse(saved) : JSON.parse(JSON.stringify(DEFAULT));
+  } catch(e) { D = JSON.parse(JSON.stringify(DEFAULT)); }
+}
+
+function save() {
+  try { localStorage.setItem("demo_dash_v1", JSON.stringify(D)); } catch(e) {}
+}
+
+// ── LINES ─────────────────────────────────────────────────────────────────────
+function lines(str) { return (str || "").split("\n").map(s => s.trim()).filter(Boolean); }
+
+// ── RENDER HEADER ─────────────────────────────────────────────────────────────
+function renderHeader() {
+  document.getElementById("proj-name").textContent = D.projectName;
+  document.getElementById("sprint-sub").textContent = "Sprint " + D.sprintNumber + " · Executive Dashboard";
+}
+
+// ── BADGE HTML ────────────────────────────────────────────────────────────────
+function badgeHTML(status) {
+  const map = { achieved: "Achieved", "on-track": "On Track", "at-risk": "At Risk", blocked: "Blocked", planned: "Planned" };
+  const cls = status.replace("-","") === "ontrack" ? "on-track" : status;
+  return `<span class="badge badge-${status}"><span class="badge-dot"></span>${(map[status]||status).toUpperCase()}</span>`;
+}
+
+function govColor(p) { return p===100?"#22c55e":p>=70?"#3b82f6":p>=40?"#f59e0b":"#ef4444"; }
+
+// ── SPRINT VIEW ───────────────────────────────────────────────────────────────
+function renderSprint() {
+  const sprints = [
+    { key: "previous", label: "Previous Sprint" },
+    { key: "current", label: "Current Sprint" },
+    { key: "next", label: "Next Sprint" }
+  ];
+  const grid = document.getElementById("sprint-grid");
+  grid.innerHTML = sprints.map(s => {
+    const sp = D[s.key];
+    const topColor = STATUS_TOP[sp.status] || "#94a3b8";
+    const dotColor = topColor;
+    const itemsHTML = lines(sp.items).map(i =>
+      `<div class="sprint-item"><div class="sprint-dot" style="background:${dotColor}"></div><div class="sprint-text">${i}</div></div>`
+    ).join("");
+    const issuesHTML = lines(sp.issues||"").length > 0
+      ? `<div class="issues-block"><div class="issues-label">ISSUES</div>${lines(sp.issues).map(i=>`<div class="issue-item"><div class="issue-dot"></div><div class="issue-text">${i}</div></div>`).join("")}</div>`
+      : "";
+    return `<div class="sprint-box" style="border-top-color:${topColor}">
+      <div class="sprint-box-header">
+        <div class="sprint-box-label">${s.label}</div>
+        ${badgeHTML(sp.status)}
+      </div>
+      <div class="sprint-items">${itemsHTML}</div>
+      ${issuesHTML}
+    </div>`;
+  }).join("");
+
+  const upds = lines(D.recentUpdates);
+  const updCard = document.getElementById("updates-card");
+  if (upds.length) {
+    updCard.style.display = "";
+    document.getElementById("updates-content").innerHTML = upds.map(u =>
+      `<div class="sprint-item"><div class="sprint-dot" style="background:var(--orange)"></div><div class="sprint-text">${u}</div></div>`
+    ).join("");
+  } else { updCard.style.display = "none"; }
+
+  const narCard = document.getElementById("narrative-card");
+  if (D.narrative && D.narrative.trim()) {
+    narCard.style.display = "";
+    document.getElementById("narrative-content").innerHTML = D.narrative.trim().split("\n\n").map(p => `<p>${p}</p>`).join("");
+  } else { narCard.style.display = "none"; }
+}
+
+// ── PROJECT VIEW ──────────────────────────────────────────────────────────────
+function renderProject() {
+  document.getElementById("risks-content").innerHTML = (D.risks||[]).map(r =>
+    `<div class="risk-item"><span class="risk-badge-label">RISK</span><span class="risk-text">${r}</span></div>`
+  ).join("");
+
+  document.getElementById("releases-content").innerHTML = (D.releases||[]).map(r =>
+    `<div class="release-row"><div class="release-month">${r.month}</div><div class="release-desc">${r.description}</div></div>`
+  ).join("");
+
+  document.getElementById("gov-bars").innerHTML = (D.governance||[]).map(g =>
+    `<div class="gov-row">
+      <div class="gov-row-header"><span class="gov-name">${g.name}</span><span class="gov-pct">${g.progress}%</span></div>
+      <div class="bar-track"><div class="bar-fill" style="width:${g.progress}%;background:${govColor(g.progress)}"></div></div>
+      ${g.log ? `<div class="gov-log">${g.log}</div>` : ""}
+    </div>`
+  ).join("");
+
+  document.getElementById("gov-logs").innerHTML = (D.governance||[]).filter(g => g.log).map(g =>
+    `<div class="gov-log-entry"><span class="gov-log-key">${g.name}:</span> ${g.log}</div>`
+  ).join("") || "<div style='font-size:12px;color:#94a3b8;'>No logs.</div>";
+
+  const nodes = document.getElementById("milestone-nodes");
+  nodes.innerHTML = (D.milestones||[]).map(m => {
+    const ph = PHASE_COLORS[m.phase] || "#94a3b8";
+    return `<div class="milestone-node">
+      <div class="milestone-period">${m.period}</div>
+      <div class="milestone-circle" style="background:${ph}">
+        <span style="width:8px;height:8px;background:rgba(255,255,255,.9);border-radius:50%;display:block"></span>
+      </div>
+      <div class="milestone-info">
+        <div class="milestone-name">${m.name}</div>
+        ${badgeHTML(m.status)}
+      </div>
+    </div>`;
+  }).join("");
+
+  const legendPhases = [...new Set((D.milestones||[]).map(m => m.phase))];
+  document.getElementById("milestone-legend").innerHTML = legendPhases.map(ph =>
+    `<div class="legend-item"><div class="legend-dot" style="background:${PHASE_COLORS[ph]||"#94a3b8"}"></div><span class="legend-label">${ph}</span></div>`
+  ).join("");
+}
+
+// ── EDIT VIEW ─────────────────────────────────────────────────────────────────
+function renderEdit() {
+  document.getElementById("e-project-name").value = D.projectName || "";
+  document.getElementById("e-sprint-number").value = D.sprintNumber || "";
+  document.getElementById("e-recent-updates").value = D.recentUpdates || "";
+  document.getElementById("e-narrative").value = D.narrative || "";
+
+  // Sprint blocks
+  const blocks = document.getElementById("sprint-edit-blocks");
+  const statuses = ["achieved","on-track","at-risk","blocked","planned"];
+  blocks.innerHTML = ["previous","current","next"].map(key => {
+    const sp = D[key] || {};
+    const opts = statuses.map(s => `<option value="${s}" ${sp.status===s?"selected":""}>${s.charAt(0).toUpperCase()+s.slice(1).replace("-"," ")}</option>`).join("");
+    const label = key.charAt(0).toUpperCase()+key.slice(1);
+    return `<div class="sprint-edit-block">
+      <div class="sprint-edit-title">${label} Sprint</div>
+      <div class="edit-row">
+        <div class="field-group" style="flex:0 0 auto">
+          <label class="field-label">Status</label>
+          <select onchange="D['${key}'].status=this.value;save();renderAll()" style="width:160px">${opts}</select>
+        </div>
+      </div>
+      <div class="field-group">
+        <label class="field-label">Items</label>
+        <div class="field-hint">One per line</div>
+        <textarea rows="4" onchange="D['${key}'].items=this.value;save();renderAll()">${sp.items||""}</textarea>
+      </div>
+      ${key !== "next" ? `<div class="field-group">
+        <label class="field-label">Issues</label>
+        <div class="field-hint">One per line — leave blank if none</div>
+        <textarea rows="2" onchange="D['${key}'].issues=this.value;save();renderAll()">${sp.issues||""}</textarea>
+      </div>` : ""}
+    </div>`;
+  }).join("");
+
+  // Risks
+  document.getElementById("risks-edit").innerHTML = (D.risks||[]).map((r, i) =>
+    `<div class="list-edit-row">
+      <input type="text" value="${r}" oninput="D.risks[${i}]=this.value;save();renderAll()">
+      <button class="remove-btn" onclick="D.risks.splice(${i},1);save();renderAll()">×</button>
+    </div>`
+  ).join("");
+
+  // Gov
+  document.getElementById("gov-edit").innerHTML = (D.governance||[]).map((g, i) =>
+    `<div class="gov-edit-row">
+      <input class="name-input" type="text" value="${g.name}" oninput="D.governance[${i}].name=this.value;save();renderAll()">
+      <input type="range" min="0" max="100" value="${g.progress}" oninput="D.governance[${i}].progress=parseInt(this.value);save();renderAll();document.getElementById('gov-pct-${i}').textContent=this.value+'%'">
+      <span class="gov-pct-label" id="gov-pct-${i}">${g.progress}%</span>
+      <input type="text" placeholder="Log note…" value="${g.log||""}" oninput="D.governance[${i}].log=this.value;save();renderAll()">
+    </div>`
+  ).join("");
+
+  // Releases
+  document.getElementById("releases-edit").innerHTML = (D.releases||[]).map((r, i) =>
+    `<div class="release-edit-row">
+      <input class="month-input" type="text" placeholder="Month" value="${r.month}" oninput="D.releases[${i}].month=this.value;save();renderAll()">
+      <input type="text" placeholder="Description…" value="${r.description}" oninput="D.releases[${i}].description=this.value;save();renderAll()">
+      <button class="remove-btn" onclick="D.releases.splice(${i},1);save();renderAll()">×</button>
+    </div>`
+  ).join("");
+
+  // Milestones
+  const phaseOpts = ["development","certification","go-live","operations"];
+  const statOpts = ["on-track","at-risk","blocked","planned","achieved"];
+  document.getElementById("milestones-edit").innerHTML = (D.milestones||[]).map((m, i) => {
+    const phOpts = phaseOpts.map(p => `<option value="${p}" ${m.phase===p?"selected":""}>${p}</option>`).join("");
+    const stOpts = statOpts.map(s => `<option value="${s}" ${m.status===s?"selected":""}>${s}</option>`).join("");
+    return `<div class="milestone-edit-row">
+      <input type="text" placeholder="Name" value="${m.name}" style="min-width:120px" oninput="D.milestones[${i}].name=this.value;save();renderAll()">
+      <input type="text" placeholder="Period" value="${m.period}" style="min-width:120px" oninput="D.milestones[${i}].period=this.value;save();renderAll()">
+      <select onchange="D.milestones[${i}].phase=this.value;save();renderAll()">${phOpts}</select>
+      <select onchange="D.milestones[${i}].status=this.value;save();renderAll()">${stOpts}</select>
+      <button class="remove-btn" onclick="D.milestones.splice(${i},1);save();renderAll()">×</button>
+    </div>`;
+  }).join("");
+}
+
+function renderAll() {
+  renderHeader();
+  renderSprint();
+  renderProject();
+  if (currentTab === "edit") renderEdit();
+}
+
+// ── ADD ITEMS ─────────────────────────────────────────────────────────────────
+function addRisk() { D.risks.push("New risk…"); save(); renderEdit(); }
+function addRelease() { D.releases.push({ month: "", description: "" }); save(); renderEdit(); }
+function addMilestone() { D.milestones.push({ name: "", phase: "development", status: "planned", period: "" }); save(); renderEdit(); }
+
+// ── EDIT FIELD SAVES (top-level) ──────────────────────────────────────────────
+function bindEditEvents() {
+  document.getElementById("e-project-name").addEventListener("input", function() { D.projectName = this.value; save(); renderAll(); });
+  document.getElementById("e-sprint-number").addEventListener("input", function() { D.sprintNumber = this.value; save(); renderAll(); });
+  document.getElementById("e-recent-updates").addEventListener("input", function() { D.recentUpdates = this.value; save(); renderAll(); });
+  document.getElementById("e-narrative").addEventListener("input", function() { D.narrative = this.value; save(); renderAll(); });
+}
+
+// ── TAB SWITCH ────────────────────────────────────────────────────────────────
+function switchTab(tab) {
+  currentTab = tab;
+  document.getElementById("sprint-view").style.display = tab === "sprint" ? "" : "none";
+  document.getElementById("project-view").style.display = tab === "project" ? "" : "none";
+  document.getElementById("edit-view").style.display = tab === "edit" ? "block" : "none";
+  document.querySelectorAll(".tab-btn").forEach((b, i) => {
+    b.classList.toggle("active", ["sprint","project","edit"][i] === tab);
+  });
+  if (tab === "edit") renderEdit();
+}
+
+// ── COPY CLAUDE PROMPT ────────────────────────────────────────────────────────
+function copyClaudePrompt() {
+  const prompt = `You are Nicolas Ruiz, Sr. Product Owner – Payments at Tangerine Bank.
+Write a weekly executive narrative for business stakeholders (not developers).
+Story-driven, contextual, precise. No bullet points. 3-4 short paragraphs. Don't start with "This week".
+
+Project: ${D.projectName} — Sprint ${D.sprintNumber}
+
+Just completed (${D.previous.status}): ${lines(D.previous.items).join("; ")}${lines(D.previous.issues||"").length ? " | Issues: "+lines(D.previous.issues).join("; ") : ""}
+
+In progress (${D.current.status}): ${lines(D.current.items).join("; ")}${lines(D.current.issues||"").length ? " | Issues: "+lines(D.current.issues).join("; ") : ""}
+
+Coming up (${D.next.status}): ${lines(D.next.items).join("; ")}
+
+Recent decisions: ${lines(D.recentUpdates).join("; ")}
+Active risks: ${(D.risks||[]).join("; ")}
+Upcoming releases: ${(D.releases||[]).map(r=>r.month+": "+r.description).join(", ")}
+
+Write the narrative now.`;
+
+  navigator.clipboard.writeText(prompt).then(() => showToast("✅ Prompt copied — paste into Claude on your personal machine"));
+}
+
+// ── EXPORT CLEAN HTML ─────────────────────────────────────────────────────────
+function exportClean() {
+  const today = new Date().toLocaleDateString("en-CA", { year:"numeric", month:"long", day:"numeric" });
+  const spItems = (sp) => lines(sp.items).map(i => `<li>${i}</li>`).join("");
+  const spIssues = (sp) => lines(sp.issues||"").length > 0
+    ? `<div style="margin-top:10px;padding-top:8px;border-top:1px dashed #fecaca"><strong style="color:#b91c1c;font-size:11px">ISSUES</strong><ul style="color:#ef4444;margin:6px 0 0;padding-left:16px">${lines(sp.issues).map(i=>`<li style="font-size:12px">${i}</li>`).join("")}</ul></div>` : "";
+  const gc = (p) => p===100?"#22c55e":p>=70?"#3b82f6":p>=40?"#f59e0b":"#ef4444";
+  const st = (status) => {
+    const m = { achieved:["#f0fdf4","#86efac","#15803d","#22c55e","Achieved"], "on-track":["#eff6ff","#93c5fd","#1d4ed8","#3b82f6","On Track"], "at-risk":["#fffbeb","#fcd34d","#b45309","#f59e0b","At Risk"], blocked:["#fef2f2","#fca5a5","#b91c1c","#ef4444","Blocked"], planned:["#f8fafc","#cbd5e1","#475569","#94a3b8","Planned"] };
+    return m[status] || m.planned;
+  };
+
+  const html = `<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Executive Dashboard — Sprint ${D.sprintNumber}</title>
+<style>
+body{font-family:'Segoe UI',Arial,sans-serif;max-width:740px;margin:40px auto;color:#0f1623;background:#f8f9fb;padding:0 20px;}
+.card{background:#fff;border-radius:12px;border:1px solid #e2e8f0;padding:20px 24px;margin-bottom:18px;box-shadow:0 1px 3px rgba(0,0,0,.06);}
+h1{font-size:22px;font-weight:800;margin:0 0 4px;}
+.sub{font-size:12px;color:#94a3b8;margin-bottom:0;}
+.sec{font-size:10px;font-weight:800;letter-spacing:.1em;color:#94a3b8;text-transform:uppercase;margin-bottom:14px;}
+.sprint-grid{display:flex;gap:14px;margin-bottom:0;}
+.sb{flex:1;border-radius:10px;border:1px solid #e2e8f0;border-top-width:3px;padding:14px 16px;}
+.sb ul{margin:0;padding-left:16px;}.sb li{font-size:12px;margin-bottom:4px;line-height:1.5;color:#334155;}
+.badge{display:inline-flex;align-items:center;gap:4px;padding:2px 9px;border-radius:20px;font-size:10px;font-weight:800;letter-spacing:.05em;}
+.risk-item{display:flex;gap:10px;padding:10px 14px;background:#fef2f2;border-radius:8px;border:1px solid #fecaca;margin-bottom:8px;}
+.risk-lbl{font-size:10px;font-weight:800;color:#b91c1c;background:#fca5a5;padding:2px 8px;border-radius:4px;flex-shrink:0;}
+.gov-bar{margin-bottom:14px;}.bar-t{height:6px;background:#e2e8f0;border-radius:4px;}
+.narrative p{font-size:13.5px;line-height:1.75;color:#334155;margin:0 0 14px;}
+.rel-row{display:flex;gap:12px;margin-bottom:8px;font-size:13px;}
+.ms-row{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid #f1f5f9;}
+.two-col{display:flex;gap:14px;}
+footer{font-size:11px;color:#94a3b8;text-align:center;margin-top:32px;padding-top:16px;border-top:1px solid #e2e8f0;}
+@media print{body{background:#fff;}}
+</style></head><body>
+<div style="border-bottom:3px solid #f05a28;padding-bottom:14px;margin-bottom:22px">
+<h1>${D.projectName}</h1><div class="sub">Sprint ${D.sprintNumber} &nbsp;·&nbsp; ${today}</div></div>
+
+${D.narrative ? `<div class="card" style="border-left:3px solid #6366f1"><div class="sec">Executive Narrative</div><div class="narrative">${D.narrative.trim().split("\n\n").map(p=>`<p>${p}</p>`).join("")}</div></div>` : ""}
+
+<div class="card"><div class="sec">Sprint Narrative — Previous · Current · Next</div>
+<div class="sprint-grid">
+${["previous","current","next"].map(k => {
+  const sp = D[k]; const s = st(sp.status);
+  return `<div class="sb" style="border-top-color:${s[3]}">
+<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+<strong style="font-size:11px">${k.charAt(0).toUpperCase()+k.slice(1)} Sprint</strong>
+<span class="badge" style="background:${s[0]};border:1px solid ${s[1]};color:${s[2]}">${s[4].toUpperCase()}</span></div>
+<ul>${spItems(sp)}</ul>${spIssues(sp)}</div>`;
+}).join("")}
+</div>
+${lines(D.recentUpdates).length ? `<div style="margin-top:14px;padding:12px 16px;background:#fff9f7;border-radius:8px;border-left:3px solid #f05a28"><div class="sec" style="margin-bottom:6px">Recent Updates</div><ul style="margin:0;padding-left:16px">${lines(D.recentUpdates).map(u=>`<li style="font-size:12.5px;color:#334155;margin-bottom:4px">${u}</li>`).join("")}</ul></div>` : ""}
+</div>
+
+<div class="two-col">
+<div class="card" style="flex:1.5">
+<div class="sec">Program Risks &amp; Dependencies</div>
+${(D.risks||[]).map(r=>`<div class="risk-item"><span class="risk-lbl">RISK</span><span style="font-size:13px;color:#334155">${r}</span></div>`).join("")}
+</div>
+<div class="card" style="flex:1">
+<div class="sec">Upcoming Releases</div>
+${(D.releases||[]).map(r=>`<div class="rel-row"><strong style="color:#f05a28;min-width:55px">${r.month}</strong><span style="color:#334155">${r.description}</span></div>`).join("")}
+</div></div>
+
+<div class="card"><div class="sec">Project Governance</div>
+<div style="display:flex;gap:28px;flex-wrap:wrap">
+<div style="flex:1;min-width:200px">${(D.governance||[]).map(g=>`<div class="gov-bar"><div style="display:flex;justify-content:space-between;font-size:12px;font-weight:700;margin-bottom:4px"><span>${g.name}</span><span>${g.progress}%</span></div><div class="bar-t"><div style="height:100%;width:${g.progress}%;background:${gc(g.progress)};border-radius:4px"></div></div>${g.log?`<div style="font-size:11px;color:#64748b;margin-top:3px">${g.log}</div>`:""}</div>`).join("")}</div>
+<div style="flex:1;min-width:160px"><div style="font-size:11px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px">Logs</div>${(D.governance||[]).filter(g=>g.log).map(g=>`<div style="font-size:12px;color:#334155;margin-bottom:7px;line-height:1.5"><strong>${g.name}:</strong> ${g.log}</div>`).join("")}</div>
+</div></div>
+
+<div class="card"><div class="sec">Program Milestones</div>
+${(D.milestones||[]).map(m=>{const s=st(m.status);const ph={"development":"#f59e0b","certification":"#6366f1","go-live":"#22c55e","operations":"#94a3b8"}[m.phase]||"#94a3b8";
+return `<div class="ms-row"><div><strong style="font-size:13px">${m.name}</strong><span style="font-size:11px;color:#64748b;margin-left:8px">${m.period}</span></div><div style="display:flex;gap:8px;align-items:center"><span style="font-size:11px;font-weight:700;color:#fff;background:${ph};padding:2px 9px;border-radius:4px;text-transform:capitalize">${m.phase}</span><span class="badge" style="background:${s[0]};border:1px solid ${s[1]};color:${s[2]}">${s[4].toUpperCase()}</span></div></div>`;
+}).join("")}</div>
+
+<footer>Executive Dashboard · ${D.projectName} · Sprint ${D.sprintNumber} · ${today}</footer>
+</body></html>`;
+
+  const blob = new Blob([html], { type:"text/html" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = `dashboard-sprint-${D.sprintNumber}.html`;
+  a.click();
+  URL.revokeObjectURL(url);
+  showToast("📥 Exported — attach to your work email");
+}
+
+// ── TOAST ─────────────────────────────────────────────────────────────────────
+function showToast(msg) {
+  const t = document.getElementById("toast");
+  t.textContent = msg; t.classList.add("show");
+  setTimeout(() => t.classList.remove("show"), 3000);
+}
+
+// ── INIT ──────────────────────────────────────────────────────────────────────
+load();
+renderAll();
+bindEditEvents();
+</script>
+</body>
+</html>

@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mockup — Matches Search & Group Links</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#000000; --surface:#111111; --surface2:#1A1A1A;
+    --text:#FFFFFF; --text-secondary:#717171; --green:#06C167; --red:#EE2737;
+  }
+  *{box-sizing:border-box;}
+  body{
+    background:#2a2a2a; margin:0; padding:40px; font-family:'Inter',sans-serif;
+    display:flex; gap:32px; flex-wrap:wrap; justify-content:center;
+  }
+  .frame-label{color:#aaa; font-size:13px; font-weight:700; margin-bottom:10px; text-align:center;}
+  .phone{
+    width:390px; background:var(--bg); border-radius:36px; padding:14px;
+    box-shadow:0 30px 60px rgba(0,0,0,.5); border:6px solid #1a1a1a;
+  }
+  .screen{
+    background:var(--bg); border-radius:24px; min-height:760px; overflow:hidden;
+    display:flex; flex-direction:column;
+  }
+  header{
+    background:#000; padding:14px 16px 10px; display:flex; align-items:center; justify-content:space-between;
+  }
+  .brand{font-size:16px; font-weight:900; color:#fff;}
+  .brand .yr{color:var(--green);}
+  .back-pill{
+    background:var(--surface2); color:var(--text-secondary); font-size:11px; font-weight:700;
+    padding:6px 12px; border-radius:999px; display:flex; align-items:center; gap:4px;
+  }
+  nav.tabs{display:flex; background:#000; border-bottom:1px solid rgba(255,255,255,0.06); padding:0 4px;}
+  .tab-btn{flex:1; text-align:center; padding:12px 2px; font-size:10.5px; font-weight:700; color:var(--text-secondary); letter-spacing:0.5px; position:relative;}
+  .tab-btn.active{color:#fff;}
+  .tab-btn.active::after{content:''; position:absolute; bottom:0; left:16%; right:16%; height:2px; background:#fff; border-radius:2px 2px 0 0;}
+  main{padding:14px; flex:1; overflow-y:auto;}
+
+  .search-input{
+    width:100%; padding:12px 18px; margin-bottom:12px; border-radius:999px; border:none;
+    background:var(--surface); color:#fff; font-size:14px; display:flex; align-items:center; gap:8px;
+  }
+  .search-input input{background:none; border:none; color:#fff; font-size:14px; font-family:inherit; outline:none; width:100%;}
+  .search-input input::placeholder{color:var(--text-secondary);}
+  .search-input .clear-x{color:var(--text-secondary); font-size:14px; cursor:pointer; flex-shrink:0;}
+
+  .subtabs{display:flex; gap:6px; margin-bottom:14px;}
+  .subtab-btn{
+    flex:1; padding:8px 4px; border-radius:999px; background:var(--surface); color:var(--text-secondary);
+    font-size:11px; font-weight:700; text-align:center;
+  }
+  .subtab-btn.active{background:#fff; color:#000;}
+
+  .day-label{font-size:11px; font-weight:700; color:var(--text-secondary); letter-spacing:0.5px; text-transform:uppercase; margin:14px 0 8px;}
+  .day-label:first-child{margin-top:0;}
+
+  .match-card{background:var(--surface); border-radius:16px; padding:12px 14px; margin-bottom:10px;}
+  .match-meta{display:flex; justify-content:space-between; font-size:11px; color:var(--text-secondary); margin-bottom:8px;}
+  .match-row{display:flex; align-items:center; justify-content:space-between; gap:8px;}
+  .match-team{display:flex; align-items:center; gap:8px; flex:1; min-width:0;}
+  .match-team.right{justify-content:flex-end; text-align:right;}
+  .match-team .flag{font-size:20px;}
+  .match-team .team-name{font-size:14px; font-weight:600;}
+  .match-team .team-name.dim{color:var(--text-secondary); font-weight:500;}
+  .match-center{display:flex; flex-direction:column; align-items:center; min-width:60px; gap:3px;}
+  .match-score{font-size:18px; font-weight:700;}
+  .match-time{font-size:12px; color:var(--text-secondary);}
+  .status-badge{font-size:9px; padding:3px 9px; border-radius:999px; font-weight:700;}
+  .status-badge.ft{background:rgba(255,255,255,0.08); color:var(--text-secondary);}
+  .status-badge.ns{background:rgba(6,193,103,0.15); color:var(--green);}
+  .highlight-tag{
+    display:inline-block; margin-top:8px; font-size:10px; font-weight:700; color:var(--green);
+    background:rgba(6,193,103,0.12); padding:3px 9px; border-radius:999px;
+  }
+
+  /* groups */
+  .group-accordion{background:var(--surface); border-radius:16px; margin-bottom:10px; overflow:hidden;}
+  .group-header{padding:14px 16px; display:flex; justify-content:space-between; align-items:center;}
+  .group-header .gtitle{font-size:15px; font-weight:800;}
+  .group-matches-btn{
+    display:flex; align-items:center; gap:5px; background:var(--surface2); color:var(--green);
+    font-size:11px; font-weight:700; padding:7px 12px; border-radius:999px; margin:0 14px 12px;
+  }
+  table.standings{width:100%; border-collapse:collapse; font-size:12px;}
+  table.standings th, table.standings td{padding:7px 4px; text-align:center;}
+  table.standings th{color:var(--text-secondary); font-weight:600; font-size:10px; border-bottom:1px solid rgba(255,255,255,0.06);}
+  table.standings td:nth-child(2){text-align:left; padding-left:8px;}
+  table.standings tr.qualify{background:rgba(6,193,103,0.08);}
+  table.standings tr.qualify td{color:#fff;}
+  table.standings tr.qualify .pts{color:var(--green);}
+  table.standings .tname{display:flex; align-items:center; gap:6px; font-size:12.5px; font-weight:600;}
+  table.standings .pts{font-weight:700;}
+  table.standings .team-matches-link{
+    color:var(--text-secondary); font-size:13px; cursor:pointer; padding:2px 4px;
+  }
+  .annot{
+    background:rgba(255,255,255,0.04); border-radius:12px; padding:10px 12px; margin:0 0 12px;
+    font-size:11.5px; color:var(--text-secondary); line-height:1.5;
+  }
+  .annot b{color:#fff;}
+</style>
+</head>
+<body>
+
+<div>
+  <div class="frame-label">MATCHES TAB — search "Argentina" + ALL subtab</div>
+  <div class="phone"><div class="screen">
+    <header>
+      <span class="brand">FIFA WC <span class="yr">2026</span></span>
+      <span style="font-size:11px;color:#717171;">Updated 2m ago</span>
+    </header>
+    <nav class="tabs">
+      <div class="tab-btn">HOME</div>
+      <div class="tab-btn">GROUPS</div>
+      <div class="tab-btn active">MATCHES</div>
+      <div class="tab-btn">BRACKET</div>
+      <div class="tab-btn">PREDICT</div>
+    </nav>
+    <main>
+      <div class="annot">New: search box filters by team or group name. The <b>ALL</b> subtab shows past + today + future together, chronologically — so you see a team's last result and next fixture in one place.</div>
+      <div class="search-input"><input value="Argentina" readonly><span class="clear-x">✕</span></div>
+      <div class="subtabs">
+        <div class="subtab-btn">TODAY</div>
+        <div class="subtab-btn">PAST</div>
+        <div class="subtab-btn">FUTURE</div>
+        <div class="subtab-btn active">ALL</div>
+      </div>
+
+      <div class="day-label">Yesterday · Jun 16</div>
+      <div class="match-card">
+        <div class="match-meta"><span>GROUP C</span><span>FT</span></div>
+        <div class="match-row">
+          <div class="match-team"><span class="flag">🇦🇷</span><span class="team-name">Argentina</span></div>
+          <div class="match-center"><span class="match-score">2 – 0</span><span class="status-badge ft">FT</span></div>
+          <div class="match-team right"><span class="team-name">Poland</span><span class="flag">🇵🇱</span></div>
+        </div>
+        <span class="highlight-tag">10:00 PM kickoff</span>
+      </div>
+
+      <div class="day-label">Today · Jun 17</div>
+      <div class="match-card" style="opacity:0.55;">
+        <div class="match-meta"><span>GROUP D</span><span>3:00 PM</span></div>
+        <div class="match-row">
+          <div class="match-team"><span class="flag">🇫🇷</span><span class="team-name dim">France</span></div>
+          <div class="match-center"><span class="match-time">3:00 PM</span><span class="status-badge ns">NS</span></div>
+          <div class="match-team right"><span class="team-name dim">Morocco</span><span class="flag">🇲🇦</span></div>
+        </div>
+      </div>
+
+      <div class="day-label">Jun 21</div>
+      <div class="match-card">
+        <div class="match-meta"><span>GROUP C</span><span>4 days away</span></div>
+        <div class="match-row">
+          <div class="match-team"><span class="flag">🇦🇷</span><span class="team-name">Argentina</span></div>
+          <div class="match-center"><span class="match-time">10:00 PM</span><span class="status-badge ns">NS</span></div>
+          <div class="match-team right"><span class="team-name">Saudi Arabia</span><span class="flag">🇸🇦</span></div>
+        </div>
+      </div>
+    </main>
+  </div></div>
+</div>
+
+<div>
+  <div class="frame-label">GROUPS TAB — per-team & per-group "Matches" links</div>
+  <div class="phone"><div class="screen">
+    <header>
+      <span class="brand">FIFA WC <span class="yr">2026</span></span>
+      <span style="font-size:11px;color:#717171;">Updated 2m ago</span>
+    </header>
+    <nav class="tabs">
+      <div class="tab-btn">HOME</div>
+      <div class="tab-btn active">GROUPS</div>
+      <div class="tab-btn">MATCHES</div>
+      <div class="tab-btn">BRACKET</div>
+      <div class="tab-btn">PREDICT</div>
+    </nav>
+    <main>
+      <div class="search-input"><input placeholder="Search team..."></div>
+
+      <div class="group-accordion">
+        <div class="group-header">
+          <span class="gtitle">GROUP C</span>
+          <span style="color:#717171;">⌃</span>
+        </div>
+        <div class="group-matches-btn">⚽ View Group C matches</div>
+        <table class="standings">
+          <tr><th>#</th><th>Team</th><th>P</th><th>PTS</th><th></th></tr>
+          <tr class="qualify">
+            <td>1</td>
+            <td><div class="tname">🇦🇷 Argentina</div></td>
+            <td>1</td><td class="pts">3</td>
+            <td><span class="team-matches-link">⚽</span></td>
+          </tr>
+          <tr class="qualify">
+            <td>2</td>
+            <td><div class="tname">🇸🇦 Saudi Arabia</div></td>
+            <td>1</td><td class="pts">1</td>
+            <td><span class="team-matches-link">⚽</span></td>
+          </tr>
+          <tr>
+            <td>3</td>
+            <td><div class="tname">🇵🇱 Poland</div></td>
+            <td>1</td><td>1</td>
+            <td><span class="team-matches-link">⚽</span></td>
+          </tr>
+          <tr>
+            <td>4</td>
+            <td><div class="tname">🇲🇽 Mexico</div></td>
+            <td>1</td><td>0</td>
+            <td><span class="team-matches-link">⚽</span></td>
+          </tr>
+        </table>
+      </div>
+
+      <div class="annot">Tapping the ⚽ icon on a team row jumps to MATCHES → ALL, pre-filled with that team's name. Tapping "View Group C matches" does the same but filters for all 4 teams in the group at once.</div>
+
+      <div class="group-accordion">
+        <div class="group-header">
+          <span class="gtitle">GROUP D</span>
+          <span style="color:#717171;">⌃</span>
+        </div>
+        <div class="group-matches-btn">⚽ View Group D matches</div>
+        <table class="standings">
+          <tr><th>#</th><th>Team</th><th>P</th><th>PTS</th><th></th></tr>
+          <tr><td>1</td><td><div class="tname">🇫🇷 France</div></td><td>0</td><td>0</td><td><span class="team-matches-link">⚽</span></td></tr>
+          <tr><td>2</td><td><div class="tname">🇲🇦 Morocco</div></td><td>0</td><td>0</td><td><span class="team-matches-link">⚽</span></td></tr>
+        </table>
+      </div>
+    </main>
+  </div></div>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Nicolas Ruiz — Resume PDF</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<style>
+  body{font-family:'Outfit',-apple-system,Arial,sans-serif;background:#f5f5f7;color:#1d1d1f;display:flex;align-items:center;justify-content:center;min-height:100vh;margin:0;}
+  .card{background:#fff;border-radius:18px;padding:44px 52px;text-align:center;box-shadow:rgba(0,0,0,0.08) 3px 5px 30px 0;}
+  h1{font-size:21px;font-weight:600;margin:0 0 8px;}
+  p{font-size:14px;color:rgba(0,0,0,0.55);margin:0 0 22px;}
+  button{background:#0071e3;color:#fff;border:none;border-radius:980px;padding:12px 26px;font-size:15px;cursor:pointer;}
+  button:hover{opacity:.9;}
+</style>
+</head>
+<body>
+<div class="card">
+  <h1>Nicolas Ruiz — Resume</h1>
+  <p id="status">Preparing your PDF…</p>
+  <button onclick="makePdf()">Download again</button>
+</div>
+<script>
+function makePdf(){
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF({ unit:'pt', format:'letter' });
+  const W = 612, M = 54, CW = W - M*2;
+  let y = 56;
+  const GRAY=[92,94,98], DARK=[23,26,32], BLUE=[62,106,225];
+  function ensure(h){ if(y+h > 742){ doc.addPage(); y = 56; } }
+  function text(str, size, opts={}){
+    doc.setFont('helvetica', opts.bold?'bold':(opts.italic?'oblique':'normal'));
+    doc.setFontSize(size);
+    doc.setTextColor(...(opts.color||DARK));
+    const lines = doc.splitTextToSize(str, opts.width||CW);
+    const lh = size * 1.35;
+    ensure(lines.length*lh);
+    lines.forEach(l=>{ doc.text(l, opts.x||M, y); y += lh; });
+    y += (opts.after!=null?opts.after:4);
+  }
+  function heading(str){ y += 10; ensure(30); doc.setDrawColor(...BLUE); doc.setLineWidth(1); text(str.toUpperCase(), 10.5, {bold:true, color:BLUE, after:2}); doc.line(M, y-6, M+CW, y-6); y += 8; }
+  function bullet(str){
+    doc.setFont('helvetica','normal'); doc.setFontSize(10);
+    const lines = doc.splitTextToSize(str, CW-14);
+    ensure(lines.length*13.5);
+    doc.setTextColor(...DARK);
+    doc.text('•', M+2, y);
+    lines.forEach(l=>{ doc.text(l, M+14, y); y += 13.5; });
+    y += 2;
+  }
+  function job(company, period, role, bullets){
+    y += 6; ensure(40);
+    doc.setFont('helvetica','bold'); doc.setFontSize(11.5); doc.setTextColor(...DARK);
+    doc.text(company, M, y);
+    doc.setFont('helvetica','normal'); doc.setFontSize(9.5); doc.setTextColor(...GRAY);
+    doc.text(period, M+CW, y, {align:'right'});
+    y += 14;
+    text(role, 10, {color:GRAY, after:6});
+    bullets.forEach(bullet);
+  }
+  // Header
+  text('Nicolas Ruiz', 22, {bold:true, after:2});
+  text('Sr. Product Owner — Payments', 12, {color:BLUE, after:2});
+  text('Tangerine · Milton, Ontario, Canada · +1 647 883 2626 · nicolasruiz@gmail.com · linkedin.com/in/nicolasmruiz', 9.5, {color:GRAY, after:6});
+
+  heading('Profile');
+  text('Senior Product Owner with 17 years of cross-industry delivery across Canada and Latin America, including 10 years in SAP consulting and 7+ years in Product Ownership roles within banking and fintech. Known for identifying operational patterns across data, process, and organizational structure, and translating them into roadmaps and operating models built to outlast the initiatives that created them — including the Scotiabank International Banking data consolidation model, the Technisys company-wide delivery methodology, and the Claro Colombia procurement redesign, all still active today. Consulting background instilled a discipline for structured thinking and risk management in environments with zero tolerance for failure, shaping a Product Owner practice grounded equally in analytical rigor and business pragmatism.', 10, {color:DARK});
+
+  heading('AI & Emerging Tools');
+  text('Hands-on AI practitioner with experience across software development, analysis, automation, and content creation.', 10, {bold:true});
+  text('Development: native iOS and web applications, financial analysis dashboards computing from raw input files, and a health-insight tool that interprets bloodwork and proposes next steps — built with Claude Code and prototyped in Claude Design. Automation: schedule management, email triage, and document workflows through AI agents and scheduled tasks. Content: executive presentations, image assets, and short-form video production using AI tools including Higgsfield. Proficient in API integration, prompt engineering, and building reusable AI skills and artifacts.', 10);
+  text('Claude Code · Claude Design · Claude API · iOS development · AI agents · prompt engineering · image & video AI · artifacts & skills', 9.5, {color:BLUE});
+
+  heading('Experience');
+  job('Tangerine','Mar 2025 – present','Sr. Product Owner — Payments',[
+    'Delivered VISA OCT for domestic and cross-border transfers on time using VISA rails, guiding a newly formed team through MVP and incremental delivery to build platform expertise as the initiative progressed.',
+    "Leading Tangerine's implementation of Payments Canada's Real-Time Rail (RTR) industry initiative — delivering incremental upgrades for Send and Receive 3.6, now advancing to 3.7.",
+    'Pioneered a centralized SharePoint documentation hub for the Payments team — synced with Teams (Calendar, Planner) and used as the model for adoption across the organization; produces newsletters recognized for clarity and engagement.',
+    'Built Claude-based artifacts for project estimation, status reporting, and newsletter production, reducing manual reporting effort.']);
+  job('Scotiabank','Mar 2023 – Mar 2025','Sr. Product Owner — Data & Analytics',[
+    'Delivered a data consolidation initiative — previously attempted and abandoned multiple times — successfully integrating retail data from 9 Latin American countries into Canada and designing the operating model now being adopted as the standard across International Banking.',
+    'Initiative drove the creation of new Retail analytics departments and is actively expanding into Risk, Wealth, and Commercial; analysis surfaced CAD 47M (4%) in expense reductions incorporated into the F25 Plan and shareholder reports. Also pioneered a centralized SharePoint documentation model — later adopted as a team standard.']);
+  job('Technisys','Jul 2021 – Feb 2023','Product Owner — Agile Delivery Methodology',[
+    "Designed and documented the organization's end-to-end delivery methodology — including reusable artifacts, guidelines, and flexible agile frameworks adopted company-wide — compressing client Discovery from 5 months to 2–3 weeks and reducing per-project costs by USD 30K/quarter.",
+    'Methodology drove customer satisfaction from baseline to 90%+ while a multi-country estimation model cut time and cost deviations by 50%, giving leadership a reliable forecasting tool for the first time.']);
+  job('Scotiabank','May 2017 – Jul 2021','Product Owner & Scrum Master — Retail CRM',[
+    'As Scrum Master, joined a high-potential team with strong leadership support and became instrumental in elevating its agile practice — through deep conviction and hands-on coaching — earning top-5 recognition among all agile teams at Scotiabank.',
+    'As Product Owner, conceived and led a next-generation CRM vision — cross-channel lead management, AI-driven next best action, and customer-centric flows with full behavioural insights — years ahead of industry adoption. Secured CAD 3M in funding through executive roadshows, deployed in Chile and actively expanding across the region.']);
+  job('SAP Consulting','2006 – 2017','Business Consultant & CoE Supervisor',[
+    'Re-engineered procurement and reverse logistics at Claro Colombia — cut procurement times by 66%, saving $750K USD/year in logistics and $180K USD in warehouse costs.',
+    'Built and led a high-performing SAP support team, growing CSAT from 70% to 90% and eliminating a 2-year open backlog within months.']);
+  text('10 years of ERP implementations across telecoms, pharma, food processing, and financial services in Argentina, Colombia, Peru, Mexico, Chile, and Uruguay — every project delivered successfully.', 9.5, {italic:true, color:GRAY});
+
+  heading('Skills');
+  text('Product: product ownership, roadmapping, backlog management, design thinking, UX discovery, impact mapping', 10);
+  text('Analysis & Data: Power BI, Excel / VBA, KPI design, process optimisation, financial modelling', 10);
+  text('Agile: Scrum, Kanban, scaled Scrum, agile coaching', 10);
+  text('Tools: Jira, Confluence, Claude AI, Figma, SharePoint', 10);
+
+  heading('Certifications');
+  text('Professional Agile Leadership (Scrum.org — PAL) · Professional Scrum Master (Scrum.org — PSM I) · Scaled Professional Scrum (Scrum.org — SPS) · SAP Certified Associate (Procurement & Materials)', 10);
+
+  heading('Education');
+  text('Business Process Management — University of Toronto (2016–2018)', 10, {after:1});
+  text('Accounting & Finance — Universidad del Rosario (2016)', 10, {after:1});
+  text('B.Eng. Computer Science — Universidad EAN (2009–2012)', 10);
+
+  heading('Languages');
+  text('English — full professional · Spanish — native', 10);
+
+  doc.save('Nicolas-Ruiz-Resume.pdf');
+  document.getElementById('status').textContent = 'Your PDF has downloaded. Need it again?';
+}
+window.addEventListener('load', ()=>setTimeout(makePdf, 400));
+</script>
+</body>
+</html>

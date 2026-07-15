@@ -1,0 +1,1802 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<a href="../AI Projects.dc.html" style="position:fixed;top:16px;left:16px;z-index:99999;display:flex;align-items:center;gap:6px;font-family:sans-serif;font-size:13px;font-weight:600;color:#171A20;background:rgba(255,255,255,.92);backdrop-filter:blur(6px);padding:8px 14px 8px 10px;border-radius:20px;box-shadow:0 2px 10px rgba(0,0,0,.12);text-decoration:none;">← Portfolio</a>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&display=swap" rel="stylesheet">
+<style>
+  * { -webkit-font-smoothing: antialiased; box-sizing: border-box; }
+  body { margin: 0; }
+  :root { --hx-accent: #22C7C0; --hx-accent-ink: #58E0D6; --hx-accent-soft: rgba(34,199,192,0.15); }
+  .hx::-webkit-scrollbar { width: 0; height: 0; }
+  a, a:hover { color: var(--hx-accent-ink); }
+  @keyframes hx-drift { 0% { transform: translate(0,0) scale(1); } 50% { transform: translate(18px,-26px) scale(1.08); } 100% { transform: translate(0,0) scale(1); } }
+  @keyframes hx-pulse { 0%,100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.45; transform: scale(0.72); } }
+  @keyframes hx-rise { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: translateY(0); } }
+</style>
+</helmet>
+<div style="min-height: 100%; background: #05080d; display: flex; align-items: flex-start; justify-content: center; padding: 30px 16px; font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', sans-serif;">
+  <div style="width: 390px; height: 820px; background: #070b11; border: 1px solid rgba(255,255,255,0.10); border-radius: 54px; overflow: hidden; position: relative; box-shadow: 0 40px 120px -20px rgba(0,0,0,0.85); display: flex; flex-direction: column;">
+
+    <!-- ambient accent bloom -->
+
+    <!-- status bar -->
+    <div style="height: 46px; flex: none; display: flex; align-items: center; justify-content: space-between; padding: 4px 30px 0; font-size: 14px; font-weight: 600; color: #f1f4f8; position: relative;">
+      <span>9:41</span>
+      <span style="width: 96px; height: 26px; background: #000; border-radius: 999px; margin-top: 2px;"></span>
+      <span style="font-variant-numeric: tabular-nums;">100%</span>
+    </div>
+
+    <sc-if value="{{ showCoach }}" hint-placeholder-val="{{ false }}">
+    <div class="hx" style="flex: 1; overflow-y: auto; position: relative; background: #070b11;">
+      <div style="padding: 10px 20px 110px; display: flex; flex-direction: column; gap: 16px;">
+
+        <div style="display: flex; align-items: center; gap: 10px; margin-top: 6px;">
+          <img src="assets/helix-icon.png" alt="" style="width: 34px; height: 34px; border-radius: 999px;">
+          <div style="flex: 1;">
+            <div style="font-family: 'Bricolage Grotesque', sans-serif; font-size: 18px; font-weight: 800; color: #f1f4f8;">Helix Coach</div>
+            <div style="font-size: 11px; color: #5FD17A;">● watching your day</div>
+          </div>
+        </div>
+
+        <!-- coach message -->
+        <sc-if value="{{ noCtx }}" hint-placeholder-val="{{ true }}">
+        <div style="display: flex; flex-direction: column; gap: 8px;">
+          <div style="font-size: 10.5px; color: #6b7585; display: flex; align-items: center; gap: 6px; cursor: pointer;" style-hover="opacity: 0.8">
+            <span>🧠</span><span>Thought for 2s · checked sleep, load, recovery</span><span>›</span>
+          </div>
+          <div style="max-width: 88%; background: #0e141d; border: 1px solid rgba(255,255,255,0.07); border-radius: 18px 18px 18px 6px; padding: 13px 15px; font-size: 13.5px; line-height: 1.55; color: #cdd8ea;">Oof, I get it — that itch to move is real, especially with 62 recovery staring back at you. Just a heads up: your load is at 31 of 38 and you've still got that 1h12 sleep debt looming. If you're hitting pickleball tonight, keep the rallies fun and the sprints few?</div>
+          <div style="max-width: 88%; background: #0e141d; border: 1px solid rgba(255,255,255,0.07); border-radius: 18px 18px 18px 6px; padding: 13px 15px; font-size: 13.5px; line-height: 1.55; color: #cdd8ea;">Did you get your creatine in with that salt water yet?</div>
+        </div>
+
+        <!-- user message -->
+        <div style="display: flex; justify-content: flex-end;">
+          <div style="max-width: 85%; background: linear-gradient(150deg,#4DE1C4,#12A5C8); border-radius: 18px 18px 6px 18px; padding: 12px 15px; font-size: 13.5px; line-height: 1.5; color: #04201f; font-weight: 500;">Creatine I take it at night, did it last night. Vitamins at noon with food</div>
+        </div>
+
+        <!-- coach reply with actions taken -->
+        <div style="display: flex; flex-direction: column; gap: 8px;">
+          <div style="font-size: 10.5px; color: #6b7585; display: flex; align-items: center; gap: 6px; cursor: pointer;" style-hover="opacity: 0.8">
+            <span>🧠</span><span>Thought for 1s · updating supplement schedule</span><span>›</span>
+          </div>
+          <!-- staged log: needs confirmation -->
+          <div style="max-width: 88%; background: #0e141d; border: 1px solid rgba(255,255,255,0.10); border-radius: 16px; padding: 14px 15px; display: flex; flex-direction: column; gap: 10px;">
+            <div style="font-size: 10px; font-weight: 700; letter-spacing: 0.8px; text-transform: uppercase; color: #F5C451;">Ready to log — please check</div>
+            <div style="display: flex; align-items: center; gap: 10px;">
+              <span style="flex: 1; font-size: 13px; color: #f1f4f8; font-weight: 600;">Creatine</span>
+              <span style="font-size: 12.5px; color: #cdd8ea; background: #1a212c; border: 1px dashed rgba(255,255,255,0.2); border-radius: 8px; padding: 4px 10px; cursor: pointer;" style-hover="border-color: rgba(255,255,255,0.4)">10 g ✎</span>
+              <span style="font-size: 12.5px; color: #cdd8ea; background: #1a212c; border: 1px dashed rgba(255,255,255,0.2); border-radius: 8px; padding: 4px 10px; cursor: pointer;" style-hover="border-color: rgba(255,255,255,0.4)">yest 22:00 ✎</span>
+            </div>
+            <div style="display: flex; gap: 8px; margin-top: 2px;">
+              <div style="flex: 1; text-align: center; font-size: 12px; font-weight: 700; color: #04201f; background: linear-gradient(150deg,#4DE1C4,#12A5C8); border-radius: 999px; padding: 8px 0; cursor: pointer;" style-active="transform: scale(0.97)">Confirm</div>
+              <div style="flex: 1; text-align: center; font-size: 12px; font-weight: 600; color: #cdd8ea; border: 1px solid rgba(255,255,255,0.12); border-radius: 999px; padding: 8px 0; cursor: pointer;" style-active="transform: scale(0.97)">Not quite…</div>
+            </div>
+          </div>
+          <div style="max-width: 88%; background: #0e141d; border: 1px solid rgba(255,255,255,0.07); border-radius: 18px 18px 18px 6px; padding: 13px 15px; font-size: 13.5px; line-height: 1.55; color: #cdd8ea;">Creatine's staged — I assumed your usual 10 g, tap to fix if not. For the vitamins, which ones do you take at noon? I don't want to guess on your log.</div>
+          <div style="display: flex; flex-wrap: wrap; gap: 6px; max-width: 88%;">
+            <span style="font-size: 12px; color: #cdd8ea; border: 1px solid rgba(255,255,255,0.14); border-radius: 999px; padding: 7px 12px; cursor: pointer;" style-hover="background: rgba(255,255,255,0.04)">Multivitamin</span>
+            <span style="font-size: 12px; color: #cdd8ea; border: 1px solid rgba(255,255,255,0.14); border-radius: 999px; padding: 7px 12px; cursor: pointer;" style-hover="background: rgba(255,255,255,0.04)">Omega-3</span>
+            <span style="font-size: 12px; color: #cdd8ea; border: 1px solid rgba(255,255,255,0.14); border-radius: 999px; padding: 7px 12px; cursor: pointer;" style-hover="background: rgba(255,255,255,0.04)">Vitamin D3</span>
+            <span style="font-size: 12px; color: #cdd8ea; border: 1px solid rgba(255,255,255,0.14); border-radius: 999px; padding: 7px 12px; cursor: pointer;" style-hover="background: rgba(255,255,255,0.04)">Magnesium</span>
+            <span style="font-size: 12px; color: #8b95a3; border: 1px dashed rgba(255,255,255,0.14); border-radius: 999px; padding: 7px 12px; cursor: pointer;" style-hover="background: rgba(255,255,255,0.04)">something else…</span>
+          </div>
+        </div>
+
+        <!-- suggested replies -->
+        <div style="display: flex; flex-direction: column; gap: 8px; margin-top: 2px;">
+          <div style="font-size: 12.5px; color: #8b95a3; border: 1px solid rgba(255,255,255,0.10); border-radius: 999px; padding: 9px 14px; width: fit-content; cursor: pointer;" style-hover="background: rgba(255,255,255,0.04)">↪ What signs of overtraining should I watch for tonight?</div>
+          <div style="font-size: 12.5px; color: #8b95a3; border: 1px solid rgba(255,255,255,0.10); border-radius: 999px; padding: 9px 14px; width: fit-content; cursor: pointer;" style-hover="background: rgba(255,255,255,0.04)">↪ Log my lunch: chicken bowl + rice</div>
+        </div>
+        </sc-if>
+
+        <!-- context thread: opened from a card -->
+        <sc-if value="{{ hasCtx }}" hint-placeholder-val="{{ false }}">
+        <div style="display: flex; flex-direction: column; gap: 10px;">
+          <div style="display: flex; justify-content: center;">
+            <div style="display: flex; align-items: center; gap: 7px; background: #1a212c; border: 1px solid rgba(255,255,255,0.10); border-radius: 999px; padding: 6px 13px; font-size: 11px; color: #cdd8ea;">
+              <span style="width: 6px; height: 6px; border-radius: 999px; background: {{ ctxDot }};"></span>
+              <span>from your <b style="color: #f1f4f8;">{{ ctxLabel }}</b> card · {{ ctxValue }}</span>
+            </div>
+          </div>
+          <div style="font-size: 10.5px; color: #6b7585; display: flex; align-items: center; gap: 6px;">
+            <span>🧠</span><span>Thought for 1s · pulled today's context for {{ ctxLabel }}</span>
+          </div>
+          <div style="max-width: 90%; background: #0e141d; border: 1px solid rgba(255,255,255,0.07); border-radius: 18px 18px 18px 6px; padding: 13px 15px; font-size: 13.5px; line-height: 1.55; color: #cdd8ea;">{{ ctxMsg }}</div>
+          <div style="display: flex; flex-direction: column; gap: 8px; margin-top: 2px;">
+            <div style="font-size: 12.5px; color: #8b95a3; border: 1px solid rgba(255,255,255,0.10); border-radius: 999px; padding: 9px 14px; width: fit-content; cursor: pointer;" style-hover="background: rgba(255,255,255,0.04)">↪ {{ ctxChip1 }}</div>
+            <div style="font-size: 12.5px; color: #8b95a3; border: 1px solid rgba(255,255,255,0.10); border-radius: 999px; padding: 9px 14px; width: fit-content; cursor: pointer;" style-hover="background: rgba(255,255,255,0.04)">↪ {{ ctxChip2 }}</div>
+          </div>
+        </div>
+        </sc-if>
+
+      </div>
+      <!-- composer -->
+      <div style="position: absolute; left: 0; right: 0; bottom: 0; padding: 10px 16px 12px; background: linear-gradient(to top, #070b11 60%, transparent); display: flex; align-items: center; gap: 8px;">
+        <div style="width: 38px; height: 38px; border-radius: 999px; border: 1px solid rgba(255,255,255,0.12); display: flex; align-items: center; justify-content: center; color: #8b95a3; font-size: 18px; flex: none; cursor: pointer;">+</div>
+        <div style="flex: 1; height: 40px; border-radius: 999px; background: #0e141d; border: 1px solid rgba(255,255,255,0.10); display: flex; align-items: center; padding: 0 16px; font-size: 13px; color: #6b7585;">Ask Helix anything…</div>
+        <div style="width: 38px; height: 38px; border-radius: 999px; background: linear-gradient(150deg,#4DE1C4,#12A5C8); display: flex; align-items: center; justify-content: center; color: #04201f; font-size: 16px; font-weight: 800; flex: none; cursor: pointer;" style-active="transform: scale(0.92)">↑</div>
+      </div>
+    </div>
+    </sc-if>
+    <sc-if value="{{ showToday }}" hint-placeholder-val="{{ true }}">
+    <div class="hx" style="flex: 1; overflow-y: auto; position: relative;">
+      <div style="padding: 8px 20px 130px; display: flex; flex-direction: column;">
+
+        <!-- header -->
+        <div data-hx-rise="0" style="display: flex; align-items: center; justify-content: space-between; margin: 6px 0 20px;">
+          <div>
+            <div style="font-size: 9.5px; font-weight: 700; letter-spacing: 1.1px; text-transform: uppercase; color: #8b95a3;">Thursday · Jul 9</div>
+            <div style="font-family: 'Bricolage Grotesque', sans-serif; font-size: 25px; font-weight: 800; color: #f1f4f8; letter-spacing: -0.3px; margin-top: 2px;">Good morning, Nicolas</div>
+          </div>
+          <div onClick="{{ goSettings }}" style="width: 40px; height: 40px; border-radius: 999px; background: linear-gradient(150deg,#4DE1C4,#12A5C8); display: flex; align-items: center; justify-content: center; color: #04201f; font-size: 14px; font-weight: 800; letter-spacing: 0.3px; cursor: pointer;" style-active="transform: scale(0.92)">NL</div>
+        </div>
+
+        <!-- day history scrubber -->
+        <div style="display: flex; align-items: center; gap: 6px; margin: -8px 0 18px;">
+          <sc-for list="{{ dayChips }}" as="dc" hint-placeholder-count="6">
+            <div onClick="{{ dc.pick }}" style="flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 7px 0 6px; border: 1px solid {{ dc.border }}; background: {{ dc.bg }}; border-radius: 12px; cursor: pointer;" style-active="transform: scale(0.94)">
+              <span style="font-size: 10px; font-weight: 700; color: #8b95a3;">{{ dc.dow }}</span>
+              <span style="width: 5px; height: 5px; border-radius: 999px; background: {{ dc.dotColor }};"></span>
+            </div>
+          </sc-for>
+          <div onClick="{{ backToToday }}" style="flex: 1.3; display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 7px 0 6px; border: 1px solid var(--hx-accent); background: rgba(77,225,196,0.08); border-radius: 12px; cursor: pointer;" style-active="transform: scale(0.94)">
+            <span style="font-size: 10px; font-weight: 800; color: var(--hx-accent-ink);">Today</span>
+            <span style="width: 5px; height: 5px; border-radius: 999px; background: #F5C451;"></span>
+          </div>
+        </div>
+
+        <!-- historic day recap -->
+        <sc-if value="{{ showHist }}" hint-placeholder-val="{{ false }}">
+        <div style="background: linear-gradient(160deg, #0e141d, #0c1219); border: 1px solid rgba(255,255,255,0.14); border-radius: 20px; padding: 15px 16px; margin-bottom: 20px; box-shadow: 0 18px 42px -22px rgba(0,0,0,0.7), inset 0 1px 0 rgba(255,255,255,0.05);">
+          <div style="display: flex; align-items: center; justify-content: space-between;">
+            <span style="font-size: 9.5px; font-weight: 700; letter-spacing: 1.1px; text-transform: uppercase; color: #8b95a3;">Looking back · {{ histDow }} {{ histDate }}</span>
+            <span onClick="{{ backToToday }}" style="font-size: 11px; font-weight: 700; color: var(--hx-accent-ink); cursor: pointer;" style-hover="opacity: 0.8">back to today ×</span>
+          </div>
+          <div style="display: flex; gap: 18px; margin-top: 12px;">
+            <div><div style="font-size: 10px; color: #8b95a3;">Recovery</div><div style="font-family: 'Bricolage Grotesque', sans-serif; font-size: 21px; font-weight: 800; color: {{ histRecColor }};">{{ histRec }}</div></div>
+            <div><div style="font-size: 10px; color: #8b95a3;">Sleep</div><div style="font-family: 'Bricolage Grotesque', sans-serif; font-size: 21px; font-weight: 800; color: #82a0da;">{{ histSleep }}</div></div>
+            <div><div style="font-size: 10px; color: #8b95a3;">Load</div><div style="font-family: 'Bricolage Grotesque', sans-serif; font-size: 21px; font-weight: 800; color: #cdd8ea;">{{ histLoad }}</div></div>
+          </div>
+          <div style="display: flex; align-items: flex-start; gap: 8px; margin-top: 12px; padding-top: 11px; border-top: 1px solid rgba(255,255,255,0.05);">
+            <img src="assets/helix-icon.png" alt="" style="width: 18px; height: 18px; border-radius: 999px; flex: none;">
+            <span style="flex: 1; font-size: 11.5px; line-height: 1.5; color: #cdd8ea;">{{ histNote }}</span>
+          </div>
+          <sc-if value="{{ hasGap }}" hint-placeholder-val="{{ false }}">
+            <div onClick="{{ goLog }}" style="display: flex; align-items: center; justify-content: space-between; margin-top: 10px; background: rgba(245,196,81,0.06); border: 1px dashed rgba(245,196,81,0.35); border-radius: 12px; padding: 9px 12px; cursor: pointer;" style-active="transform: scale(0.98)">
+              <span style="font-size: 11px; color: #F5C451;">{{ histGap }} — add it retroactively</span>
+              <span style="font-size: 12px; color: #F5C451; font-weight: 700;">+ log</span>
+            </div>
+          </sc-if>
+        </div>
+        </sc-if>
+
+        <div style="order: {{ sec.status.order }}; display: {{ sec.status.disp }};">
+        <!-- BODY STATUS trio -->
+        <div style="font-size: 9.5px; font-weight: 700; letter-spacing: 1.1px; text-transform: uppercase; color: #8b95a3; margin: 0 2px 10px;">Body status</div>
+        <div data-hx-rise="1" style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px;">
+          <!-- recovery -->
+          <div onClick="{{ askRecovery }}" style="background: #0e141d; border: 1px solid rgba(255,255,255,0.07); border-radius: 20px; padding: 16px 8px 14px; box-shadow: 0 18px 42px -22px rgba(0,0,0,0.7), inset 0 1px 0 rgba(255,255,255,0.05); display: flex; flex-direction: column; align-items: center; gap: 8px;" style-active="transform: scale(0.97)">
+            <svg viewBox="0 0 72 72" width="68" height="68" style="display: block;">
+              <circle cx="36" cy="36" r="30" fill="none" stroke="#1a212c" stroke-width="7"></circle>
+              <circle data-hx-ring="71.6" cx="36" cy="36" r="30" fill="none" stroke="#F5C451" stroke-width="7" stroke-linecap="round" stroke-dasharray="188.5" stroke-dashoffset="71.6" transform="rotate(-90 36 36)"></circle>
+              <text data-hx-count="62" x="36" y="40" text-anchor="middle" font-family="Bricolage Grotesque, sans-serif" font-size="22" font-weight="800" fill="#F5C451">62</text>
+            </svg>
+            <div style="display: flex; flex-direction: column; align-items: center; gap: 2px;">
+              <div style="font-size: 11px; font-weight: 600; color: #cdd8ea;">Recovery</div>
+              <div style="font-size: 10px; color: #F5C451;">below base</div>
+            </div>
+          </div>
+          <!-- load -->
+          <div onClick="{{ askLoad }}" style="background: #0e141d; border: 1px solid rgba(255,255,255,0.07); border-radius: 20px; padding: 16px 8px 14px; box-shadow: 0 18px 42px -22px rgba(0,0,0,0.7), inset 0 1px 0 rgba(255,255,255,0.05); display: flex; flex-direction: column; align-items: center; gap: 8px;" style-active="transform: scale(0.97)">
+            <svg viewBox="0 0 72 72" width="68" height="68" style="display: block;">
+              <circle cx="36" cy="36" r="30" fill="none" stroke="#1a212c" stroke-width="7"></circle>
+              <circle data-hx-ring="101.8" cx="36" cy="36" r="30" fill="none" stroke="#5FD17A" stroke-width="7" stroke-linecap="round" stroke-dasharray="188.5" stroke-dashoffset="101.8" transform="rotate(-90 36 36)"></circle>
+              <text data-hx-count="46" x="36" y="40" text-anchor="middle" font-family="Bricolage Grotesque, sans-serif" font-size="22" font-weight="800" fill="#5FD17A">46</text>
+            </svg>
+            <div style="display: flex; flex-direction: column; align-items: center; gap: 2px;">
+              <div style="font-size: 11px; font-weight: 600; color: #cdd8ea;">Load</div>
+              <div style="font-size: 10px; color: #5FD17A;">on track</div>
+            </div>
+          </div>
+          <!-- sleep -->
+          <div onClick="{{ askSleep }}" style="background: #0e141d; border: 1px solid rgba(255,255,255,0.07); border-radius: 20px; padding: 16px 8px 14px; box-shadow: 0 18px 42px -22px rgba(0,0,0,0.7), inset 0 1px 0 rgba(255,255,255,0.05); display: flex; flex-direction: column; align-items: center; gap: 8px;" style-active="transform: scale(0.97)">
+            <svg viewBox="0 0 72 72" width="68" height="68" style="display: block;">
+              <circle cx="36" cy="36" r="30" fill="none" stroke="#1a212c" stroke-width="7"></circle>
+              <circle data-hx-ring="49" cx="36" cy="36" r="30" fill="none" stroke="#82a0da" stroke-width="7" stroke-linecap="round" stroke-dasharray="188.5" stroke-dashoffset="49" transform="rotate(-90 36 36)"></circle>
+              <text data-hx-count="74" x="36" y="40" text-anchor="middle" font-family="Bricolage Grotesque, sans-serif" font-size="22" font-weight="800" fill="#82a0da">74</text>
+            </svg>
+            <div style="display: flex; flex-direction: column; align-items: center; gap: 3px;">
+              <div style="font-size: 11px; font-weight: 600; color: #cdd8ea;">Sleep</div>
+              <div style="display: flex; align-items: center; gap: 4px; font-size: 10px; font-weight: 700; color: #F5C451; background: rgba(245,196,81,0.10); border: 1px solid rgba(245,196,81,0.25); border-radius: 999px; padding: 2px 7px;">
+                <span style="width: 5px; height: 5px; border-radius: 999px; background: #F5C451;"></span>
+                <span>debt −2h04</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        </div>
+        <div style="order: {{ sec.coach.order }}; display: {{ sec.coach.disp }};">
+        <!-- INSIGHT / coach -->
+        <div data-hx-rise="2" style="background: linear-gradient(160deg, #0e141d, #0c1219); border: 1px solid rgba(255,255,255,0.10); border-radius: 24px; padding: 18px; margin-top: 20px; box-shadow: 0 18px 42px -22px rgba(0,0,0,0.7), inset 0 1px 0 rgba(255,255,255,0.05); position: relative; overflow: hidden;">
+          <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 10px; position: relative;">
+            <img src="assets/helix-icon.png" alt="" style="width: 24px; height: 24px; border-radius: 999px;">
+            <span style="font-size: 12.5px; font-weight: 700; color: #f1f4f8;">Helix Coach</span>
+            <span style="font-size: 9px; font-weight: 700; letter-spacing: 0.6px; color: #8b95a3; border: 1px solid rgba(255,255,255,0.12); border-radius: 999px; padding: 3px 8px;">SLEEP · CIRCADIAN</span>
+          </div>
+          <div style="font-size: 14px; line-height: 1.5; color: #cdd8ea; position: relative;">Recovery is below your band and your overnight HR dip was only 18%. Keep training aerobic today — I've drafted a downshift plan for tonight.</div>
+          <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 14px; position: relative;">
+            <span style="font-size: 10.5px; color: #6b7585;">informed by Walker · Huberman</span>
+            <span onClick="{{ openPlan }}" style="font-size: 12.5px; color: var(--hx-accent-ink); font-weight: 600; cursor: pointer;" style-hover="opacity: 0.8">Open plan →</span>
+          </div>
+        </div>
+
+        </div>
+        <div style="order: {{ sec.day.order }}; display: {{ sec.day.disp }};">
+        <!-- DAY ARC -->
+        <div style="display: flex; align-items: center; justify-content: space-between; margin: 24px 2px 10px;">
+          <span style="font-size: 9.5px; font-weight: 700; letter-spacing: 1.1px; text-transform: uppercase; color: #8b95a3;">Your day, as a curve</span>
+          <span style="font-size: 11px; color: #6b7585;">solid = so far · dotted = forecast</span>
+        </div>
+        <div data-hx-rise="2" style="background: linear-gradient(160deg, #0e141d, #0c1219); border: 1px solid rgba(255,255,255,0.10); border-radius: 24px; padding: 16px 16px 12px; box-shadow: 0 18px 42px -22px rgba(0,0,0,0.7), inset 0 1px 0 rgba(255,255,255,0.05); position: relative; overflow: hidden;">
+          <div style="position: relative;">
+          <svg viewBox="0 0 330 96" width="100%" height="96" style="display: block;">
+            <defs>
+              <linearGradient id="hxarc" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0" stop-color="#4DE1C4" stop-opacity="0.28"></stop>
+                <stop offset="1" stop-color="#4DE1C4" stop-opacity="0"></stop>
+              </linearGradient>
+            </defs>
+            <!-- forecast curve 06:00 → 24:00 -->
+            <path d="{{ arcFillD }}" fill="url(#hxarc)"></path>
+            <path d="{{ arcPastD }}" fill="none" stroke="#4DE1C4" stroke-width="2"></path>
+            <path d="{{ arcLineD }}" fill="none" stroke="#4DE1C4" stroke-width="2" stroke-dasharray="1.5 5" stroke-linecap="round" opacity="0.75"></path>
+            <!-- now marker -->
+            <line x1="118" y1="8" x2="118" y2="90" stroke="#f1f4f8" stroke-width="1" stroke-dasharray="2 3" opacity="0.5"></line>
+            <circle cx="118" cy="36" r="4" fill="#f1f4f8"></circle>
+            <!-- event dots -->
+            <circle cx="22" cy="42" r="3.5" fill="var(--hx-accent)"></circle>
+            <circle cx="160" cy="48" r="3.5" fill="#F5C451"></circle>
+            <circle cx="{{ sleepX }}" cy="{{ sleepDotY }}" r="3.5" fill="#82a0da"></circle>
+          </svg>
+          <sc-for list="{{ plans }}" as="p" hint-placeholder-count="1">
+            <div style="position: absolute; left: {{ p.leftPct }}; top: {{ p.topPct }}; width: 7px; height: 7px; margin: -3.5px 0 0 -3.5px; border-radius: 999px; background: {{ p.color }};"></div>
+          </sc-for>
+          </div>
+          <div style="display: flex; justify-content: space-between; font-size: 9px; color: #6b7585; margin-top: 2px;"><span>06</span><span>09</span><span>12</span><span>15</span><span>18</span><span>21</span><span>24</span></div>
+          <div style="display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px;">
+            <span style="display: flex; align-items: center; gap: 5px; font-size: 10.5px; color: #cdd8ea; background: #1a212c; border-radius: 999px; padding: 4px 9px;"><span style="width: 6px; height: 6px; border-radius: 999px; background: var(--hx-accent);"></span>06:19 gym ✓</span>
+            <span style="display: flex; align-items: center; gap: 5px; font-size: 10.5px; color: #cdd8ea; background: #1a212c; border-radius: 999px; padding: 4px 9px;"><span style="width: 6px; height: 6px; border-radius: 999px; background: #F5C451;"></span>14:00 caffeine cutoff</span>
+            <sc-for list="{{ plans }}" as="p" hint-placeholder-count="1">
+            <span style="display: flex; align-items: center; gap: 5px; font-size: 10.5px; color: #cdd8ea; background: #1a212c; border-radius: 999px; padding: 4px 9px;"><span style="width: 6px; height: 6px; border-radius: 999px; background: {{ p.color }};"></span>{{ p.time }} {{ p.chipLabel }}</span>
+            </sc-for>
+            <span style="display: flex; align-items: center; gap: 5px; font-size: 10.5px; color: #cdd8ea; background: #1a212c; border-radius: 999px; padding: 4px 9px;"><span style="width: 6px; height: 6px; border-radius: 999px; background: #82a0da;"></span>{{ sleepTime }} lights out</span>
+          </div>
+          <!-- evening planner -->
+          <div style="margin-top: 12px; padding-top: 12px; border-top: 1px solid rgba(255,255,255,0.05);">
+            <div style="display: flex; align-items: center; justify-content: space-between;">
+              <span style="font-size: 11px; font-weight: 700; color: #cdd8ea;">Planned for later</span>
+              <span style="font-size: 10px; color: #6b7585;">‹ › move · × drop</span>
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 6px; margin-top: 10px;">
+              <sc-for list="{{ plans }}" as="p" hint-placeholder-count="1">
+                <div style="display: flex; align-items: center; gap: 8px; background: #1a212c; border-radius: 12px; padding: 7px 8px 7px 11px;">
+                  <span style="width: 7px; height: 7px; border-radius: 999px; background: {{ p.color }}; flex: none;"></span>
+                  <span style="flex: 1; min-width: 0; font-size: 12px; font-weight: 600; color: #f1f4f8; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{ p.label }} <span style="font-size: 9.5px; color: #6b7585; font-weight: 500;">{{ p.note }}</span></span>
+                  <span onClick="{{ p.earlier }}" style="width: 24px; height: 24px; border-radius: 8px; background: #0e141d; display: flex; align-items: center; justify-content: center; color: #8b95a3; font-size: 13px; cursor: pointer; flex: none;" style-hover="color: #f1f4f8" style-active="transform: scale(0.88)">‹</span>
+                  <span style="width: 38px; text-align: center; font-size: 11.5px; font-weight: 700; color: #cdd8ea; font-variant-numeric: tabular-nums; flex: none;">{{ p.time }}</span>
+                  <span onClick="{{ p.later }}" style="width: 24px; height: 24px; border-radius: 8px; background: #0e141d; display: flex; align-items: center; justify-content: center; color: #8b95a3; font-size: 13px; cursor: pointer; flex: none;" style-hover="color: #f1f4f8" style-active="transform: scale(0.88)">›</span>
+                  <span onClick="{{ p.remove }}" style="width: 24px; height: 24px; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #6b7585; font-size: 14px; cursor: pointer; flex: none;" style-hover="color: #FF6B6B" style-active="transform: scale(0.88)">×</span>
+                </div>
+              </sc-for>
+              <sc-if value="{{ noPlans }}" hint-placeholder-val="{{ false }}">
+                <div style="font-size: 11px; color: #6b7585; text-align: center; padding: 6px 0;">Nothing planned — a full downshift evening.</div>
+              </sc-if>
+            </div>
+            <sc-if value="{{ pickerOpen }}" hint-placeholder-val="{{ false }}">
+              <div style="font-size: 10px; color: #6b7585; margin: 10px 2px 0;">Your usuals — from the last 90 days of activity</div>
+              <div style="display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px;">
+                <sc-for list="{{ presets }}" as="pr" hint-placeholder-count="3">
+                  <span onClick="{{ pr.add }}" style="display: flex; align-items: center; gap: 5px; font-size: 11.5px; font-weight: 600; color: #cdd8ea; border: 1px solid rgba(255,255,255,0.14); border-radius: 999px; padding: 7px 12px; cursor: pointer;" style-hover="border-color: rgba(255,255,255,0.35)" style-active="transform: scale(0.94)"><span style="width: 6px; height: 6px; border-radius: 999px; background: {{ pr.color }};"></span>+ {{ pr.label }} <span style="font-size: 9.5px; color: #6b7585; font-weight: 500;">{{ pr.freq }}</span></span>
+                </sc-for>
+                <span onClick="{{ goCoach }}" style="font-size: 11.5px; font-weight: 600; color: #8b95a3; border: 1px dashed rgba(255,255,255,0.16); border-radius: 999px; padding: 7px 12px; cursor: pointer;" style-hover="color: #cdd8ea; border-color: rgba(255,255,255,0.3)" style-active="transform: scale(0.94)">something else… tell coach</span>
+              </div>
+            </sc-if>
+            <div onClick="{{ togglePicker }}" style="text-align: center; font-size: 11.5px; font-weight: 600; color: #8b95a3; border: 1px dashed rgba(255,255,255,0.16); border-radius: 999px; padding: 8px 0; margin-top: 10px; cursor: pointer;" style-hover="color: #cdd8ea; border-color: rgba(255,255,255,0.3)" style-active="transform: scale(0.98)">{{ pickerToggleLabel }}</div>
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 10px; background: #1a212c; border-radius: 12px; padding: 9px 12px;">
+              <span style="font-size: 11px; color: #8b95a3;">Tomorrow's recovery forecast</span>
+              <span style="font-family: 'Bricolage Grotesque', sans-serif; font-size: 17px; font-weight: 800; color: {{ forecastColor }};">{{ forecast }}</span>
+            </div>
+          </div>
+          <div style="display: flex; align-items: center; gap: 8px; margin-top: 12px; padding-top: 11px; border-top: 1px solid rgba(255,255,255,0.05);">
+            <img src="assets/helix-icon.png" alt="" style="width: 18px; height: 18px; border-radius: 999px; flex: none;">
+            <span style="flex: 1; font-size: 11.5px; line-height: 1.45; color: #cdd8ea;">{{ arcCoachMsg }}</span>
+          </div>
+        </div>
+
+        </div>
+        <div style="order: {{ sec.training.order }}; display: {{ sec.training.disp }};">
+        <!-- TRAINING -->
+        <div style="display: flex; align-items: center; justify-content: space-between; margin: 24px 2px 10px;">
+          <span style="font-size: 9.5px; font-weight: 700; letter-spacing: 1.1px; text-transform: uppercase; color: #8b95a3;">Training</span>
+          <span style="font-size: 11px; color: #6b7585;">readiness-adjusted</span>
+        </div>
+        <div data-hx-rise="3" style="background: #0e141d; border: 1px solid rgba(255,255,255,0.07); border-radius: 20px; padding: 16px; box-shadow: 0 18px 42px -22px rgba(0,0,0,0.7), inset 0 1px 0 rgba(255,255,255,0.05);">
+          <div style="display: flex; align-items: baseline; justify-content: space-between;">
+            <div>
+              <div style="font-size: 11px; color: #8b95a3;">Today's load budget</div>
+              <div style="font-family: 'Bricolage Grotesque', sans-serif; font-size: 26px; font-weight: 800; color: #f1f4f8; letter-spacing: -0.5px; margin-top: 2px;">{{ loadUsed }}<span style="font-size: 14px; color: #6b7585; font-family: -apple-system; font-weight: 600;"> / {{ loadBudget }} used</span></div>
+            </div>
+            <div style="font-size: 11px; color: #F5C451; text-align: right;">{{ loadLeftLabel }}</div>
+          </div>
+          <!-- stacked budget bar -->
+          <div style="display: flex; height: 10px; border-radius: 6px; overflow: hidden; gap: 2px; margin-top: 12px; background: #1a212c;">
+            <sc-for list="{{ activities }}" as="act" hint-placeholder-count="3">
+              <div style="width: {{ act.pct }}; height: 100%; background: {{ act.color }}; opacity: {{ act.opacity }};"></div>
+            </sc-for>
+          </div>
+          <!-- activity stack -->
+          <div style="display: flex; flex-direction: column; gap: 8px; margin-top: 12px;">
+            <sc-for list="{{ activities }}" as="act" hint-placeholder-count="3">
+              <div style="display: flex; align-items: center; gap: 8px; font-size: 12px; color: #cdd8ea; padding: 4px 0; cursor: pointer; border-radius: 8px;" style-hover="background: rgba(255,255,255,0.03)" style-active="transform: scale(0.99)">
+                <span style="width: 8px; height: 8px; border-radius: 2px; background: {{ act.color }}; flex: none;"></span>
+                <span style="flex: 1;">{{ act.label }}</span>
+                <span style="font-size: 10px; color: #6b7585; text-transform: uppercase; letter-spacing: 0.5px;">{{ act.category }}</span>
+                <span style="width: 34px; text-align: right; font-variant-numeric: tabular-nums; color: #8b95a3;">{{ act.load }}</span>
+                <span style="color: #6b7585;">›</span>
+              </div>
+            </sc-for>
+          </div>
+          <!-- 7-day load vs optimal band -->
+          <div style="position: relative; height: 46px; margin-top: 14px;">
+            <div style="position: absolute; left: 0; right: 0; top: 12px; height: 16px; background: rgba(255,255,255,0.05); border-top: 1px dashed rgba(255,255,255,0.16); border-bottom: 1px dashed rgba(255,255,255,0.16);"></div>
+            <div style="position: absolute; inset: 0; display: flex; align-items: flex-end; gap: 6px;">
+              <div style="flex: 1; height: 40%; background: #1a212c; border-radius: 3px;"></div>
+              <div style="flex: 1; height: 52%; background: #1a212c; border-radius: 3px;"></div>
+              <div style="flex: 1; height: 34%; background: #1a212c; border-radius: 3px;"></div>
+              <div style="flex: 1; height: 66%; background: #1a212c; border-radius: 3px;"></div>
+              <div style="flex: 1; height: 58%; background: #1a212c; border-radius: 3px;"></div>
+              <div style="flex: 1; height: 78%; background: #1a212c; border-radius: 3px;"></div>
+              <div style="flex: 1; height: 92%; background: #F5C451; border-radius: 3px;"></div>
+            </div>
+          </div>
+          <div style="display: flex; justify-content: space-between; font-size: 9px; color: #6b7585; margin-top: 4px;">
+            <span>Fri</span><span>Sat</span><span>Sun</span><span>Mon</span><span>Tue</span><span>Wed</span><span style="color: #F5C451; font-weight: 700;">Today</span>
+          </div>
+          <div style="font-size: 10px; line-height: 1.5; color: #6b7585; margin-top: 8px;">Ceiling = your 28-day training tolerance (acute : chronic load). Repeatedly training far above it is where injuries and overtraining live.</div>
+          <div style="display: flex; align-items: center; gap: 8px; margin-top: 12px; padding-top: 12px; border-top: 1px solid rgba(255,255,255,0.05);">
+            <img src="assets/helix-icon.png" alt="" style="width: 18px; height: 18px; border-radius: 999px; flex: none;">
+            <span style="flex: 1; font-size: 11.5px; line-height: 1.45; color: #cdd8ea;">Pickleball will land you right at your ceiling. Fine today — but skip sprints for balls you can't reach, and finish by 19:30 so your heart rate settles before sleep.</span>
+          </div>
+          <div style="margin-top: 12px;">
+            <div style="text-align: center; font-size: 12px; font-weight: 600; color: #cdd8ea; border: 1px solid rgba(255,255,255,0.12); border-radius: 999px; padding: 9px 0; cursor: pointer;" style-active="transform: scale(0.97)">What fits today?</div>
+          </div>
+        </div>
+
+        </div>
+        <div style="order: {{ sec.stress.order }}; display: {{ sec.stress.disp }};">
+        <!-- STRESS & ENERGY -->
+        <div style="display: flex; align-items: center; justify-content: space-between; margin: 24px 2px 10px;">
+          <span style="font-size: 9.5px; font-weight: 700; letter-spacing: 1.1px; text-transform: uppercase; color: #8b95a3;">Stress &amp; Energy</span>
+          <span style="display: flex; align-items: center; gap: 5px; font-size: 11px; color: #6b7585;"><span style="width: 6px; height: 6px; border-radius: 999px; background: #FF6B6B; animation: hx-pulse 2.2s ease-in-out infinite;"></span>live</span>
+        </div>
+        <div data-hx-rise="3" style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+          <div style="background: #0e141d; border: 1px solid rgba(255,255,255,0.07); border-radius: 18px; padding: 15px; box-shadow: inset 0 1px 0 rgba(255,255,255,0.05);">
+            <div style="display: flex; align-items: center; justify-content: space-between;"><span style="font-size: 11px; color: #8b95a3;">Stress</span><span onClick="{{ askStress }}" style="width: 22px; height: 22px; border-radius: 999px; background: var(--hx-accent-soft); display: flex; align-items: center; justify-content: center; cursor: pointer;" style-active="transform: scale(0.88)"><img src="assets/helix-icon.png" alt="ask coach" style="width: 14px; height: 14px; border-radius: 999px;"></span></div>
+            <div style="font-family: 'Bricolage Grotesque', sans-serif; font-size: 30px; font-weight: 800; color: #f1f4f8; letter-spacing: -0.8px; margin-top: 2px;"><span data-hx-count="82">82</span></div>
+            <div style="position: relative; height: 6px; border-radius: 4px; margin-top: 8px; background: linear-gradient(90deg,#5FD17A,#F5C451,#FF6B6B);"><div data-hx-marker="82" style="position: absolute; top: -3px; left: 82%; width: 3px; height: 12px; border-radius: 2px; background: #f1f4f8; box-shadow: 0 0 6px rgba(0,0,0,0.6);"></div></div>
+            <div style="font-size: 10.5px; color: #FF6B6B; margin-top: 6px;">high · sympathetic</div>
+          </div>
+          <div style="background: #0e141d; border: 1px solid rgba(255,255,255,0.07); border-radius: 18px; padding: 15px; box-shadow: inset 0 1px 0 rgba(255,255,255,0.05);">
+            <div style="display: flex; align-items: center; justify-content: space-between;"><span style="font-size: 11px; color: #8b95a3;">Body Battery</span><span onClick="{{ askBattery }}" style="width: 22px; height: 22px; border-radius: 999px; background: var(--hx-accent-soft); display: flex; align-items: center; justify-content: center; cursor: pointer;" style-active="transform: scale(0.88)"><img src="assets/helix-icon.png" alt="ask coach" style="width: 14px; height: 14px; border-radius: 999px;"></span></div>
+            <div style="font-family: 'Bricolage Grotesque', sans-serif; font-size: 30px; font-weight: 800; color: #f1f4f8; letter-spacing: -0.8px; margin-top: 2px;"><span data-hx-count="34">34</span><span style="font-size:15px;color:#6b7585;">%</span></div>
+            <svg viewBox="0 0 140 26" width="100%" height="26" style="margin-top: 8px;">
+              <defs><linearGradient id="hxbb" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#8b95a3" stop-opacity="0.3"></stop><stop offset="1" stop-color="#8b95a3" stop-opacity="0"></stop></linearGradient></defs>
+              <polygon points="0,6 30,10 60,4 90,14 120,20 140,22 140,26 0,26" fill="url(#hxbb)"></polygon>
+              <polyline points="0,6 30,10 60,4 90,14 120,20 140,22" fill="none" stroke="#cdd8ea" stroke-width="2"></polyline>
+              <circle cx="140" cy="22" r="3" fill="#cdd8ea"></circle>
+            </svg>
+            <div style="font-size: 10.5px; color: #8b95a3; margin-top: 2px;">draining faster than usual</div>
+          </div>
+        </div>
+
+        </div>
+        <div style="order: {{ sec.experiments.order }}; display: {{ sec.experiments.disp }};">
+        <!-- EXPERIMENTS -->
+        <div style="display: flex; align-items: center; justify-content: space-between; margin: 24px 2px 10px;">
+          <span style="font-size: 9.5px; font-weight: 700; letter-spacing: 1.1px; text-transform: uppercase; color: #8b95a3;">Experiments</span>
+          <span style="font-size: 11px; color: #6b7585;">n = 1, done right</span>
+        </div>
+        <div data-hx-rise="4" style="background: #0e141d; border: 1px solid rgba(255,255,255,0.07); border-radius: 20px; padding: 16px; box-shadow: 0 18px 42px -22px rgba(0,0,0,0.7), inset 0 1px 0 rgba(255,255,255,0.05);">
+          <div style="display: flex; align-items: center; justify-content: space-between;">
+            <div style="font-size: 13.5px; font-weight: 700; color: #f1f4f8;">Magnesium 300 mg → deep sleep</div>
+            <span style="font-size: 10px; font-weight: 700; color: var(--hx-accent-ink); background: var(--hx-accent-soft); border-radius: 999px; padding: 3px 9px;">day 12 / 21</span>
+          </div>
+          <div style="font-size: 11px; color: #6b7585; margin-top: 3px;">Alternating on/off nights so we can tell it apart from everything else you do.</div>
+          <div style="display: flex; align-items: center; gap: 12px; margin-top: 12px;">
+            <div style="flex: none;">
+              <div style="font-family: 'Bricolage Grotesque', sans-serif; font-size: 24px; font-weight: 800; color: #5FD17A; letter-spacing: -0.5px;">+9%</div>
+              <div style="font-size: 10px; color: #8b95a3;">deep sleep, on-nights</div>
+            </div>
+            <div style="flex: 1;">
+              <div style="display: flex; justify-content: space-between; font-size: 10px; color: #8b95a3;"><span>evidence</span><span>getting solid</span></div>
+              <div style="height: 6px; background: #1a212c; border-radius: 4px; margin-top: 4px;"><div style="width: 58%; height: 100%; background: linear-gradient(90deg,#12A5C8,#4DE1C4); border-radius: 4px;"></div></div>
+              <div style="font-size: 10px; color: #6b7585; margin-top: 4px;">9 more nights to call it — don't peek early.</div>
+            </div>
+          </div>
+          <div style="display: flex; align-items: center; gap: 8px; margin-top: 12px; padding-top: 12px; border-top: 1px solid rgba(255,255,255,0.05);">
+            <img src="assets/helix-icon.png" alt="" style="width: 18px; height: 18px; border-radius: 999px; flex: none;">
+            <span style="flex: 1; font-size: 11.5px; line-height: 1.45; color: #cdd8ea;">Tonight is an <b style="color: #f1f4f8;">off night</b> — skip the magnesium so the comparison stays clean.</span>
+          </div>
+          <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 12px;">
+            <span style="font-size: 11px; color: #6b7585;">Queued: caffeine cutoff 13:00 → HRV</span>
+            <span style="font-size: 12px; color: var(--hx-accent-ink); font-weight: 600; cursor: pointer;" style-hover="opacity: 0.8">Design a new one →</span>
+          </div>
+        </div>
+
+        </div>
+        <div style="order: {{ sec.nutrition.order }}; display: {{ sec.nutrition.disp }};">
+        <!-- NUTRITION -->
+        <div style="display: flex; align-items: center; justify-content: space-between; margin: 24px 2px 10px;">
+          <span style="font-size: 9.5px; font-weight: 700; letter-spacing: 1.1px; text-transform: uppercase; color: #8b95a3;">Nutrition</span>
+          <span style="font-size: 11px; color: #cdd8ea; font-weight: 600; cursor: pointer;" style-hover="opacity: 0.8">Log +</span>
+        </div>
+        <div data-hx-rise="4" style="background: #0e141d; border: 1px solid rgba(255,255,255,0.07); border-radius: 20px; padding: 16px; box-shadow: 0 18px 42px -22px rgba(0,0,0,0.7), inset 0 1px 0 rgba(255,255,255,0.05);">
+          <div style="display: flex; align-items: baseline; justify-content: space-between;">
+            <div style="font-family: 'Bricolage Grotesque', sans-serif; font-size: 30px; font-weight: 800; color: #f1f4f8; letter-spacing: -0.8px;">{{ kcalToday }}<span style="font-size: 14px; color: #6b7585; font-family: -apple-system;"> / 2,600 kcal</span></div>
+            <div style="font-size: 10.5px; color: {{ nutriStatusColor }};">{{ nutriStatus }}</div>
+          </div>
+          <div style="display: flex; gap: 8px; margin-top: 14px;">
+            <div style="flex: 1;"><div style="font-size: 10px; color: #8b95a3;">Protein</div><div style="height: 6px; background: #1a212c; border-radius: 4px; margin-top: 4px;"><div style="width: {{ pW }}; height: 100%; background: #cdd8ea; border-radius: 4px; transition: width 0.6s cubic-bezier(.4,0,.2,1);"></div></div><div style="font-size: 10px; color: #6b7585; margin-top: 3px;">{{ pLabel }}</div></div>
+            <div style="flex: 1;"><div style="font-size: 10px; color: #8b95a3;">Carbs</div><div style="height: 6px; background: #1a212c; border-radius: 4px; margin-top: 4px;"><div style="width: {{ cW }}; height: 100%; background: #5BA9F0; border-radius: 4px; transition: width 0.6s cubic-bezier(.4,0,.2,1);"></div></div><div style="font-size: 10px; color: #6b7585; margin-top: 3px;">{{ cLabel }}</div></div>
+            <div style="flex: 1;"><div style="font-size: 10px; color: #8b95a3;">Fat</div><div style="height: 6px; background: #1a212c; border-radius: 4px; margin-top: 4px;"><div style="width: {{ fW }}; height: 100%; background: #F5C451; border-radius: 4px; transition: width 0.6s cubic-bezier(.4,0,.2,1);"></div></div><div style="font-size: 10px; color: #6b7585; margin-top: 3px;">{{ fLabel }}</div></div>
+          </div>
+          <!-- energy balance -->
+          <div style="margin-top: 14px; padding-top: 12px; border-top: 1px solid rgba(255,255,255,0.05);">
+            <div style="display: flex; justify-content: space-between; font-size: 10px; color: #8b95a3;"><span>Energy in vs out</span><span>target: −300 to −500 kcal</span></div>
+            <div style="display: flex; flex-direction: column; gap: 4px; margin-top: 7px;">
+              <div style="display: flex; align-items: center; gap: 8px;">
+                <span style="width: 24px; font-size: 9.5px; color: #6b7585; flex: none;">in</span>
+                <div style="flex: 1; height: 6px; background: #1a212c; border-radius: 4px;"><div style="width: {{ inW }}; height: 100%; background: #5FD17A; border-radius: 4px; transition: width 0.6s cubic-bezier(.4,0,.2,1);"></div></div>
+                <span style="width: 58px; text-align: right; font-size: 10px; color: #cdd8ea; font-variant-numeric: tabular-nums; flex: none;">{{ kcalToday }} kcal</span>
+              </div>
+              <div style="display: flex; align-items: center; gap: 8px;">
+                <span style="width: 24px; font-size: 9.5px; color: #6b7585; flex: none;">out</span>
+                <div style="flex: 1; height: 6px; background: #1a212c; border-radius: 4px;"><div style="width: {{ outW }}; height: 100%; background: #F5C451; border-radius: 4px;"></div></div>
+                <span style="width: 58px; text-align: right; font-size: 10px; color: #cdd8ea; font-variant-numeric: tabular-nums; flex: none;">1,890 kcal</span>
+              </div>
+            </div>
+            <div style="display: flex; align-items: flex-start; gap: 8px; margin-top: 10px;">
+              <img src="assets/helix-icon.png" alt="" style="width: 18px; height: 18px; border-radius: 999px; flex: none;">
+              <span style="flex: 1; font-size: 11.5px; line-height: 1.5; color: #cdd8ea;">{{ netNote }}</span>
+            </div>
+          </div>
+        </div>
+
+        </div>
+        <div style="order: {{ sec.movement.order }}; display: {{ sec.movement.disp }};">
+        <!-- MOVEMENT -->
+        <div style="display: flex; align-items: center; justify-content: space-between; margin: 24px 2px 10px;">
+          <span style="font-size: 9.5px; font-weight: 700; letter-spacing: 1.1px; text-transform: uppercase; color: #8b95a3;">Movement &amp; sitting</span>
+          <span style="font-size: 11px; color: #6b7585;">from your watch</span>
+        </div>
+        <div style="background: #0e141d; border: 1px solid rgba(255,255,255,0.07); border-radius: 20px; padding: 16px; box-shadow: 0 18px 42px -22px rgba(0,0,0,0.7), inset 0 1px 0 rgba(255,255,255,0.05);">
+          <div style="display: flex; gap: 18px;">
+            <div><div style="font-size: 10px; color: #8b95a3;">Steps</div><div style="font-family: 'Bricolage Grotesque', sans-serif; font-size: 21px; font-weight: 800; color: #f1f4f8;">7,412</div><div style="font-size: 9.5px; color: #5FD17A;">on pace ✓</div></div>
+            <div><div style="font-size: 10px; color: #8b95a3;">Stand hours</div><div style="font-family: 'Bricolage Grotesque', sans-serif; font-size: 21px; font-weight: 800; color: #f1f4f8;">7<span style="font-size: 12px; color: #6b7585; font-family: -apple-system;"> /12</span></div><div style="font-size: 9.5px; color: #F5C451;">2 behind pace</div></div>
+            <div><div style="font-size: 10px; color: #8b95a3;">Sitting</div><div style="font-family: 'Bricolage Grotesque', sans-serif; font-size: 21px; font-weight: 800; color: #f1f4f8;">6h20</div><div style="font-size: 9.5px; color: #FF6B6B;">longest block 2h10</div></div>
+          </div>
+          <!-- hour strip 08–20 -->
+          <div style="display: flex; gap: 3px; margin-top: 14px;">
+            <div style="flex: 1; height: 14px; border-radius: 3px; background: var(--hx-accent);"></div>
+            <div style="flex: 1; height: 14px; border-radius: 3px; background: #5FD17A;"></div>
+            <div style="flex: 1; height: 14px; border-radius: 3px; background: #1a212c;"></div>
+            <div style="flex: 1; height: 14px; border-radius: 3px; background: #5FD17A;"></div>
+            <div style="flex: 1; height: 14px; border-radius: 3px; background: #1a212c;"></div>
+            <div style="flex: 1; height: 14px; border-radius: 3px; background: #1a212c;"></div>
+            <div style="flex: 1; height: 14px; border-radius: 3px; background: #FF6B6B;"></div>
+            <div style="flex: 1; height: 14px; border-radius: 3px; background: #FF6B6B;"></div>
+            <div style="flex: 1; height: 14px; border-radius: 3px; background: #5FD17A;"></div>
+            <div style="flex: 1; height: 14px; border-radius: 3px; background: rgba(255,255,255,0.06);"></div>
+            <div style="flex: 1; height: 14px; border-radius: 3px; background: rgba(255,255,255,0.06);"></div>
+            <div style="flex: 1; height: 14px; border-radius: 3px; background: rgba(255,255,255,0.06);"></div>
+          </div>
+          <div style="display: flex; justify-content: space-between; font-size: 9px; color: #6b7585; margin-top: 4px;"><span>08</span><span>12</span><span>16</span><span>20</span></div>
+          <div style="display: flex; flex-wrap: wrap; gap: 10px; margin-top: 8px; font-size: 10px; color: #8b95a3;">
+            <span style="display: flex; align-items: center; gap: 4px;"><span style="width: 6px; height: 6px; border-radius: 2px; background: var(--hx-accent);"></span>training</span>
+            <span style="display: flex; align-items: center; gap: 4px;"><span style="width: 6px; height: 6px; border-radius: 2px; background: #5FD17A;"></span>moving</span>
+            <span style="display: flex; align-items: center; gap: 4px;"><span style="width: 6px; height: 6px; border-radius: 2px; background: #1a212c;"></span>sitting</span>
+            <span style="display: flex; align-items: center; gap: 4px;"><span style="width: 6px; height: 6px; border-radius: 2px; background: #FF6B6B;"></span>long sit</span>
+          </div>
+          <div style="display: flex; align-items: flex-start; gap: 8px; margin-top: 12px; padding-top: 11px; border-top: 1px solid rgba(255,255,255,0.05);">
+            <img src="assets/helix-icon.png" alt="" style="width: 18px; height: 18px; border-radius: 999px; flex: none;">
+            <span style="flex: 1; font-size: 11.5px; line-height: 1.45; color: #cdd8ea;">Your 14:00–16:00 sit block lands right before your stress peak — on days you break it with a 10-min walk, evening stress runs ~11 points lower. Want a 15:00 nudge?</span>
+          </div>
+        </div>
+
+        </div>
+        <div style="order: {{ sec.monitor.order }}; display: {{ sec.monitor.disp }};">
+        <!-- HEALTH MONITOR -->
+        <div style="display: flex; align-items: center; justify-content: space-between; margin: 24px 2px 10px;">
+          <span style="font-size: 9.5px; font-weight: 700; letter-spacing: 1.1px; text-transform: uppercase; color: #8b95a3;">Health Monitor</span>
+          <span style="display: flex; align-items: center; gap: 5px; font-size: 10px; font-weight: 700; color: #5FD17A; background: rgba(95,209,122,0.10); border: 1px solid rgba(95,209,122,0.25); border-radius: 999px; padding: 3px 9px;"><span style="width: 5px; height: 5px; border-radius: 999px; background: #5FD17A;"></span>morning check: 5 of 6 in band</span>
+        </div>
+        <div data-hx-rise="5" style="background: #0e141d; border: 1px solid rgba(255,255,255,0.07); border-radius: 20px; overflow: hidden; box-shadow: 0 18px 42px -22px rgba(0,0,0,0.7), inset 0 1px 0 rgba(255,255,255,0.05);">
+          <div style="display: flex; align-items: center; gap: 12px; padding: 13px 15px; border-bottom: 1px solid rgba(255,255,255,0.05);" style-hover="background: rgba(255,255,255,0.02)">
+            <span style="width: 88px; flex: none; font-size: 13px; font-weight: 600; color: #f1f4f8;">HRV</span>
+            <div style="flex: 1; position: relative; height: 7px; background: #1a212c; border-radius: 5px;"><div style="position: absolute; top: 0; bottom: 0; left: 22%; right: 28%; background: rgba(255,255,255,0.06); border-left: 1.5px dashed #6b7585; border-right: 1.5px dashed #6b7585;"></div><div style="position: absolute; top: -2px; bottom: -2px; left: 48%; width: 3px; border-radius: 2px; background: #f1f4f8;"></div></div>
+            <span style="width: 62px; flex: none; text-align: right; font-size: 12.5px; font-weight: 600; color: #cdd8ea; font-variant-numeric: tabular-nums;">38.3 ms</span>
+          </div>
+          <div style="display: flex; align-items: center; gap: 12px; padding: 13px 15px; border-bottom: 1px solid rgba(255,255,255,0.05);" style-hover="background: rgba(255,255,255,0.02)">
+            <span style="width: 88px; flex: none; font-size: 13px; font-weight: 600; color: #f1f4f8;">Resting HR</span>
+            <div style="flex: 1; position: relative; height: 7px; background: #1a212c; border-radius: 5px;"><div style="position: absolute; top: 0; bottom: 0; left: 25%; right: 30%; background: rgba(255,255,255,0.06); border-left: 1.5px dashed #6b7585; border-right: 1.5px dashed #6b7585;"></div><div style="position: absolute; top: -2px; bottom: -2px; left: 40%; width: 3px; border-radius: 2px; background: #f1f4f8;"></div></div>
+            <span style="width: 62px; flex: none; text-align: right; font-size: 12.5px; font-weight: 600; color: #cdd8ea; font-variant-numeric: tabular-nums;">54 bpm</span>
+          </div>
+          <div style="display: flex; align-items: center; gap: 12px; padding: 13px 15px;" style-hover="background: rgba(255,255,255,0.02)">
+            <span style="width: 88px; flex: none; font-size: 13px; font-weight: 600; color: #f1f4f8;">SpO₂</span>
+            <div style="flex: 1; position: relative; height: 7px; background: #1a212c; border-radius: 5px;"><div style="position: absolute; top: 0; bottom: 0; left: 55%; right: 8%; background: rgba(255,255,255,0.06); border-left: 1.5px dashed #6b7585; border-right: 1.5px dashed #6b7585;"></div><div style="position: absolute; top: -2px; bottom: -2px; left: 70%; width: 3px; border-radius: 2px; background: #f1f4f8;"></div></div>
+            <span style="width: 62px; flex: none; text-align: right; font-size: 12.5px; font-weight: 600; color: #cdd8ea; font-variant-numeric: tabular-nums;">97 %</span>
+          </div>
+          <div style="display: flex; align-items: center; gap: 12px; padding: 13px 15px; border-top: 1px solid rgba(255,255,255,0.05);" style-hover="background: rgba(255,255,255,0.02)">
+            <span style="width: 88px; flex: none; font-size: 13px; font-weight: 600; color: #f1f4f8;">Resp rate</span>
+            <div style="flex: 1; position: relative; height: 7px; background: #1a212c; border-radius: 5px;"><div style="position: absolute; top: 0; bottom: 0; left: 30%; right: 32%; background: rgba(255,255,255,0.06); border-left: 1.5px dashed #6b7585; border-right: 1.5px dashed #6b7585;"></div><div style="position: absolute; top: -2px; bottom: -2px; left: 50%; width: 3px; border-radius: 2px; background: #f1f4f8;"></div></div>
+            <span style="width: 62px; flex: none; text-align: right; font-size: 12.5px; font-weight: 600; color: #cdd8ea; font-variant-numeric: tabular-nums;">13.8 /min</span>
+          </div>
+          <div style="display: flex; align-items: center; gap: 12px; padding: 13px 15px; border-top: 1px solid rgba(255,255,255,0.05); background: rgba(245,196,81,0.04);" style-hover="background: rgba(245,196,81,0.07)">
+            <span style="width: 88px; flex: none; font-size: 13px; font-weight: 600; color: #F5C451;">Skin temp</span>
+            <div style="flex: 1; position: relative; height: 7px; background: #1a212c; border-radius: 5px;"><div style="position: absolute; top: 0; bottom: 0; left: 28%; right: 34%; background: rgba(255,255,255,0.06); border-left: 1.5px dashed #6b7585; border-right: 1.5px dashed #6b7585;"></div><div style="position: absolute; top: -2px; bottom: -2px; left: 78%; width: 3px; border-radius: 2px; background: #F5C451;"></div></div>
+            <span style="width: 62px; flex: none; text-align: right; font-size: 12.5px; font-weight: 600; color: #F5C451; font-variant-numeric: tabular-nums;">+0.3 °C</span>
+          </div>
+          <div style="display: flex; align-items: center; gap: 12px; padding: 13px 15px; border-top: 1px solid rgba(255,255,255,0.05);" style-hover="background: rgba(255,255,255,0.02)">
+            <span style="width: 88px; flex: none; font-size: 13px; font-weight: 600; color: #f1f4f8;">Blood press.</span>
+            <div style="flex: 1; position: relative; height: 7px; background: #1a212c; border-radius: 5px;"><div style="position: absolute; top: 0; bottom: 0; left: 20%; right: 35%; background: rgba(255,255,255,0.06); border-left: 1.5px dashed #6b7585; border-right: 1.5px dashed #6b7585;"></div><div style="position: absolute; top: -2px; bottom: -2px; left: 42%; width: 3px; border-radius: 2px; background: #f1f4f8;"></div></div>
+            <span style="width: 62px; flex: none; text-align: right; font-size: 12.5px; font-weight: 600; color: #cdd8ea; font-variant-numeric: tabular-nums;">118/76</span>
+          </div>
+          <div style="display: flex; align-items: flex-start; gap: 9px; padding: 12px 15px; border-top: 1px solid rgba(255,255,255,0.05); background: rgba(245,196,81,0.04);">
+            <img src="assets/helix-icon.png" alt="" style="width: 18px; height: 18px; border-radius: 999px; flex: none; margin-top: 1px;">
+            <span style="flex: 1; font-size: 11.5px; line-height: 1.45; color: #cdd8ea;">Skin temp is +0.3 °C above your band. Alone it's noise; with tonight's HRV it becomes signal — I'll check both at 6 am and flag anything before you feel it.</span>
+          </div>
+        </div>
+        <div style="font-size: 10.5px; color: #6b7585; margin: 8px 4px 0;">Shaded = your normal range · marker = today. Tap any metric for what it means.</div>
+
+        </div>
+        <div style="order: {{ sec.patterns.order }}; display: {{ sec.patterns.disp }};">
+        <!-- PATTERNS -->
+        <div style="display: flex; align-items: center; justify-content: space-between; margin: 24px 2px 10px;">
+          <span style="font-size: 9.5px; font-weight: 700; letter-spacing: 1.1px; text-transform: uppercase; color: #8b95a3;">Patterns in your data</span>
+          <span style="font-size: 11px; color: #6b7585;">found overnight, no need to ask</span>
+        </div>
+        <!-- AI-suggested hypotheses -->
+        <div style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 10px;">
+          <sc-for list="{{ patSuggestions }}" as="ps" hint-placeholder-count="2">
+            <div style="background: linear-gradient(160deg, #0e141d, #0c1219); border: 1px dashed rgba(77,225,196,0.35); border-radius: 18px; padding: 13px 14px;">
+              <div style="display: flex; align-items: center; gap: 8px;">
+                <img src="assets/helix-icon.png" alt="" style="width: 18px; height: 18px; border-radius: 999px; flex: none;">
+                <span style="flex: 1; font-size: 12.5px; font-weight: 700; color: #f1f4f8;">{{ ps.pair }}</span>
+                <span style="font-size: 9.5px; font-weight: 700; color: {{ ps.confColor }}; border: 1px solid rgba(255,255,255,0.14); border-radius: 999px; padding: 3px 8px; flex: none;">{{ ps.conf }}</span>
+              </div>
+              <div style="font-size: 11.5px; line-height: 1.5; color: #cdd8ea; margin-top: 8px;">{{ ps.hyp }}</div>
+              <sc-if value="{{ ps.isOpen }}" hint-placeholder-val="{{ false }}">
+                <div style="background: #1a212c; border-radius: 12px; padding: 10px 12px; margin-top: 10px; font-size: 11.5px; line-height: 1.55; color: #cdd8ea;">{{ ps.detail }}</div>
+              </sc-if>
+              <div style="display: flex; gap: 8px; margin-top: 10px;">
+                <span onClick="{{ ps.toggle }}" style="flex: 1; text-align: center; font-size: 11.5px; font-weight: 700; color: var(--hx-accent-ink); border: 1px solid rgba(77,225,196,0.4); border-radius: 999px; padding: 7px 0; cursor: pointer;" style-active="transform: scale(0.96)">Dig in</span>
+                <span onClick="{{ goCoach }}" style="flex: 1; text-align: center; font-size: 11.5px; font-weight: 700; color: #cdd8ea; border: 1px solid rgba(255,255,255,0.14); border-radius: 999px; padding: 7px 0; cursor: pointer;" style-active="transform: scale(0.96)">Ask coach</span>
+                <span onClick="{{ ps.dismiss }}" style="width: 68px; text-align: center; font-size: 11.5px; font-weight: 600; color: #6b7585; border: 1px solid rgba(255,255,255,0.10); border-radius: 999px; padding: 7px 0; cursor: pointer;" style-hover="color: #FF6B6B" style-active="transform: scale(0.96)">Not useful</span>
+              </div>
+            </div>
+          </sc-for>
+          <sc-if value="{{ noPatLeft }}" hint-placeholder-val="{{ false }}">
+            <div style="font-size: 11px; color: #6b7585; text-align: center; border: 1px dashed rgba(255,255,255,0.14); border-radius: 14px; padding: 12px;">All suggestions reviewed — new hypotheses surface as your data grows.</div>
+          </sc-if>
+        </div>
+        <sc-if value="{{ showPatA }}" hint-placeholder-val="{{ true }}">
+        <div data-hx-rise="6" style="background: #0e141d; border: 1px solid rgba(255,255,255,0.07); border-radius: 20px; padding: 15px 16px; box-shadow: 0 18px 42px -22px rgba(0,0,0,0.7), inset 0 1px 0 rgba(255,255,255,0.05);">
+          <div style="display: flex; align-items: center; justify-content: space-between;">
+            <span style="font-size: 13px; font-weight: 700; color: #f1f4f8;">Overnight SpO₂ <span style="color: #6b7585; font-weight: 500;">vs</span> weight</span>
+            <span style="font-size: 10.5px; font-weight: 700; color: #5BA9F0; background: rgba(91,169,240,0.10); border: 1px solid rgba(91,169,240,0.25); border-radius: 999px; padding: 3px 9px;">moderate link · 90 nights</span>
+            <span onClick="{{ dismissPatA }}" style="font-size: 10.5px; font-weight: 700; color: #6b7585; border: 1px solid rgba(255,255,255,0.12); border-radius: 999px; padding: 3px 9px; cursor: pointer; flex: none; margin-left: 6px;" style-hover="color: #f1f4f8">Got it ×</span>
+          </div>
+          <svg viewBox="0 0 330 92" width="100%" height="92" style="display: block; margin-top: 10px;">
+            <line x1="30" y1="14" x2="316" y2="72" stroke="#5BA9F0" stroke-width="1.2" stroke-dasharray="3 4" opacity="0.6"></line>
+            <circle cx="38" cy="16" r="3" fill="#5BA9F0" opacity="0.85"></circle>
+            <circle cx="55" cy="26" r="3" fill="#5BA9F0" opacity="0.85"></circle>
+            <circle cx="70" cy="14" r="3" fill="#5BA9F0" opacity="0.85"></circle>
+            <circle cx="88" cy="30" r="3" fill="#5BA9F0" opacity="0.85"></circle>
+            <circle cx="104" cy="22" r="3" fill="#5BA9F0" opacity="0.85"></circle>
+            <circle cx="122" cy="38" r="3" fill="#5BA9F0" opacity="0.85"></circle>
+            <circle cx="140" cy="28" r="3" fill="#5BA9F0" opacity="0.85"></circle>
+            <circle cx="158" cy="46" r="3" fill="#5BA9F0" opacity="0.85"></circle>
+            <circle cx="178" cy="36" r="3" fill="#5BA9F0" opacity="0.85"></circle>
+            <circle cx="198" cy="54" r="3" fill="#5BA9F0" opacity="0.85"></circle>
+            <circle cx="220" cy="44" r="3" fill="#5BA9F0" opacity="0.85"></circle>
+            <circle cx="242" cy="62" r="3" fill="#5BA9F0" opacity="0.85"></circle>
+            <circle cx="264" cy="52" r="3" fill="#5BA9F0" opacity="0.85"></circle>
+            <circle cx="288" cy="70" r="3" fill="#FF6B6B"></circle>
+            <text x="30" y="88" font-size="8.5" fill="#6b7585" font-family="-apple-system, sans-serif">85 kg</text>
+            <text x="296" y="88" font-size="8.5" fill="#6b7585" font-family="-apple-system, sans-serif">88 kg</text>
+            <text x="4" y="16" font-size="8.5" fill="#6b7585" font-family="-apple-system, sans-serif">96%</text>
+            <text x="4" y="74" font-size="8.5" fill="#6b7585" font-family="-apple-system, sans-serif">91%</text>
+          </svg>
+          <div style="display: flex; align-items: flex-start; gap: 8px; margin-top: 10px; padding-top: 11px; border-top: 1px solid rgba(255,255,255,0.05);">
+            <img src="assets/helix-icon.png" alt="" style="width: 18px; height: 18px; border-radius: 999px; flex: none;">
+            <span style="flex: 1; font-size: 11.5px; line-height: 1.5; color: #cdd8ea;">Above 86 kg your oxygen dips below 92% get more frequent — the red dot is last night. Losing the next kilo is a breathing intervention, not a vanity one. <span onClick="{{ askSpo2w }}" style="color: var(--hx-accent-ink); font-weight: 600; cursor: pointer;">Ask coach →</span></span>
+          </div>
+        </div>
+        </sc-if>
+        <sc-if value="{{ showPatB }}" hint-placeholder-val="{{ true }}">
+        <div style="background: #0e141d; border: 1px solid rgba(255,255,255,0.07); border-radius: 20px; padding: 15px 16px; margin-top: 10px; box-shadow: 0 18px 42px -22px rgba(0,0,0,0.7), inset 0 1px 0 rgba(255,255,255,0.05);">
+          <div style="display: flex; align-items: center; justify-content: space-between;">
+            <span style="font-size: 13px; font-weight: 700; color: #f1f4f8;">Resting HR <span style="color: #6b7585; font-weight: 500;">vs</span> next-day recovery</span>
+            <span style="font-size: 10.5px; font-weight: 700; color: #FF6B6B; background: rgba(255,107,107,0.10); border: 1px solid rgba(255,107,107,0.25); border-radius: 999px; padding: 3px 9px;">strong link · 14 days</span>
+            <span onClick="{{ dismissPatB }}" style="font-size: 10.5px; font-weight: 700; color: #6b7585; border: 1px solid rgba(255,255,255,0.12); border-radius: 999px; padding: 3px 9px; cursor: pointer; flex: none; margin-left: 6px;" style-hover="color: #f1f4f8">Got it ×</span>
+          </div>
+          <svg viewBox="0 0 330 92" width="100%" height="92" style="display: block; margin-top: 10px;">
+            <line x1="30" y1="10" x2="316" y2="76" stroke="#FF6B6B" stroke-width="1.2" stroke-dasharray="3 4" opacity="0.6"></line>
+            <circle cx="42" cy="14" r="3" fill="#FF6B6B" opacity="0.85"></circle>
+            <circle cx="68" cy="18" r="3" fill="#FF6B6B" opacity="0.85"></circle>
+            <circle cx="92" cy="28" r="3" fill="#FF6B6B" opacity="0.85"></circle>
+            <circle cx="118" cy="24" r="3" fill="#FF6B6B" opacity="0.85"></circle>
+            <circle cx="142" cy="38" r="3" fill="#FF6B6B" opacity="0.85"></circle>
+            <circle cx="166" cy="44" r="3" fill="#FF6B6B" opacity="0.85"></circle>
+            <circle cx="190" cy="40" r="3" fill="#FF6B6B" opacity="0.85"></circle>
+            <circle cx="214" cy="54" r="3" fill="#FF6B6B" opacity="0.85"></circle>
+            <circle cx="240" cy="60" r="3" fill="#FF6B6B" opacity="0.85"></circle>
+            <circle cx="266" cy="58" r="3" fill="#FF6B6B" opacity="0.85"></circle>
+            <circle cx="292" cy="72" r="3" fill="#F5C451"></circle>
+            <text x="30" y="88" font-size="8.5" fill="#6b7585" font-family="-apple-system, sans-serif">51 bpm</text>
+            <text x="290" y="88" font-size="8.5" fill="#6b7585" font-family="-apple-system, sans-serif">57 bpm</text>
+            <text x="4" y="14" font-size="8.5" fill="#6b7585" font-family="-apple-system, sans-serif">85</text>
+            <text x="4" y="76" font-size="8.5" fill="#6b7585" font-family="-apple-system, sans-serif">50</text>
+          </svg>
+          <div style="display: flex; align-items: flex-start; gap: 8px; margin-top: 10px; padding-top: 11px; border-top: 1px solid rgba(255,255,255,0.05);">
+            <img src="assets/helix-icon.png" alt="" style="width: 18px; height: 18px; border-radius: 999px; flex: none;">
+            <span style="flex: 1; font-size: 11.5px; line-height: 1.5; color: #cdd8ea;">Your tightest pattern: +1 bpm at rest ≈ −7 recovery points next morning. Yellow dot is today (54 bpm → 62). RHR moves before you feel it — it's your early-warning gauge. <span onClick="{{ askRhrRec }}" style="color: var(--hx-accent-ink); font-weight: 600; cursor: pointer;">Ask coach →</span></span>
+          </div>
+        </div>
+        </sc-if>
+        </div>
+
+        <div onClick="{{ openSections }}" style="order: 99; text-align: center; font-size: 11.5px; font-weight: 700; color: #8b95a3; border: 1px dashed rgba(255,255,255,0.16); border-radius: 999px; padding: 10px 0; margin-top: 24px; cursor: pointer;" style-hover="color: #cdd8ea; border-color: rgba(255,255,255,0.3)" style-active="transform: scale(0.98)">✎ Edit sections</div>
+
+      </div>
+    </div>
+    </sc-if>
+
+    <!-- ============ LOG ============ -->
+    <sc-if value="{{ showLog }}" hint-placeholder-val="{{ false }}">
+    <div class="hx" style="flex: 1; overflow-y: auto; position: relative; background: #070b11;">
+      <div style="padding: 8px 20px 130px;">
+
+        <div style="display: flex; align-items: center; justify-content: space-between; margin: 6px 0 4px;">
+          <div style="font-family: 'Bricolage Grotesque', sans-serif; font-size: 25px; font-weight: 800; color: #f1f4f8; letter-spacing: -0.3px;">Daily log</div>
+          <span style="font-size: 11px; font-weight: 700; color: var(--hx-accent-ink); font-variant-numeric: tabular-nums;">{{ logCount }} of 7</span>
+        </div>
+        <div style="font-size: 12px; color: #8b95a3; line-height: 1.5;">What the sensors can't see. Helix asks, you tap.</div>
+
+        <div style="display: flex; gap: 5px; margin: 14px 0 20px;">
+          <div style="flex: 1; height: 5px; border-radius: 4px; background: var(--hx-accent);"></div>
+          <div style="flex: 1; height: 5px; border-radius: 4px; background: var(--hx-accent);"></div>
+          <div style="flex: 1; height: 5px; border-radius: 4px; background: var(--hx-accent);"></div>
+          <div style="flex: 1; height: 5px; border-radius: 4px; background: var(--hx-accent);"></div>
+          <div style="flex: 1; height: 5px; border-radius: 4px; background: {{ bar5 }}; transition: background 0.4s;"></div>
+          <div style="flex: 1; height: 5px; border-radius: 4px; background: #1a212c;"></div>
+          <div style="flex: 1; height: 5px; border-radius: 4px; background: #1a212c;"></div>
+        </div>
+
+        <!-- quick log -->
+        <div style="font-size: 9.5px; font-weight: 700; letter-spacing: 1.1px; text-transform: uppercase; color: #8b95a3; margin: 0 2px 10px;">Log something</div>
+        <div style="display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 8px; margin-bottom: 8px;">
+          <div style="text-align: center; font-size: 11.5px; font-weight: 600; color: #cdd8ea; padding: 11px 0; background: #0e141d; border: 1px solid rgba(255,255,255,0.08); border-radius: 14px; cursor: pointer;" style-hover="border-color: rgba(255,255,255,0.25)" style-active="transform: scale(0.94)" onClick="{{ openMeal }}">Meal</div>
+          <div style="text-align: center; font-size: 11.5px; font-weight: 600; color: #cdd8ea; padding: 11px 0; background: #0e141d; border: 1px solid rgba(255,255,255,0.08); border-radius: 14px; cursor: pointer;" style-hover="border-color: rgba(255,255,255,0.25)" style-active="transform: scale(0.94)">Drink</div>
+          <div style="text-align: center; font-size: 11.5px; font-weight: 600; color: #cdd8ea; padding: 11px 0; background: #0e141d; border: 1px solid rgba(255,255,255,0.08); border-radius: 14px; cursor: pointer;" style-hover="border-color: rgba(255,255,255,0.25)" style-active="transform: scale(0.94)">Caffeine</div>
+          <div style="text-align: center; font-size: 11.5px; font-weight: 600; color: #cdd8ea; padding: 11px 0; background: #0e141d; border: 1px solid rgba(255,255,255,0.08); border-radius: 14px; cursor: pointer;" style-hover="border-color: rgba(255,255,255,0.25)" style-active="transform: scale(0.94)">Suppl.</div>
+          <div style="text-align: center; font-size: 11.5px; font-weight: 600; color: #cdd8ea; padding: 11px 0; background: #0e141d; border: 1px solid rgba(255,255,255,0.08); border-radius: 14px; cursor: pointer;" style-hover="border-color: rgba(255,255,255,0.25)" style-active="transform: scale(0.94)">Activity</div>
+          <div style="text-align: center; font-size: 11.5px; font-weight: 600; color: #cdd8ea; padding: 11px 0; background: #0e141d; border: 1px solid rgba(255,255,255,0.08); border-radius: 14px; cursor: pointer;" style-hover="border-color: rgba(255,255,255,0.25)" style-active="transform: scale(0.94)">Symptom</div>
+          <div style="text-align: center; font-size: 11.5px; font-weight: 600; color: #cdd8ea; padding: 11px 0; background: #0e141d; border: 1px solid rgba(255,255,255,0.08); border-radius: 14px; cursor: pointer;" style-hover="border-color: rgba(255,255,255,0.25)" style-active="transform: scale(0.94)">Journal</div>
+          <div onClick="{{ goCoach }}" style="text-align: center; font-size: 11.5px; font-weight: 700; color: var(--hx-accent-ink); padding: 11px 0; background: var(--hx-accent-soft); border: 1px solid transparent; border-radius: 14px; cursor: pointer;" style-active="transform: scale(0.94)">Tell coach</div>
+        </div>
+        <div style="font-size: 10.5px; color: #6b7585; margin: 0 4px 20px;">Anything works in chat too — "log my lunch" or "forgot my watch at the gym". Weight logs itself from your scale.</div>
+
+        <!-- daily staples: one-touch recurring logs -->
+        <div style="display: flex; align-items: center; justify-content: space-between; margin: 0 2px 10px;">
+          <span style="font-size: 9.5px; font-weight: 700; letter-spacing: 1.1px; text-transform: uppercase; color: #8b95a3;">Your staples</span>
+          <span style="font-size: 10.5px; color: #6b7585;">tap to confirm today</span>
+        </div>
+        <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 8px;">
+          <div style="display: flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 600; color: #04201f; background: linear-gradient(150deg,#4DE1C4,#3BC9AE); border-radius: 999px; padding: 8px 13px; cursor: pointer;" style-active="transform: scale(0.94)"><span>✓</span><span>Eggs ×4</span></div>
+          <div style="display: flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 600; color: #04201f; background: linear-gradient(150deg,#4DE1C4,#3BC9AE); border-radius: 999px; padding: 8px 13px; cursor: pointer;" style-active="transform: scale(0.94)"><span>✓</span><span>Centrum</span></div>
+          <div style="display: flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 600; color: #cdd8ea; background: #0e141d; border: 1px solid rgba(255,255,255,0.12); border-radius: 999px; padding: 8px 13px; cursor: pointer;" style-hover="border-color: rgba(255,255,255,0.3)" style-active="transform: scale(0.94)"><span style="color: #6b7585;">○</span><span>Magnesium</span></div>
+          <div style="display: flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 600; color: #cdd8ea; background: #0e141d; border: 1px solid rgba(255,255,255,0.12); border-radius: 999px; padding: 8px 13px; cursor: pointer;" style-hover="border-color: rgba(255,255,255,0.3)" style-active="transform: scale(0.94)"><span style="color: #6b7585;">○</span><span>Omega-3</span></div>
+          <div style="display: flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 600; color: #cdd8ea; background: #0e141d; border: 1px solid rgba(255,255,255,0.12); border-radius: 999px; padding: 8px 13px; cursor: pointer;" style-hover="border-color: rgba(255,255,255,0.3)" style-active="transform: scale(0.94)"><span style="color: #6b7585;">○</span><span>Creatine 10 g</span></div>
+          <div style="display: flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 600; color: #cdd8ea; background: #0e141d; border: 1px solid rgba(255,255,255,0.12); border-radius: 999px; padding: 8px 13px; cursor: pointer;" style-hover="border-color: rgba(255,255,255,0.3)" style-active="transform: scale(0.94)"><span style="color: #6b7585;">○</span><span>Ground beef</span></div>
+        </div>
+        <div style="background: #0e141d; border: 1px dashed rgba(77,225,196,0.35); border-radius: 16px; padding: 12px 14px; margin-bottom: 20px;">
+          <div style="display: flex; align-items: flex-start; gap: 9px;">
+            <img src="assets/helix-icon.png" alt="" style="width: 18px; height: 18px; border-radius: 999px; margin-top: 1px;">
+            <div style="flex: 1; font-size: 12px; line-height: 1.5; color: #cdd8ea;">You've logged <b style="color: #f1f4f8;">eggs 26 of the last 30 days</b>. Pin it as a staple so it's one tap?</div>
+          </div>
+          <div style="display: flex; gap: 8px; margin-top: 10px; margin-left: 27px;">
+            <span style="font-size: 11.5px; font-weight: 700; color: #04201f; background: var(--hx-accent); border-radius: 999px; padding: 6px 14px; cursor: pointer;" style-active="transform: scale(0.95)">Pin it</span>
+            <span style="font-size: 11.5px; font-weight: 600; color: #8b95a3; border: 1px solid rgba(255,255,255,0.12); border-radius: 999px; padding: 6px 14px; cursor: pointer;" style-hover="color: #cdd8ea">No thanks</span>
+          </div>
+        </div>
+
+        <!-- coach nudge -->
+        <div style="background: linear-gradient(160deg, #0e141d, #0c1219); border: 1px solid rgba(255,255,255,0.10); border-radius: 20px; padding: 16px; margin-bottom: 20px; box-shadow: 0 18px 42px -22px rgba(0,0,0,0.7), inset 0 1px 0 rgba(255,255,255,0.05);">
+          <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+            <img src="assets/helix-icon.png" alt="" style="width: 22px; height: 22px; border-radius: 999px;">
+            <span style="font-size: 12px; font-weight: 700; color: #f1f4f8;">Helix Coach</span>
+            <span style="font-size: 9px; font-weight: 700; letter-spacing: 0.6px; color: #8b95a3; border: 1px solid rgba(255,255,255,0.12); border-radius: 999px; padding: 3px 8px;">NUTRITION</span>
+          </div>
+          <div style="font-size: 13px; line-height: 1.5; color: #cdd8ea;">Two drinks last night usually costs you ~15% deep sleep and a couple bpm of resting HR. Front-load water today — I'll watch tonight's recovery.</div>
+          <div style="font-size: 12px; color: var(--hx-accent-ink); font-weight: 600; margin-top: 10px; cursor: pointer;" style-hover="opacity: 0.8">What should I eat today? →</div>
+        </div>
+
+        <!-- answered -->
+        <div style="font-size: 9.5px; font-weight: 700; letter-spacing: 1.1px; text-transform: uppercase; color: #8b95a3; margin: 0 2px 4px;">Still open</div>
+        <div style="font-size: 10.5px; color: #6b7585; margin: 0 2px 10px;">Three quick taps, chosen for today.</div>
+        <div style="background: #0e141d; border: 1px solid rgba(255,255,255,0.10); border-radius: 20px; padding: 16px; margin-bottom: 12px; box-shadow: inset 0 1px 0 rgba(255,255,255,0.05);">
+          <div style="font-size: 13.5px; font-weight: 600; color: #f1f4f8;">How's your mood right now?</div>
+          <div style="font-size: 10.5px; color: #6b7585; margin-top: 4px;">Asked because stress has read high since 9:00 — checking it's not just sensor noise.</div>
+          <div style="display: flex; gap: 8px; margin-top: 12px;">
+            <div style="flex: 1; text-align: center; font-size: 20px; padding: 10px 0; background: #1a212c; border: 1px solid rgba(255,255,255,0.08); border-radius: 14px; cursor: pointer;" style-hover="border-color: rgba(255,255,255,0.25)" style-active="transform: scale(0.94)">😖</div>
+            <div style="flex: 1; text-align: center; font-size: 20px; padding: 10px 0; background: #1a212c; border: 1px solid rgba(255,255,255,0.08); border-radius: 14px; cursor: pointer;" style-hover="border-color: rgba(255,255,255,0.25)" style-active="transform: scale(0.94)">😕</div>
+            <div style="flex: 1; text-align: center; font-size: 20px; padding: 10px 0; background: #1a212c; border: 1px solid rgba(255,255,255,0.08); border-radius: 14px; cursor: pointer;" style-hover="border-color: rgba(255,255,255,0.25)" style-active="transform: scale(0.94)">😐</div>
+            <div style="flex: 1; text-align: center; font-size: 20px; padding: 10px 0; background: #1a212c; border: 1px solid rgba(255,255,255,0.08); border-radius: 14px; cursor: pointer;" style-hover="border-color: rgba(255,255,255,0.25)" style-active="transform: scale(0.94)">🙂</div>
+            <div style="flex: 1; text-align: center; font-size: 20px; padding: 10px 0; background: #1a212c; border: 1px solid rgba(255,255,255,0.08); border-radius: 14px; cursor: pointer;" style-hover="border-color: rgba(255,255,255,0.25)" style-active="transform: scale(0.94)">😄</div>
+          </div>
+        </div>
+        <div style="background: #0e141d; border: 1px solid rgba(255,255,255,0.10); border-radius: 20px; padding: 16px; margin-bottom: 20px; box-shadow: inset 0 1px 0 rgba(255,255,255,0.05);">
+          <div style="font-size: 13.5px; font-weight: 600; color: #f1f4f8;">Muscle soreness after yesterday's gym?</div>
+          <div style="font-size: 10.5px; color: #6b7585; margin-top: 4px;">Asked because Garmin logged 58 min of strength (legs + pull) yesterday.</div>
+          <div style="display: flex; gap: 8px; margin-top: 12px;">
+            <div style="flex: 1; text-align: center; font-size: 12px; font-weight: 600; color: #cdd8ea; padding: 9px 0; background: #1a212c; border: 1px solid rgba(255,255,255,0.08); border-radius: 999px; cursor: pointer;" style-hover="border-color: rgba(255,255,255,0.25)" style-active="transform: scale(0.96)">None</div>
+            <div style="flex: 1; text-align: center; font-size: 12px; font-weight: 600; color: #cdd8ea; padding: 9px 0; background: #1a212c; border: 1px solid rgba(255,255,255,0.08); border-radius: 999px; cursor: pointer;" style-hover="border-color: rgba(255,255,255,0.25)" style-active="transform: scale(0.96)">Mild</div>
+            <div style="flex: 1; text-align: center; font-size: 12px; font-weight: 600; color: #cdd8ea; padding: 9px 0; background: #1a212c; border: 1px solid rgba(255,255,255,0.08); border-radius: 999px; cursor: pointer;" style-hover="border-color: rgba(255,255,255,0.25)" style-active="transform: scale(0.96)">Sore</div>
+            <div style="flex: 1; text-align: center; font-size: 12px; font-weight: 600; color: #cdd8ea; padding: 9px 0; background: #1a212c; border: 1px solid rgba(255,255,255,0.08); border-radius: 999px; cursor: pointer;" style-hover="border-color: rgba(255,255,255,0.25)" style-active="transform: scale(0.96)">Very</div>
+          </div>
+        </div>
+        <div style="background: #0e141d; border: 1px solid rgba(255,255,255,0.10); border-radius: 20px; padding: 16px; margin-bottom: 20px; box-shadow: inset 0 1px 0 rgba(255,255,255,0.05);">
+          <div style="font-size: 13.5px; font-weight: 600; color: #f1f4f8;">Screen time before bed last night?</div>
+          <div style="font-size: 10.5px; color: #6b7585; margin-top: 4px;">Asked because deep sleep dropped 22% last night — late screens correlate with your worst nights.</div>
+          <div style="display: flex; gap: 8px; margin-top: 12px;">
+            <div style="flex: 1; text-align: center; font-size: 12px; font-weight: 600; color: #cdd8ea; padding: 9px 0; background: #1a212c; border: 1px solid rgba(255,255,255,0.08); border-radius: 999px; cursor: pointer;" style-hover="border-color: rgba(255,255,255,0.25)" style-active="transform: scale(0.96)">None</div>
+            <div style="flex: 1; text-align: center; font-size: 12px; font-weight: 600; color: #cdd8ea; padding: 9px 0; background: #1a212c; border: 1px solid rgba(255,255,255,0.08); border-radius: 999px; cursor: pointer;" style-hover="border-color: rgba(255,255,255,0.25)" style-active="transform: scale(0.96)">&lt; 30 min</div>
+            <div style="flex: 1; text-align: center; font-size: 12px; font-weight: 600; color: #cdd8ea; padding: 9px 0; background: #1a212c; border: 1px solid rgba(255,255,255,0.08); border-radius: 999px; cursor: pointer;" style-hover="border-color: rgba(255,255,255,0.25)" style-active="transform: scale(0.96)">30–90</div>
+            <div style="flex: 1; text-align: center; font-size: 12px; font-weight: 600; color: #cdd8ea; padding: 9px 0; background: #1a212c; border: 1px solid rgba(255,255,255,0.08); border-radius: 999px; cursor: pointer;" style-hover="border-color: rgba(255,255,255,0.25)" style-active="transform: scale(0.96)">In bed 😅</div>
+          </div>
+        </div>
+
+        <!-- today's log timeline -->
+        <div style="display: flex; align-items: center; justify-content: space-between; margin: 0 2px 10px;">
+          <span style="font-size: 9.5px; font-weight: 700; letter-spacing: 1.1px; text-transform: uppercase; color: #8b95a3;">Today's log</span>
+          <span style="font-size: 10.5px; color: #6b7585;">auto · coach · you</span>
+        </div>
+        <div style="background: #0e141d; border: 1px solid rgba(255,255,255,0.07); border-radius: 20px; overflow: hidden; box-shadow: inset 0 1px 0 rgba(255,255,255,0.05);">
+          <div style="display: flex; align-items: center; gap: 10px; padding: 12px 15px; border-bottom: 1px solid rgba(255,255,255,0.05);">
+            <span style="width: 38px; flex: none; font-size: 11px; color: #6b7585; font-variant-numeric: tabular-nums;">06:19</span>
+            <div style="flex: 1; min-width: 0;">
+              <div style="font-size: 13px; font-weight: 600; color: #f1f4f8;">Gym · strength 58 min</div>
+              <div style="font-size: 10.5px; color: #6b7585;">from Garmin</div>
+            </div>
+            <span style="font-size: 9px; font-weight: 700; letter-spacing: 0.6px; color: #5BA9F0; border: 1px solid rgba(91,169,240,0.35); border-radius: 999px; padding: 3px 8px;">AUTO</span>
+          </div>
+          <div style="display: flex; align-items: center; gap: 10px; padding: 12px 15px; border-bottom: 1px solid rgba(255,255,255,0.05);">
+            <span style="width: 38px; flex: none; font-size: 11px; color: #6b7585; font-variant-numeric: tabular-nums;">07:02</span>
+            <div style="flex: 1; min-width: 0;">
+              <div style="font-size: 13px; font-weight: 600; color: #f1f4f8;">Weight 78.2 kg</div>
+              <div style="font-size: 10.5px; color: #6b7585;">from smart scale</div>
+            </div>
+            <span style="font-size: 9px; font-weight: 700; letter-spacing: 0.6px; color: #5BA9F0; border: 1px solid rgba(91,169,240,0.35); border-radius: 999px; padding: 3px 8px;">AUTO</span>
+          </div>
+          <div style="display: flex; align-items: center; gap: 10px; padding: 12px 15px; border-bottom: 1px solid rgba(255,255,255,0.05);">
+            <span style="width: 38px; flex: none; font-size: 11px; color: #6b7585; font-variant-numeric: tabular-nums;">08:15</span>
+            <div style="flex: 1; min-width: 0;">
+              <div style="font-size: 13px; font-weight: 600; color: #f1f4f8;">Creatine 10 g</div>
+              <div style="font-size: 10.5px; color: #6b7585;">staged in chat, you confirmed</div>
+            </div>
+            <span style="font-size: 9px; font-weight: 700; letter-spacing: 0.6px; color: var(--hx-accent-ink); border: 1px solid var(--hx-accent-soft); background: var(--hx-accent-soft); border-radius: 999px; padding: 3px 8px;">COACH</span>
+          </div>
+          <div style="display: flex; align-items: center; gap: 10px; padding: 12px 15px; border-bottom: 1px solid rgba(255,255,255,0.05);">
+            <span style="width: 38px; flex: none; font-size: 11px; color: #6b7585; font-variant-numeric: tabular-nums;">09:40</span>
+            <div style="flex: 1; min-width: 0;">
+              <div style="font-size: 13px; font-weight: 600; color: #f1f4f8;">Espresso × 2</div>
+              <div style="font-size: 10.5px; color: #6b7585;">quick log</div>
+            </div>
+            <span style="font-size: 9px; font-weight: 700; letter-spacing: 0.6px; color: #cdd8ea; border: 1px solid rgba(255,255,255,0.18); border-radius: 999px; padding: 3px 8px;">YOU</span>
+          </div>
+          <div style="display: flex; align-items: center; gap: 10px; padding: 12px 15px;">
+            <span style="width: 38px; flex: none; font-size: 11px; color: #6b7585; font-variant-numeric: tabular-nums;">12:30</span>
+            <div style="flex: 1; min-width: 0;">
+              <div style="font-size: 13px; font-weight: 600; color: #f1f4f8;">Multivitamin + Omega-3</div>
+              <div style="font-size: 10.5px; color: #6b7585;">answered in chat</div>
+            </div>
+            <span style="font-size: 9px; font-weight: 700; letter-spacing: 0.6px; color: var(--hx-accent-ink); border: 1px solid var(--hx-accent-soft); background: var(--hx-accent-soft); border-radius: 999px; padding: 3px 8px;">COACH</span>
+          </div>
+          <sc-if value="{{ mealLogged }}" hint-placeholder-val="{{ false }}">
+          <div style="display: flex; align-items: center; gap: 10px; padding: 12px 15px; border-top: 1px solid rgba(255,255,255,0.05); background: var(--hx-accent-soft); animation: hx-rise 0.4s cubic-bezier(.4,0,.2,1);">
+            <span style="width: 38px; flex: none; font-size: 11px; color: #6b7585; font-variant-numeric: tabular-nums;">12:40</span>
+            <div style="flex: 1; min-width: 0;">
+              <div style="font-size: 13px; font-weight: 600; color: #f1f4f8;">Chicken bowl + rice + guac</div>
+              <div style="font-size: 10.5px; color: #6b7585;">~820 kcal · P 42 · quick log</div>
+            </div>
+            <span style="font-size: 9px; font-weight: 700; letter-spacing: 0.6px; color: #cdd8ea; border: 1px solid rgba(255,255,255,0.18); border-radius: 999px; padding: 3px 8px;">YOU</span>
+          </div>
+          </sc-if>
+        </div>
+        <div style="font-size: 10.5px; color: #6b7585; margin: 8px 4px 0;">One ledger, three doors in: sensors sync it, the coach stages it, you tap it. Everything editable.</div>
+
+      </div>
+    </div>
+    </sc-if>
+
+    <!-- ============ ME ============ -->
+    <sc-if value="{{ showMe }}" hint-placeholder-val="{{ false }}">
+    <div class="hx" style="flex: 1; overflow-y: auto; position: relative; background: #070b11;">
+      <div style="padding: 8px 20px 130px;">
+
+        <div style="display: flex; align-items: center; gap: 12px; margin: 6px 0 20px;">
+          <div style="width: 52px; height: 52px; border-radius: 999px; background: linear-gradient(150deg,#4DE1C4,#12A5C8); display: flex; align-items: center; justify-content: center; color: #04201f; font-size: 18px; font-weight: 800;">NL</div>
+          <div style="flex: 1;">
+            <div style="font-family: 'Bricolage Grotesque', sans-serif; font-size: 20px; font-weight: 800; color: #f1f4f8; letter-spacing: -0.3px;">Nicolas</div>
+            <div style="font-size: 11.5px; color: #8b95a3;">34 · 78.2 kg · member since Mar 2026</div>
+          </div>
+          <span style="font-size: 11px; color: #cdd8ea; border: 1px solid rgba(255,255,255,0.12); border-radius: 999px; padding: 6px 12px; cursor: pointer;" style-hover="background: rgba(255,255,255,0.04)">Edit</span>
+        </div>
+
+        <!-- biological age hero -->
+        <div style="background: linear-gradient(160deg, #0e141d, #0c1219); border: 1px solid rgba(255,255,255,0.10); border-radius: 24px; padding: 18px; box-shadow: 0 18px 42px -22px rgba(0,0,0,0.7), inset 0 1px 0 rgba(255,255,255,0.05);">
+          <div style="display: flex; align-items: baseline; justify-content: space-between;">
+            <span style="font-size: 9.5px; font-weight: 700; letter-spacing: 1.1px; text-transform: uppercase; color: #8b95a3;">Biological age</span>
+            <span style="font-size: 10.5px; color: #F5C451;">48% confidence — needs bloodwork</span>
+          </div>
+          <div style="display: flex; align-items: flex-end; gap: 12px; margin-top: 6px;">
+            <span style="font-family: 'Bricolage Grotesque', sans-serif; font-size: 52px; font-weight: 800; line-height: 1; color: #f1f4f8; letter-spacing: -1.5px;"><span data-hx-count="31">31</span>.4</span>
+            <span style="font-size: 12px; color: #5FD17A; font-weight: 600; line-height: 1.35; margin-bottom: 6px;">2.6 yr younger<br>than chronological</span>
+          </div>
+          <div style="position: relative; height: 6px; border-radius: 4px; margin-top: 16px; background: #1a212c;">
+            <div style="position: absolute; top: 0; bottom: 0; left: 0; width: 62%; border-radius: 4px; background: linear-gradient(90deg,#12A5C8,#4DE1C4);"></div>
+            <div style="position: absolute; top: -4px; left: 68%; width: 2px; height: 14px; background: #6b7585;"></div>
+          </div>
+          <div style="display: flex; justify-content: space-between; font-size: 9.5px; color: #6b7585; margin-top: 5px;"><span>bio 31.4</span><span>chrono 34</span></div>
+          <div style="font-size: 12px; color: var(--hx-accent-ink); font-weight: 600; margin-top: 12px; cursor: pointer;" style-hover="opacity: 0.8">Add bloodwork to tighten this →</div>
+        </div>
+
+        <!-- week vs last -->
+        <div style="display: flex; align-items: center; justify-content: space-between; margin: 24px 2px 10px;">
+          <span style="font-size: 9.5px; font-weight: 700; letter-spacing: 1.1px; text-transform: uppercase; color: #8b95a3;">This week vs last</span>
+          <span style="font-size: 10.5px; color: #6b7585;">Mon–today</span>
+        </div>
+        <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px;">
+          <div style="background: #0e141d; border: 1px solid rgba(255,255,255,0.07); border-radius: 14px; padding: 10px 11px; box-shadow: inset 0 1px 0 rgba(255,255,255,0.05);">
+            <div style="font-size: 10px; color: #8b95a3;">Deep sleep</div>
+            <div style="font-family: 'Bricolage Grotesque', sans-serif; font-size: 17px; font-weight: 800; color: #5FD17A; margin-top: 2px;">+11%</div>
+            <div style="font-size: 9.5px; color: #6b7585;">magnesium on-nights</div>
+          </div>
+          <div style="background: #0e141d; border: 1px solid rgba(255,255,255,0.07); border-radius: 14px; padding: 10px 11px; box-shadow: inset 0 1px 0 rgba(255,255,255,0.05);">
+            <div style="font-size: 10px; color: #8b95a3;">Avg HRV</div>
+            <div style="font-family: 'Bricolage Grotesque', sans-serif; font-size: 17px; font-weight: 800; color: #F5C451; margin-top: 2px;">−8%</div>
+            <div style="font-size: 9.5px; color: #6b7585;">heavy training block</div>
+          </div>
+          <div style="background: #0e141d; border: 1px solid rgba(255,255,255,0.07); border-radius: 14px; padding: 10px 11px; box-shadow: inset 0 1px 0 rgba(255,255,255,0.05);">
+            <div style="font-size: 10px; color: #8b95a3;">Load</div>
+            <div style="font-family: 'Bricolage Grotesque', sans-serif; font-size: 17px; font-weight: 800; color: #f1f4f8; margin-top: 2px;">+18%</div>
+            <div style="font-size: 9.5px; color: #6b7585;">deliberate — deload Sat</div>
+          </div>
+        </div>
+
+        <!-- supplement stack -->
+        <div style="display: flex; align-items: center; justify-content: space-between; margin: 24px 2px 10px;">
+          <span style="font-size: 9.5px; font-weight: 700; letter-spacing: 1.1px; text-transform: uppercase; color: #8b95a3;">Your stack</span>
+          <span style="font-size: 10.5px; color: #6b7585;">adherence · measured effect</span>
+        </div>
+        <div style="background: #0e141d; border: 1px solid rgba(255,255,255,0.07); border-radius: 20px; padding: 6px 15px; box-shadow: 0 18px 42px -22px rgba(0,0,0,0.7), inset 0 1px 0 rgba(255,255,255,0.05);">
+          <div style="display: flex; align-items: center; gap: 10px; padding: 11px 0; border-bottom: 1px solid rgba(255,255,255,0.05);">
+            <div style="flex: 1;"><div style="font-size: 12.5px; font-weight: 600; color: #f1f4f8;">Magnesium 300 mg</div><div style="font-size: 10px; color: #6b7585;">nightly · 96% adherence</div></div>
+            <span style="font-size: 10px; font-weight: 700; color: var(--hx-accent-ink); background: var(--hx-accent-soft); border-radius: 999px; padding: 3px 9px;">testing · day 12</span>
+          </div>
+          <div style="display: flex; align-items: center; gap: 10px; padding: 11px 0; border-bottom: 1px solid rgba(255,255,255,0.05);">
+            <div style="flex: 1;"><div style="font-size: 12.5px; font-weight: 600; color: #f1f4f8;">Creatine 10 g</div><div style="font-size: 10px; color: #6b7585;">nightly · 92% adherence</div></div>
+            <span style="font-size: 10.5px; color: #5FD17A; font-weight: 600;">+3% gym volume ✓</span>
+          </div>
+          <div style="display: flex; align-items: center; gap: 10px; padding: 11px 0; border-bottom: 1px solid rgba(255,255,255,0.05);">
+            <div style="flex: 1;"><div style="font-size: 12.5px; font-weight: 600; color: #f1f4f8;">Omega-3</div><div style="font-size: 10px; color: #6b7585;">noon · 71% adherence</div></div>
+            <span style="font-size: 10.5px; color: #8b95a3;">no measurable effect yet</span>
+          </div>
+          <div style="display: flex; align-items: center; gap: 10px; padding: 11px 0;">
+            <div style="flex: 1;"><div style="font-size: 12.5px; font-weight: 600; color: #f1f4f8;">Vitamin D3 4000 IU</div><div style="font-size: 10px; color: #6b7585;">morning · 88% adherence</div></div>
+            <span style="font-size: 10.5px; color: #F5C451;">verify with bloodwork →</span>
+          </div>
+        </div>
+        <div style="font-size: 10.5px; color: #6b7585; margin: 8px 4px 0;">Helix tells you which pills earn their place — and which are expensive urine.</div>
+
+        <!-- personal effect leaderboard -->
+        <div style="display: flex; align-items: center; justify-content: space-between; margin: 24px 2px 10px;">
+          <span style="font-size: 9.5px; font-weight: 700; letter-spacing: 1.1px; text-transform: uppercase; color: #8b95a3;">What moves your numbers</span>
+          <span style="font-size: 10.5px; color: #6b7585;">learned from 118 days of you</span>
+        </div>
+        <div style="background: #0e141d; border: 1px solid rgba(255,255,255,0.07); border-radius: 20px; padding: 6px 15px; box-shadow: 0 18px 42px -22px rgba(0,0,0,0.7), inset 0 1px 0 rgba(255,255,255,0.05);">
+          <div style="display: flex; align-items: center; gap: 10px; padding: 11px 0; border-bottom: 1px solid rgba(255,255,255,0.05);">
+            <span style="flex: 1; font-size: 12.5px; font-weight: 600; color: #f1f4f8;">Alcohol (2+ drinks)</span>
+            <div style="width: 90px; height: 6px; border-radius: 4px; background: #1a212c; position: relative; flex: none;"><div style="position: absolute; right: 50%; top: 0; bottom: 0; width: 46%; background: #FF6B6B; border-radius: 4px 0 0 4px;"></div><div style="position: absolute; left: 50%; top: -2px; bottom: -2px; width: 1px; background: rgba(255,255,255,0.2);"></div></div>
+            <span style="width: 74px; flex: none; text-align: right; font-size: 11.5px; font-weight: 700; color: #FF6B6B; font-variant-numeric: tabular-nums;">−11 recovery</span>
+          </div>
+          <div style="display: flex; align-items: center; gap: 10px; padding: 11px 0; border-bottom: 1px solid rgba(255,255,255,0.05);">
+            <span style="flex: 1; font-size: 12.5px; font-weight: 600; color: #f1f4f8;">Lights out before 23:00</span>
+            <div style="width: 90px; height: 6px; border-radius: 4px; background: #1a212c; position: relative; flex: none;"><div style="position: absolute; left: 50%; top: 0; bottom: 0; width: 34%; background: #5FD17A; border-radius: 0 4px 4px 0;"></div><div style="position: absolute; left: 50%; top: -2px; bottom: -2px; width: 1px; background: rgba(255,255,255,0.2);"></div></div>
+            <span style="width: 74px; flex: none; text-align: right; font-size: 11.5px; font-weight: 700; color: #5FD17A; font-variant-numeric: tabular-nums;">+8 recovery</span>
+          </div>
+          <div style="display: flex; align-items: center; gap: 10px; padding: 11px 0; border-bottom: 1px solid rgba(255,255,255,0.05);">
+            <span style="flex: 1; font-size: 12.5px; font-weight: 600; color: #f1f4f8;">Screens in bed</span>
+            <div style="width: 90px; height: 6px; border-radius: 4px; background: #1a212c; position: relative; flex: none;"><div style="position: absolute; right: 50%; top: 0; bottom: 0; width: 26%; background: #FF6B6B; border-radius: 4px 0 0 4px;"></div><div style="position: absolute; left: 50%; top: -2px; bottom: -2px; width: 1px; background: rgba(255,255,255,0.2);"></div></div>
+            <span style="width: 74px; flex: none; text-align: right; font-size: 11.5px; font-weight: 700; color: #FF6B6B; font-variant-numeric: tabular-nums;">−15% deep</span>
+          </div>
+          <div style="display: flex; align-items: center; gap: 10px; padding: 11px 0; border-bottom: 1px solid rgba(255,255,255,0.05);">
+            <span style="flex: 1; font-size: 12.5px; font-weight: 600; color: #f1f4f8;">Sauna evening</span>
+            <div style="width: 90px; height: 6px; border-radius: 4px; background: #1a212c; position: relative; flex: none;"><div style="position: absolute; left: 50%; top: 0; bottom: 0; width: 18%; background: #5FD17A; border-radius: 0 4px 4px 0;"></div><div style="position: absolute; left: 50%; top: -2px; bottom: -2px; width: 1px; background: rgba(255,255,255,0.2);"></div></div>
+            <span style="width: 74px; flex: none; text-align: right; font-size: 11.5px; font-weight: 700; color: #5FD17A; font-variant-numeric: tabular-nums;">+4 HRV</span>
+          </div>
+          <div style="display: flex; align-items: center; gap: 10px; padding: 11px 0;">
+            <span style="flex: 1; font-size: 12.5px; font-weight: 600; color: #f1f4f8;">Caffeine after 14:00</span>
+            <div style="width: 90px; height: 6px; border-radius: 4px; background: #1a212c; position: relative; flex: none;"><div style="position: absolute; right: 50%; top: 0; bottom: 0; width: 20%; background: #F5C451; border-radius: 4px 0 0 4px;"></div><div style="position: absolute; left: 50%; top: -2px; bottom: -2px; width: 1px; background: rgba(255,255,255,0.2);"></div></div>
+            <span style="width: 74px; flex: none; text-align: right; font-size: 11.5px; font-weight: 700; color: #F5C451; font-variant-numeric: tabular-nums;">−19m deep</span>
+          </div>
+        </div>
+        <div style="font-size: 10.5px; color: #6b7585; margin: 8px 4px 0;">Your levers, ranked by measured effect — not population averages. Tap one to test it properly as an experiment.</div>
+
+        <!-- status legend -->
+        <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin: 14px 4px 0; font-size: 10px; color: #8b95a3;">
+          <span style="display: flex; align-items: center; gap: 4px;"><span style="width: 6px; height: 6px; border-radius: 999px; background: #5FD17A;"></span>improving</span>
+          <span style="display: flex; align-items: center; gap: 4px;"><span style="width: 6px; height: 6px; border-radius: 999px; background: #F5C451;"></span>watch</span>
+          <span style="display: flex; align-items: center; gap: 4px;"><span style="width: 6px; height: 6px; border-radius: 999px; background: #FF6B6B;"></span>off baseline</span>
+          <span style="display: flex; align-items: center; gap: 4px;"><span style="width: 6px; height: 6px; border-radius: 999px; background: #6b7585;"></span>steady in band — grey is good</span>
+        </div>
+
+        <!-- metric library -->
+        <div style="display: flex; align-items: center; justify-content: space-between; margin: 24px 2px 10px;">
+          <span style="font-size: 9.5px; font-weight: 700; letter-spacing: 1.1px; text-transform: uppercase; color: #8b95a3;">Heart</span>
+          <span style="font-size: 10.5px; color: #6b7585;">vs 30-day baseline</span>
+        </div>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+          <div onClick="{{ openHrv }}" style="background: #0e141d; border: 1px solid rgba(255,255,255,0.07); border-radius: 16px; padding: 12px 13px; box-shadow: inset 0 1px 0 rgba(255,255,255,0.05); cursor: pointer;" style-active="transform: scale(0.97)">
+            <div style="display: flex; justify-content: space-between; font-size: 10.5px;"><span style="color: #8b95a3;">HRV</span><span style="color: #FF6B6B;">▼ 12%</span></div>
+            <div style="font-family: 'Bricolage Grotesque', sans-serif; font-size: 21px; font-weight: 800; color: #f1f4f8; letter-spacing: -0.4px; margin-top: 3px;">38.3<span style="font-size: 11px; color: #6b7585; font-family: -apple-system;"> ms</span></div>
+            <svg viewBox="0 0 100 22" width="100%" height="22" preserveAspectRatio="none" style="margin-top: 6px;"><polyline points="0,8 14,6 28,10 42,7 56,11 70,10 84,15 100,17" fill="none" stroke="#FF6B6B" stroke-width="1.5"></polyline></svg>
+          </div>
+          <div style="background: #0e141d; border: 1px solid rgba(255,255,255,0.07); border-radius: 16px; padding: 12px 13px; box-shadow: inset 0 1px 0 rgba(255,255,255,0.05); cursor: pointer;" style-active="transform: scale(0.97)" onClick="{{ om.rhr }}">
+            <div style="display: flex; justify-content: space-between; font-size: 10.5px;"><span style="color: #8b95a3;">Resting HR</span><span style="color: #F5C451;">▲ 2 bpm</span></div>
+            <div style="font-family: 'Bricolage Grotesque', sans-serif; font-size: 21px; font-weight: 800; color: #f1f4f8; letter-spacing: -0.4px; margin-top: 3px;">54<span style="font-size: 11px; color: #6b7585; font-family: -apple-system;"> bpm</span></div>
+            <svg viewBox="0 0 100 22" width="100%" height="22" preserveAspectRatio="none" style="margin-top: 6px;"><polyline points="0,14 14,15 28,13 42,14 56,12 70,11 84,9 100,8" fill="none" stroke="#F5C451" stroke-width="1.5"></polyline></svg>
+          </div>
+          <div style="background: #0e141d; border: 1px solid rgba(255,255,255,0.07); border-radius: 16px; padding: 12px 13px; box-shadow: inset 0 1px 0 rgba(255,255,255,0.05); cursor: pointer;" style-active="transform: scale(0.97)" onClick="{{ om.rec }}">
+            <div style="display: flex; justify-content: space-between; font-size: 10.5px;"><span style="color: #8b95a3;">HR recovery</span><span style="color: #5FD17A;">▲ 3</span></div>
+            <div style="font-family: 'Bricolage Grotesque', sans-serif; font-size: 21px; font-weight: 800; color: #f1f4f8; letter-spacing: -0.4px; margin-top: 3px;">31<span style="font-size: 11px; color: #6b7585; font-family: -apple-system;"> bpm/min</span></div>
+            <svg viewBox="0 0 100 22" width="100%" height="22" preserveAspectRatio="none" style="margin-top: 6px;"><polyline points="0,16 14,15 28,16 42,13 56,12 70,10 84,9 100,7" fill="none" stroke="#5FD17A" stroke-width="1.5"></polyline></svg>
+          </div>
+          <div style="background: #0e141d; border: 1px solid rgba(255,255,255,0.07); border-radius: 16px; padding: 12px 13px; box-shadow: inset 0 1px 0 rgba(255,255,255,0.05); cursor: pointer;" style-active="transform: scale(0.97)" onClick="{{ om.bp }}">
+            <div style="display: flex; justify-content: space-between; font-size: 10.5px;"><span style="color: #8b95a3;">Blood pressure</span><span style="color: #8b95a3;">in band ✓</span></div>
+            <div style="font-family: 'Bricolage Grotesque', sans-serif; font-size: 21px; font-weight: 800; color: #f1f4f8; letter-spacing: -0.4px; margin-top: 3px;">118/76</div>
+            <svg viewBox="0 0 100 22" width="100%" height="22" preserveAspectRatio="none" style="margin-top: 6px;"><polyline points="0,11 14,12 28,11 42,10 56,11 70,12 84,11 100,11" fill="none" stroke="#8b95a3" stroke-width="1.5"></polyline></svg>
+          </div>
+        </div>
+
+        <div style="font-size: 9.5px; font-weight: 700; letter-spacing: 1.1px; text-transform: uppercase; color: #8b95a3; margin: 22px 2px 10px;">Sleep</div>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+          <div style="background: #0e141d; border: 1px solid rgba(255,255,255,0.07); border-radius: 16px; padding: 12px 13px; box-shadow: inset 0 1px 0 rgba(255,255,255,0.05); cursor: pointer;" style-active="transform: scale(0.97)" onClick="{{ om.dur }}">
+            <div style="display: flex; justify-content: space-between; font-size: 10.5px;"><span style="color: #8b95a3;">Duration</span><span style="color: #F5C451;">▼ 42 min</span></div>
+            <div style="font-family: 'Bricolage Grotesque', sans-serif; font-size: 21px; font-weight: 800; color: #f1f4f8; letter-spacing: -0.4px; margin-top: 3px;">6h48</div>
+            <svg viewBox="0 0 100 22" width="100%" height="22" preserveAspectRatio="none" style="margin-top: 6px;"><polyline points="0,8 14,10 28,7 42,12 56,9 70,13 84,11 100,15" fill="none" stroke="#82a0da" stroke-width="1.5"></polyline></svg>
+          </div>
+          <div style="background: #0e141d; border: 1px solid rgba(255,255,255,0.07); border-radius: 16px; padding: 12px 13px; box-shadow: inset 0 1px 0 rgba(255,255,255,0.05); cursor: pointer;" style-active="transform: scale(0.97)" onClick="{{ om.debt }}">
+            <div style="display: flex; justify-content: space-between; font-size: 10.5px;"><span style="color: #8b95a3;">Debt (7 d)</span><span style="color: #F5C451;">growing</span></div>
+            <div style="font-family: 'Bricolage Grotesque', sans-serif; font-size: 21px; font-weight: 800; color: #f1f4f8; letter-spacing: -0.4px; margin-top: 3px;">−2h04</div>
+            <svg viewBox="0 0 100 22" width="100%" height="22" preserveAspectRatio="none" style="margin-top: 6px;"><polyline points="0,9 14,10 28,9 42,12 56,13 70,15 84,16 100,18" fill="none" stroke="#F5C451" stroke-width="1.5"></polyline></svg>
+          </div>
+          <div style="background: #0e141d; border: 1px solid rgba(255,255,255,0.07); border-radius: 16px; padding: 12px 13px; box-shadow: inset 0 1px 0 rgba(255,255,255,0.05); cursor: pointer;" style-active="transform: scale(0.97)" onClick="{{ om.eff }}">
+            <div style="display: flex; justify-content: space-between; font-size: 10.5px;"><span style="color: #8b95a3;">Efficiency</span><span style="color: #5FD17A;">▲ 2%</span></div>
+            <div style="font-family: 'Bricolage Grotesque', sans-serif; font-size: 21px; font-weight: 800; color: #f1f4f8; letter-spacing: -0.4px; margin-top: 3px;">91<span style="font-size: 11px; color: #6b7585; font-family: -apple-system;"> %</span></div>
+            <svg viewBox="0 0 100 22" width="100%" height="22" preserveAspectRatio="none" style="margin-top: 6px;"><polyline points="0,12 14,11 28,12 42,10 56,11 70,9 84,10 100,8" fill="none" stroke="#5FD17A" stroke-width="1.5"></polyline></svg>
+          </div>
+          <div style="background: #0e141d; border: 1px solid rgba(255,255,255,0.07); border-radius: 16px; padding: 12px 13px; box-shadow: inset 0 1px 0 rgba(255,255,255,0.05); cursor: pointer;" style-active="transform: scale(0.97)" onClick="{{ om.cons }}">
+            <div style="display: flex; justify-content: space-between; font-size: 10.5px;"><span style="color: #8b95a3;">Consistency</span><span style="color: #FF6B6B;">▼ 9</span></div>
+            <div style="font-family: 'Bricolage Grotesque', sans-serif; font-size: 21px; font-weight: 800; color: #f1f4f8; letter-spacing: -0.4px; margin-top: 3px;">68<span style="font-size: 11px; color: #6b7585; font-family: -apple-system;"> /100</span></div>
+            <svg viewBox="0 0 100 22" width="100%" height="22" preserveAspectRatio="none" style="margin-top: 6px;"><polyline points="0,7 14,8 28,10 42,9 56,12 70,11 84,14 100,16" fill="none" stroke="#FF6B6B" stroke-width="1.5"></polyline></svg>
+          </div>
+        </div>
+
+        <div style="font-size: 9.5px; font-weight: 700; letter-spacing: 1.1px; text-transform: uppercase; color: #8b95a3; margin: 22px 2px 10px;">Fitness</div>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+          <div style="background: #0e141d; border: 1px solid rgba(255,255,255,0.07); border-radius: 16px; padding: 12px 13px; box-shadow: inset 0 1px 0 rgba(255,255,255,0.05); cursor: pointer;" style-active="transform: scale(0.97)" onClick="{{ om.vo2 }}">
+            <div style="display: flex; justify-content: space-between; font-size: 10.5px;"><span style="color: #8b95a3;">VO₂ max</span><span style="color: #5FD17A;">▲ 0.4</span></div>
+            <div style="font-family: 'Bricolage Grotesque', sans-serif; font-size: 21px; font-weight: 800; color: #f1f4f8; letter-spacing: -0.4px; margin-top: 3px;">46.8</div>
+            <svg viewBox="0 0 100 22" width="100%" height="22" preserveAspectRatio="none" style="margin-top: 6px;"><polyline points="0,15 14,14 28,14 42,13 56,12 70,11 84,10 100,9" fill="none" stroke="#5FD17A" stroke-width="1.5"></polyline></svg>
+          </div>
+          <div style="background: #0e141d; border: 1px solid rgba(255,255,255,0.07); border-radius: 16px; padding: 12px 13px; box-shadow: inset 0 1px 0 rgba(255,255,255,0.05); cursor: pointer;" style-active="transform: scale(0.97)" onClick="{{ om.load7 }}">
+            <div style="display: flex; justify-content: space-between; font-size: 10.5px;"><span style="color: #8b95a3;">Training load (7 d)</span><span style="color: #F5C451;">▲ 18%</span></div>
+            <div style="font-family: 'Bricolage Grotesque', sans-serif; font-size: 21px; font-weight: 800; color: #f1f4f8; letter-spacing: -0.4px; margin-top: 3px;">212</div>
+            <svg viewBox="0 0 100 22" width="100%" height="22" preserveAspectRatio="none" style="margin-top: 6px;"><polyline points="0,16 14,14 28,15 42,12 56,10 70,11 84,8 100,6" fill="none" stroke="#F5C451" stroke-width="1.5"></polyline></svg>
+          </div>
+          <div style="background: #0e141d; border: 1px solid rgba(255,255,255,0.07); border-radius: 16px; padding: 12px 13px; box-shadow: inset 0 1px 0 rgba(255,255,255,0.05); cursor: pointer;" style-active="transform: scale(0.97)" onClick="{{ om.steps }}">
+            <div style="display: flex; justify-content: space-between; font-size: 10.5px;"><span style="color: #8b95a3;">Steps</span><span style="color: #8b95a3;">on pace ✓</span></div>
+            <div style="font-family: 'Bricolage Grotesque', sans-serif; font-size: 21px; font-weight: 800; color: #f1f4f8; letter-spacing: -0.4px; margin-top: 3px;">7,412</div>
+            <svg viewBox="0 0 100 22" width="100%" height="22" preserveAspectRatio="none" style="margin-top: 6px;"><polyline points="0,12 14,10 28,13 42,9 56,12 70,10 84,11 100,10" fill="none" stroke="#8b95a3" stroke-width="1.5"></polyline></svg>
+          </div>
+          <div style="background: #0e141d; border: 1px solid rgba(255,255,255,0.07); border-radius: 16px; padding: 12px 13px; box-shadow: inset 0 1px 0 rgba(255,255,255,0.05); cursor: pointer;" style-active="transform: scale(0.97)" onClick="{{ om.energy }}">
+            <div style="display: flex; justify-content: space-between; font-size: 10.5px;"><span style="color: #8b95a3;">Active energy</span><span style="color: #5FD17A;">▲ 9%</span></div>
+            <div style="font-family: 'Bricolage Grotesque', sans-serif; font-size: 21px; font-weight: 800; color: #f1f4f8; letter-spacing: -0.4px; margin-top: 3px;">486<span style="font-size: 11px; color: #6b7585; font-family: -apple-system;"> kcal</span></div>
+            <svg viewBox="0 0 100 22" width="100%" height="22" preserveAspectRatio="none" style="margin-top: 6px;"><polyline points="0,14 14,13 28,11 42,12 56,10 70,9 84,10 100,8" fill="none" stroke="#5FD17A" stroke-width="1.5"></polyline></svg>
+          </div>
+        </div>
+
+        <div style="font-size: 9.5px; font-weight: 700; letter-spacing: 1.1px; text-transform: uppercase; color: #8b95a3; margin: 22px 2px 10px;">Body</div>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+          <div style="background: #0e141d; border: 1px solid rgba(255,255,255,0.07); border-radius: 16px; padding: 12px 13px; box-shadow: inset 0 1px 0 rgba(255,255,255,0.05); cursor: pointer;" style-active="transform: scale(0.97)" onClick="{{ om.weight }}">
+            <div style="display: flex; justify-content: space-between; font-size: 10.5px;"><span style="color: #8b95a3;">Weight</span><span style="color: #5FD17A;">▼ 0.4 kg</span></div>
+            <div style="font-family: 'Bricolage Grotesque', sans-serif; font-size: 21px; font-weight: 800; color: #f1f4f8; letter-spacing: -0.4px; margin-top: 3px;">78.2<span style="font-size: 11px; color: #6b7585; font-family: -apple-system;"> kg</span></div>
+            <svg viewBox="0 0 100 22" width="100%" height="22" preserveAspectRatio="none" style="margin-top: 6px;"><polyline points="0,8 14,9 28,8 42,10 56,11 70,12 84,12 100,13" fill="none" stroke="#5FD17A" stroke-width="1.5"></polyline></svg>
+          </div>
+          <div style="background: #0e141d; border: 1px solid rgba(255,255,255,0.07); border-radius: 16px; padding: 12px 13px; box-shadow: inset 0 1px 0 rgba(255,255,255,0.05); cursor: pointer;" style-active="transform: scale(0.97)" onClick="{{ om.fat }}">
+            <div style="display: flex; justify-content: space-between; font-size: 10.5px;"><span style="color: #8b95a3;">Body fat</span><span style="color: #8b95a3;">in band ✓</span></div>
+            <div style="font-family: 'Bricolage Grotesque', sans-serif; font-size: 21px; font-weight: 800; color: #f1f4f8; letter-spacing: -0.4px; margin-top: 3px;">14.6<span style="font-size: 11px; color: #6b7585; font-family: -apple-system;"> %</span></div>
+            <svg viewBox="0 0 100 22" width="100%" height="22" preserveAspectRatio="none" style="margin-top: 6px;"><polyline points="0,11 14,11 28,12 42,11 56,11 70,12 84,11 100,11" fill="none" stroke="#8b95a3" stroke-width="1.5"></polyline></svg>
+          </div>
+          <div style="background: #0e141d; border: 1px solid rgba(255,255,255,0.07); border-radius: 16px; padding: 12px 13px; box-shadow: inset 0 1px 0 rgba(255,255,255,0.05); cursor: pointer;" style-active="transform: scale(0.97)" onClick="{{ om.temp }}">
+            <div style="display: flex; justify-content: space-between; font-size: 10.5px;"><span style="color: #8b95a3;">Skin temp</span><span style="color: #F5C451;">▲ 0.3°</span></div>
+            <div style="font-family: 'Bricolage Grotesque', sans-serif; font-size: 21px; font-weight: 800; color: #f1f4f8; letter-spacing: -0.4px; margin-top: 3px;">+0.3<span style="font-size: 11px; color: #6b7585; font-family: -apple-system;"> °C dev</span></div>
+            <svg viewBox="0 0 100 22" width="100%" height="22" preserveAspectRatio="none" style="margin-top: 6px;"><polyline points="0,12 14,11 28,12 42,11 56,10 70,10 84,9 100,8" fill="none" stroke="#F5C451" stroke-width="1.5"></polyline></svg>
+          </div>
+          <div style="background: #0e141d; border: 1px solid rgba(255,255,255,0.07); border-radius: 16px; padding: 12px 13px; box-shadow: inset 0 1px 0 rgba(255,255,255,0.05); cursor: pointer;" style-active="transform: scale(0.97)" onClick="{{ om.resp }}">
+            <div style="display: flex; justify-content: space-between; font-size: 10.5px;"><span style="color: #8b95a3;">Resp rate</span><span style="color: #8b95a3;">in band ✓</span></div>
+            <div style="font-family: 'Bricolage Grotesque', sans-serif; font-size: 21px; font-weight: 800; color: #f1f4f8; letter-spacing: -0.4px; margin-top: 3px;">13.8<span style="font-size: 11px; color: #6b7585; font-family: -apple-system;"> /min</span></div>
+            <svg viewBox="0 0 100 22" width="100%" height="22" preserveAspectRatio="none" style="margin-top: 6px;"><polyline points="0,11 14,12 28,11 42,11 56,12 70,11 84,12 100,11" fill="none" stroke="#8b95a3" stroke-width="1.5"></polyline></svg>
+          </div>
+        </div>
+        <div style="font-size: 10.5px; color: #6b7585; margin: 10px 4px 0;">Tap any metric for baseline, drivers, and what the coach reads from it.</div>
+
+      </div>
+    </div>
+    </sc-if>
+
+    <!-- ============ SETTINGS (via NL avatar) ============ -->
+    <sc-if value="{{ showSettings }}" hint-placeholder-val="{{ false }}">
+    <div class="hx" style="flex: 1; overflow-y: auto; position: relative; background: #070b11;">
+      <div style="padding: 8px 20px 130px;">
+
+        <div style="display: flex; align-items: center; gap: 10px; margin: 6px 0 20px;">
+          <div onClick="{{ goToday }}" style="width: 34px; height: 34px; border-radius: 999px; border: 1px solid rgba(255,255,255,0.12); display: flex; align-items: center; justify-content: center; color: #cdd8ea; font-size: 16px; cursor: pointer;" style-active="transform: scale(0.92)">‹</div>
+          <div style="font-family: 'Bricolage Grotesque', sans-serif; font-size: 22px; font-weight: 800; color: #f1f4f8; letter-spacing: -0.3px;">Settings</div>
+        </div>
+
+        <div style="display: flex; align-items: center; gap: 12px; background: #0e141d; border: 1px solid rgba(255,255,255,0.07); border-radius: 20px; padding: 14px 15px; margin-bottom: 20px; box-shadow: inset 0 1px 0 rgba(255,255,255,0.05);">
+          <div style="width: 44px; height: 44px; border-radius: 999px; background: linear-gradient(150deg,#4DE1C4,#12A5C8); display: flex; align-items: center; justify-content: center; color: #04201f; font-size: 15px; font-weight: 800;">NL</div>
+          <div style="flex: 1;">
+            <div style="font-size: 14px; font-weight: 700; color: #f1f4f8;">Nicolas</div>
+            <div style="font-size: 11px; color: #8b95a3;">nicolas@…com · Helix Plus</div>
+          </div>
+          <span style="font-size: 12px; color: #8b95a3;">›</span>
+        </div>
+
+        <div style="font-size: 9.5px; font-weight: 700; letter-spacing: 1.1px; text-transform: uppercase; color: #8b95a3; margin: 0 2px 10px;">Preferences</div>
+        <div style="background: #0e141d; border: 1px solid rgba(255,255,255,0.07); border-radius: 20px; overflow: hidden; box-shadow: inset 0 1px 0 rgba(255,255,255,0.05);">
+          <div style="display: flex; align-items: center; justify-content: space-between; padding: 14px 15px; border-bottom: 1px solid rgba(255,255,255,0.05);">
+            <span style="font-size: 13px; color: #f1f4f8;">Appearance</span>
+            <div style="display: flex; background: #1a212c; border-radius: 999px; padding: 3px;">
+              <span style="font-size: 11px; font-weight: 600; color: #8b95a3; padding: 5px 11px; border-radius: 999px; cursor: pointer;" style-hover="color: #cdd8ea">Light</span>
+              <span style="font-size: 11px; font-weight: 700; color: #04201f; background: var(--hx-accent); padding: 5px 11px; border-radius: 999px; cursor: pointer;">Auto</span>
+              <span style="font-size: 11px; font-weight: 600; color: #8b95a3; padding: 5px 11px; border-radius: 999px; cursor: pointer;" style-hover="color: #cdd8ea">Dark</span>
+            </div>
+          </div>
+          <div style="display: flex; align-items: center; justify-content: space-between; padding: 14px 15px; border-bottom: 1px solid rgba(255,255,255,0.05); cursor: pointer;" style-hover="background: rgba(255,255,255,0.02)">
+            <span style="font-size: 13px; color: #f1f4f8;">Coach personality</span>
+            <span style="font-size: 12px; color: #8b95a3;">Direct, a bit playful ›</span>
+          </div>
+          <div style="display: flex; align-items: center; justify-content: space-between; padding: 14px 15px; border-bottom: 1px solid rgba(255,255,255,0.05); cursor: pointer;" style-hover="background: rgba(255,255,255,0.02)">
+            <span style="font-size: 13px; color: #f1f4f8;">Notifications</span>
+            <span style="font-size: 12px; color: #8b95a3;">Coach + daily log ›</span>
+          </div>
+          <div style="display: flex; align-items: center; justify-content: space-between; padding: 14px 15px; border-bottom: 1px solid rgba(255,255,255,0.05); cursor: pointer;" style-hover="background: rgba(255,255,255,0.02)">
+            <span style="font-size: 13px; color: #f1f4f8;">Units</span>
+            <span style="font-size: 12px; color: #8b95a3;">Metric ›</span>
+          </div>
+          <div style="display: flex; align-items: center; justify-content: space-between; padding: 14px 15px; cursor: pointer;" style-hover="background: rgba(255,255,255,0.02)">
+            <span style="font-size: 13px; color: #f1f4f8;">Privacy & data export</span>
+            <span style="font-size: 12px; color: #8b95a3;">›</span>
+          </div>
+        </div>
+
+        <div style="font-size: 9.5px; font-weight: 700; letter-spacing: 1.1px; text-transform: uppercase; color: #8b95a3; margin: 24px 2px 10px;">Data sources</div>
+        <div style="background: #0e141d; border: 1px solid rgba(255,255,255,0.07); border-radius: 20px; overflow: hidden; box-shadow: inset 0 1px 0 rgba(255,255,255,0.05);">
+          <div style="display: flex; align-items: center; gap: 12px; padding: 13px 15px; border-bottom: 1px solid rgba(255,255,255,0.05);">
+            <span style="flex: 1; font-size: 13px; font-weight: 600; color: #f1f4f8;">Apple Health</span>
+            <span style="font-size: 11px; color: #5FD17A;">● synced 9:38</span>
+          </div>
+          <div style="display: flex; align-items: center; gap: 12px; padding: 13px 15px; border-bottom: 1px solid rgba(255,255,255,0.05);">
+            <span style="flex: 1; font-size: 13px; font-weight: 600; color: #f1f4f8;">Garmin</span>
+            <span style="font-size: 11px; color: #5FD17A;">● synced 9:41</span>
+          </div>
+          <div style="display: flex; align-items: center; gap: 12px; padding: 13px 15px;">
+            <span style="flex: 1; font-size: 13px; font-weight: 600; color: #f1f4f8;">Bloodwork</span>
+            <span style="font-size: 11px; color: #F5C451;">none yet · upload PDF ›</span>
+          </div>
+        </div>
+
+        <div style="text-align: center; font-size: 10px; color: #3d4654; margin-top: 26px;">Helix 0.4 · your data never trains anyone else's model</div>
+
+      </div>
+    </div>
+    </sc-if>
+
+    <!-- tonight's protocol sheet -->
+    <sc-if value="{{ showPlanSheet }}" hint-placeholder-val="{{ false }}">
+    <div style="position: absolute; inset: 0; z-index: 40; display: flex; flex-direction: column; justify-content: flex-end;">
+      <div onClick="{{ closeSheet }}" style="position: absolute; inset: 0; background: rgba(2,4,8,0.62); backdrop-filter: blur(2px);"></div>
+      <div style="position: relative; background: #0c1219; border: 1px solid rgba(255,255,255,0.10); border-bottom: none; border-radius: 28px 28px 54px 54px; padding: 14px 18px 26px; animation: hx-rise 0.35s cubic-bezier(.4,0,.2,1); max-height: 78%; overflow-y: auto;" class="hx">
+        <div style="width: 36px; height: 4px; border-radius: 4px; background: rgba(255,255,255,0.16); margin: 0 auto 12px;"></div>
+        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 4px;">
+          <span style="font-family: 'Bricolage Grotesque', sans-serif; font-size: 17px; font-weight: 800; color: #f1f4f8;">Tonight's downshift</span>
+          <span onClick="{{ closeSheet }}" style="width: 28px; height: 28px; border-radius: 999px; background: #1a212c; display: flex; align-items: center; justify-content: center; color: #8b95a3; font-size: 15px; cursor: pointer;" style-active="transform: scale(0.9)">×</span>
+        </div>
+        <div style="font-size: 11.5px; color: #8b95a3; line-height: 1.5; margin-bottom: 14px;">Built for a 62-recovery day with pickleball in it. If plans shift, this shifts.</div>
+        <div style="display: flex; flex-direction: column;">
+          <div style="display: flex; gap: 12px; padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.05);">
+            <span style="width: 42px; flex: none; font-size: 11.5px; font-weight: 700; color: #5FD17A; font-variant-numeric: tabular-nums;">14:00</span>
+            <div style="flex: 1;"><div style="font-size: 13px; font-weight: 600; color: #f1f4f8;">Caffeine cutoff</div><div style="font-size: 10.5px; color: #6b7585;">your lever: −19 min deep sleep when you slip</div></div>
+            <span style="font-size: 10px; color: #5FD17A; align-self: center;">reminder set ✓</span>
+          </div>
+          <div style="display: flex; gap: 12px; padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.05);">
+            <span style="width: 42px; flex: none; font-size: 11.5px; font-weight: 700; color: #cdd8ea; font-variant-numeric: tabular-nums;">19:30</span>
+            <div style="flex: 1;"><div style="font-size: 13px; font-weight: 600; color: #f1f4f8;">Pickleball ends</div><div style="font-size: 10.5px; color: #6b7585;">keep rallies fun, sprints few — load is near ceiling</div></div>
+          </div>
+          <div style="display: flex; gap: 12px; padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.05);">
+            <span style="width: 42px; flex: none; font-size: 11.5px; font-weight: 700; color: #cdd8ea; font-variant-numeric: tabular-nums;">20:30</span>
+            <div style="flex: 1;"><div style="font-size: 13px; font-weight: 600; color: #f1f4f8;">Kitchen closes</div><div style="font-size: 10.5px; color: #6b7585;">late meals blunt your overnight HR dip</div></div>
+          </div>
+          <div style="display: flex; gap: 12px; padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.05);">
+            <span style="width: 42px; flex: none; font-size: 11.5px; font-weight: 700; color: #cdd8ea; font-variant-numeric: tabular-nums;">21:45</span>
+            <div style="flex: 1;"><div style="font-size: 13px; font-weight: 600; color: #f1f4f8;">Hot shower, lights low</div><div style="font-size: 10.5px; color: #6b7585;">no magnesium tonight — off night for the experiment</div></div>
+            <span style="font-size: 10px; color: #F5C451; align-self: center;">exp. day 12</span>
+          </div>
+          <div style="display: flex; gap: 12px; padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.05);">
+            <span style="width: 42px; flex: none; font-size: 11.5px; font-weight: 700; color: #cdd8ea; font-variant-numeric: tabular-nums;">22:10</span>
+            <div style="flex: 1;"><div style="font-size: 13px; font-weight: 600; color: #f1f4f8;">Screens off</div><div style="font-size: 10.5px; color: #6b7585;">phone charges outside the bedroom — your −15% deep-sleep lever</div></div>
+          </div>
+          <div style="display: flex; gap: 12px; padding: 10px 0;">
+            <span style="width: 42px; flex: none; font-size: 11.5px; font-weight: 700; color: #82a0da; font-variant-numeric: tabular-nums;">22:40</span>
+            <div style="flex: 1;"><div style="font-size: 13px; font-weight: 600; color: #f1f4f8;">Lights out</div><div style="font-size: 10.5px; color: #6b7585;">repays 36 min of sleep debt → forecast 74 recovery</div></div>
+          </div>
+        </div>
+        <div style="display: flex; gap: 8px; margin-top: 14px;">
+          <div onClick="{{ closeSheet }}" style="flex: 1; text-align: center; font-size: 12px; font-weight: 700; color: #04201f; background: linear-gradient(150deg,#4DE1C4,#12A5C8); border-radius: 999px; padding: 10px 0; cursor: pointer;" style-active="transform: scale(0.97)">Set all reminders</div>
+          <div onClick="{{ goCoach }}" style="flex: 1; text-align: center; font-size: 12px; font-weight: 600; color: #cdd8ea; border: 1px solid rgba(255,255,255,0.12); border-radius: 999px; padding: 10px 0; cursor: pointer;" style-active="transform: scale(0.97)">Adjust with coach</div>
+        </div>
+      </div>
+    </div>
+    </sc-if>
+
+    <!-- HRV deep-dive sheet -->
+    <sc-if value="{{ showHrvSheet }}" hint-placeholder-val="{{ false }}">
+    <div style="position: absolute; inset: 0; z-index: 40; display: flex; flex-direction: column; justify-content: flex-end;">
+      <div onClick="{{ closeSheet }}" style="position: absolute; inset: 0; background: rgba(2,4,8,0.62); backdrop-filter: blur(2px);"></div>
+      <div style="position: relative; background: #0c1219; border: 1px solid rgba(255,255,255,0.10); border-bottom: none; border-radius: 28px 28px 54px 54px; padding: 14px 18px 26px; animation: hx-rise 0.35s cubic-bezier(.4,0,.2,1); max-height: 78%; overflow-y: auto;" class="hx">
+        <div style="width: 36px; height: 4px; border-radius: 4px; background: rgba(255,255,255,0.16); margin: 0 auto 12px;"></div>
+        <div style="display: flex; align-items: center; justify-content: space-between;">
+          <span style="font-family: 'Bricolage Grotesque', sans-serif; font-size: 17px; font-weight: 800; color: #f1f4f8;">HRV</span>
+          <span onClick="{{ closeSheet }}" style="width: 28px; height: 28px; border-radius: 999px; background: #1a212c; display: flex; align-items: center; justify-content: center; color: #8b95a3; font-size: 15px; cursor: pointer;" style-active="transform: scale(0.9)">×</span>
+        </div>
+        <div style="display: flex; align-items: flex-end; gap: 10px; margin-top: 4px;">
+          <span style="font-family: 'Bricolage Grotesque', sans-serif; font-size: 38px; font-weight: 800; line-height: 1; color: #f1f4f8; letter-spacing: -1px;">38.3<span style="font-size: 15px; color: #6b7585; font-family: -apple-system; font-weight: 600;"> ms</span></span>
+          <span style="font-size: 11.5px; color: #FF6B6B; font-weight: 700; margin-bottom: 4px;">▼ 12% vs your band</span>
+        </div>
+        <div style="background: #1a212c; border-radius: 14px; padding: 11px 13px; margin-top: 12px;">
+          <div style="font-size: 9.5px; font-weight: 700; letter-spacing: 1.1px; text-transform: uppercase; color: #8b95a3;">What you're seeing</div>
+          <div style="font-size: 11.5px; line-height: 1.55; color: #cdd8ea; margin-top: 5px;">HRV is the tiny variation in time between your heartbeats. Bigger variation = your nervous system is relaxed and ready; smaller = it's under strain. <span style="color: #FF6B6B; font-weight: 700;">▼ 12%</span> means last night's reading sits 12% below <em>your own</em> 30-day normal band — so your body has less recovery capacity today than usual. It's compared to you, not to other people.</div>
+        </div>
+        <!-- 30-day chart with band -->
+        <div style="position: relative; height: 84px; margin-top: 14px;">
+          <div style="position: absolute; left: 0; right: 0; top: 26px; height: 26px; background: rgba(77,225,196,0.07); border-top: 1px dashed rgba(77,225,196,0.4); border-bottom: 1px dashed rgba(77,225,196,0.4);"></div>
+          <svg viewBox="0 0 330 84" width="100%" height="84" preserveAspectRatio="none" style="position: relative;">
+            <polyline points="0,38 22,34 44,42 66,36 88,30 110,40 132,35 154,44 176,38 198,46 220,42 242,50 264,47 286,55 308,58 330,62" fill="none" stroke="#cdd8ea" stroke-width="1.8"></polyline>
+            <circle cx="330" cy="62" r="3.5" fill="#FF6B6B"></circle>
+          </svg>
+          <span style="position: absolute; right: 2px; top: 20px; font-size: 9px; color: var(--hx-accent-ink);">your band 34–46 ms</span>
+        </div>
+        <div style="display: flex; justify-content: space-between; font-size: 9px; color: #6b7585; margin-top: 2px;"><span>30 d ago</span><span>today</span></div>
+        <!-- drivers -->
+        <div style="font-size: 9.5px; font-weight: 700; letter-spacing: 1.1px; text-transform: uppercase; color: #8b95a3; margin: 16px 0 8px;">Why it's sliding — your data says</div>
+        <div style="display: flex; flex-direction: column; gap: 6px;">
+          <div style="display: flex; align-items: center; gap: 8px; font-size: 12px; color: #cdd8ea;"><span style="width: 7px; height: 7px; border-radius: 999px; background: #FF6B6B; flex: none;"></span><span style="flex: 1;">7-day training load up 18% — biggest correlate</span><span style="color: #6b7585; font-size: 10.5px;">r −0.61</span></div>
+          <div style="display: flex; align-items: center; gap: 8px; font-size: 12px; color: #cdd8ea;"><span style="width: 7px; height: 7px; border-radius: 999px; background: #F5C451; flex: none;"></span><span style="flex: 1;">Sleep debt −2h04 and growing</span><span style="color: #6b7585; font-size: 10.5px;">r −0.48</span></div>
+          <div style="display: flex; align-items: center; gap: 8px; font-size: 12px; color: #cdd8ea;"><span style="width: 7px; height: 7px; border-radius: 999px; background: #5FD17A; flex: none;"></span><span style="flex: 1;">Sauna evenings pull it back up</span><span style="color: #6b7585; font-size: 10.5px;">+4 ms next-day</span></div>
+        </div>
+        <div style="display: flex; align-items: flex-start; gap: 9px; background: #0e141d; border: 1px solid rgba(255,255,255,0.08); border-radius: 14px; padding: 12px 13px; margin-top: 14px;">
+          <img src="assets/helix-icon.png" alt="" style="width: 18px; height: 18px; border-radius: 999px; flex: none; margin-top: 1px;">
+          <span style="flex: 1; font-size: 11.5px; line-height: 1.5; color: #cdd8ea;">This is a loading dip, not a health signal — it tracks your training block, and your rebound after easy days is reliable. Watch it tomorrow after tonight's downshift.</span>
+        </div>
+        <div onClick="{{ askHrv }}" style="text-align: center; font-size: 12px; font-weight: 700; color: #04201f; background: linear-gradient(150deg,#4DE1C4,#12A5C8); border-radius: 999px; padding: 10px 0; margin-top: 12px; cursor: pointer;" style-active="transform: scale(0.97)">Ask coach about this</div>
+      </div>
+    </div>
+    </sc-if>
+
+    <!-- generic metric insight sheet -->
+    <sc-if value="{{ showMetricSheet }}" hint-placeholder-val="{{ false }}">
+    <div style="position: absolute; inset: 0; z-index: 40; display: flex; flex-direction: column; justify-content: flex-end;">
+      <div onClick="{{ closeSheet }}" style="position: absolute; inset: 0; background: rgba(2,4,8,0.62); backdrop-filter: blur(2px);"></div>
+      <div style="position: relative; background: #0c1219; border: 1px solid rgba(255,255,255,0.10); border-bottom: none; border-radius: 28px 28px 54px 54px; padding: 14px 18px 26px; animation: hx-rise 0.35s cubic-bezier(.4,0,.2,1); max-height: 78%; overflow-y: auto;" class="hx">
+        <div style="width: 36px; height: 4px; border-radius: 4px; background: rgba(255,255,255,0.16); margin: 0 auto 12px;"></div>
+        <div style="display: flex; align-items: center; justify-content: space-between;">
+          <span style="font-family: 'Bricolage Grotesque', sans-serif; font-size: 17px; font-weight: 800; color: #f1f4f8;">{{ miLabel }}</span>
+          <span onClick="{{ closeSheet }}" style="width: 28px; height: 28px; border-radius: 999px; background: #1a212c; display: flex; align-items: center; justify-content: center; color: #8b95a3; font-size: 15px; cursor: pointer;" style-active="transform: scale(0.9)">×</span>
+        </div>
+        <div style="display: flex; align-items: flex-end; gap: 10px; margin-top: 4px;">
+          <span style="font-family: 'Bricolage Grotesque', sans-serif; font-size: 38px; font-weight: 800; line-height: 1; color: #f1f4f8; letter-spacing: -1px;">{{ miValue }}<span style="font-size: 15px; color: #6b7585; font-family: -apple-system; font-weight: 600;">{{ miUnit }}</span></span>
+          <span style="font-size: 11.5px; color: {{ miDeltaColor }}; font-weight: 700; margin-bottom: 4px;">{{ miDelta }}</span>
+        </div>
+        <div style="background: #1a212c; border-radius: 14px; padding: 11px 13px; margin-top: 14px;">
+          <div style="font-size: 9.5px; font-weight: 700; letter-spacing: 1.1px; text-transform: uppercase; color: #8b95a3;">What you're seeing</div>
+          <div style="font-size: 11.5px; line-height: 1.55; color: #cdd8ea; margin-top: 5px;">{{ miWhat }}</div>
+        </div>
+        <div style="display: flex; align-items: flex-start; gap: 9px; background: #0e141d; border: 1px solid rgba(255,255,255,0.08); border-radius: 14px; padding: 12px 13px; margin-top: 10px;">
+          <img src="assets/helix-icon.png" alt="" style="width: 18px; height: 18px; border-radius: 999px; flex: none; margin-top: 1px;">
+          <span style="flex: 1; font-size: 11.5px; line-height: 1.55; color: #cdd8ea;">{{ miMeans }}</span>
+        </div>
+        <div onClick="{{ goCoach }}" style="text-align: center; font-size: 12px; font-weight: 700; color: #04201f; background: linear-gradient(150deg,#4DE1C4,#12A5C8); border-radius: 999px; padding: 10px 0; margin-top: 12px; cursor: pointer;" style-active="transform: scale(0.97)">Ask coach about this</div>
+      </div>
+    </div>
+    </sc-if>
+
+    <!-- edit sections sheet -->
+    <sc-if value="{{ showSectionsSheet }}" hint-placeholder-val="{{ false }}">
+    <div style="position: absolute; inset: 0; z-index: 40; display: flex; flex-direction: column; justify-content: flex-end;">
+      <div onClick="{{ closeSheet }}" style="position: absolute; inset: 0; background: rgba(2,4,8,0.62); backdrop-filter: blur(2px);"></div>
+      <div style="position: relative; background: #0c1219; border: 1px solid rgba(255,255,255,0.10); border-bottom: none; border-radius: 28px 28px 54px 54px; padding: 14px 18px 26px; animation: hx-rise 0.35s cubic-bezier(.4,0,.2,1); max-height: 78%; overflow-y: auto;" class="hx">
+        <div style="width: 36px; height: 4px; border-radius: 4px; background: rgba(255,255,255,0.16); margin: 0 auto 12px;"></div>
+        <div style="display: flex; align-items: center; justify-content: space-between;">
+          <span style="font-family: 'Bricolage Grotesque', sans-serif; font-size: 17px; font-weight: 800; color: #f1f4f8;">Edit sections</span>
+          <span onClick="{{ closeSheet }}" style="width: 28px; height: 28px; border-radius: 999px; background: #1a212c; display: flex; align-items: center; justify-content: center; color: #8b95a3; font-size: 15px; cursor: pointer;" style-active="transform: scale(0.9)">×</span>
+        </div>
+        <div style="font-size: 11px; color: #6b7585; margin-top: 4px;">Your Today screen, your order. Hide what you don't use — Helix still watches it in the background.</div>
+        <div style="display: flex; flex-direction: column; gap: 6px; margin-top: 14px;">
+          <sc-for list="{{ secRows }}" as="sr" hint-placeholder-count="9">
+            <div draggable="true" onDragStart="{{ sr.dragStart }}" onDragOver="{{ sr.dragOver }}" onDrop="{{ sr.drop }}" style="display: flex; align-items: center; gap: 10px; background: #1a212c; border-radius: 12px; padding: 8px 10px 8px 11px; cursor: grab;">
+              <span style="display: flex; flex-direction: column; gap: 2.5px; flex: none; padding: 4px 2px;"><span style="width: 14px; height: 1.5px; border-radius: 2px; background: #6b7585;"></span><span style="width: 14px; height: 1.5px; border-radius: 2px; background: #6b7585;"></span><span style="width: 14px; height: 1.5px; border-radius: 2px; background: #6b7585;"></span></span>
+              <span style="flex: 1; min-width: 0; font-size: 12.5px; font-weight: 600; color: {{ sr.labelColor }}; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{ sr.label }}</span>
+              <span onClick="{{ sr.toggle }}" style="width: 46px; text-align: center; font-size: 10.5px; font-weight: 700; color: {{ sr.eyeColor }}; border: 1px solid rgba(255,255,255,0.12); border-radius: 999px; padding: 5px 0; cursor: pointer; flex: none;" style-active="transform: scale(0.92)">{{ sr.eye }}</span>
+            </div>
+          </sc-for>
+        </div>
+        <div style="display: flex; gap: 8px; margin-top: 14px;">
+          <span onClick="{{ resetSections }}" style="flex: 1; text-align: center; font-size: 12px; font-weight: 700; color: #8b95a3; border: 1px solid rgba(255,255,255,0.14); border-radius: 999px; padding: 10px 0; cursor: pointer;" style-active="transform: scale(0.97)">Reset to default</span>
+          <span onClick="{{ closeSheet }}" style="flex: 1; text-align: center; font-size: 12px; font-weight: 700; color: #04201f; background: linear-gradient(150deg,#4DE1C4,#12A5C8); border-radius: 999px; padding: 10px 0; cursor: pointer;" style-active="transform: scale(0.97)">Done</span>
+        </div>
+      </div>
+    </div>
+    </sc-if>
+
+    <!-- meal log sheet -->
+    <sc-if value="{{ showMealSheet }}" hint-placeholder-val="{{ false }}">
+    <div style="position: absolute; inset: 0; z-index: 40; display: flex; flex-direction: column; justify-content: flex-end;">
+      <div onClick="{{ closeMeal }}" style="position: absolute; inset: 0; background: rgba(2,4,8,0.62); backdrop-filter: blur(2px);"></div>
+      <div style="position: relative; background: #0c1219; border: 1px solid rgba(255,255,255,0.10); border-bottom: none; border-radius: 28px 28px 54px 54px; padding: 14px 18px 26px; animation: hx-rise 0.35s cubic-bezier(.4,0,.2,1);">
+        <div style="width: 36px; height: 4px; border-radius: 4px; background: rgba(255,255,255,0.16); margin: 0 auto 12px;"></div>
+        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px;">
+          <span style="font-family: 'Bricolage Grotesque', sans-serif; font-size: 17px; font-weight: 800; color: #f1f4f8;">Log a meal</span>
+          <span onClick="{{ closeMeal }}" style="width: 28px; height: 28px; border-radius: 999px; background: #1a212c; display: flex; align-items: center; justify-content: center; color: #8b95a3; font-size: 15px; cursor: pointer;" style-active="transform: scale(0.9)">×</span>
+        </div>
+        <!-- input: say it any way -->
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <div style="flex: 1; min-height: 40px; border-radius: 14px; background: #0e141d; border: 1px solid rgba(255,255,255,0.12); display: flex; align-items: center; padding: 9px 14px; font-size: 13px; color: #f1f4f8;">chicken bowl with rice, extra guac<span style="display: inline-block; width: 2px; height: 15px; background: var(--hx-accent-ink); margin-left: 2px; animation: hx-pulse 1.1s steps(2) infinite;"></span></div>
+          <div style="width: 40px; height: 40px; border-radius: 14px; border: 1px solid rgba(255,255,255,0.12); display: flex; align-items: center; justify-content: center; flex: none; cursor: pointer;" style-active="transform: scale(0.92)"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="#cdd8ea" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8 h3 l2 -2.5 h6 L17 8 h3 v11 H4 z"></path><circle cx="12" cy="13" r="3.4"></circle></svg></div>
+        </div>
+        <div style="font-size: 10px; color: #6b7585; margin: 6px 2px 0;">Type it, say it, or snap it — Helix does the nutrition math.</div>
+        <!-- staged parse -->
+        <div style="background: #0e141d; border: 1px solid rgba(255,255,255,0.10); border-radius: 16px; padding: 13px 14px; margin-top: 12px; display: flex; flex-direction: column; gap: 9px;">
+          <div style="font-size: 10px; font-weight: 700; letter-spacing: 0.8px; text-transform: uppercase; color: #F5C451;">Helix read it as — tap ✎ to fix</div>
+          <div style="display: flex; flex-wrap: wrap; gap: 6px;">
+            <span style="font-size: 12px; color: #cdd8ea; background: #1a212c; border: 1px dashed rgba(255,255,255,0.2); border-radius: 8px; padding: 4px 10px; cursor: pointer;" style-hover="border-color: rgba(255,255,255,0.4)">Chicken bowl · 520 kcal ✎</span>
+            <span style="font-size: 12px; color: #cdd8ea; background: #1a212c; border: 1px dashed rgba(255,255,255,0.2); border-radius: 8px; padding: 4px 10px; cursor: pointer;" style-hover="border-color: rgba(255,255,255,0.4)">rice · 210 g ✎</span>
+            <span style="font-size: 12px; color: #cdd8ea; background: #1a212c; border: 1px dashed rgba(255,255,255,0.2); border-radius: 8px; padding: 4px 10px; cursor: pointer;" style-hover="border-color: rgba(255,255,255,0.4)">guac · +90 kcal ✎</span>
+            <span style="font-size: 12px; color: #cdd8ea; background: #1a212c; border: 1px dashed rgba(255,255,255,0.2); border-radius: 8px; padding: 4px 10px; cursor: pointer;" style-hover="border-color: rgba(255,255,255,0.4)">now · 12:40 ✎</span>
+          </div>
+          <div style="display: flex; gap: 12px; font-size: 11px; color: #8b95a3; font-variant-numeric: tabular-nums;">
+            <span>~820 kcal</span><span style="color: #cdd8ea;">P 42</span><span style="color: #5BA9F0;">C 96</span><span style="color: #F5C451;">F 28</span>
+          </div>
+          <div style="display: flex; align-items: center; gap: 7px; font-size: 11px; line-height: 1.45; color: #5FD17A; background: rgba(95,209,122,0.08); border-radius: 10px; padding: 8px 10px;">
+            <img src="assets/helix-icon.png" alt="" style="width: 15px; height: 15px; border-radius: 999px; flex: none;">
+            <span>Brings protein to 54 / 180 g — right on pace for a training day.</span>
+          </div>
+          <div style="display: flex; gap: 8px; margin-top: 2px;">
+            <div onClick="{{ confirmMeal }}" style="flex: 1; text-align: center; font-size: 12px; font-weight: 700; color: #04201f; background: linear-gradient(150deg,#4DE1C4,#12A5C8); border-radius: 999px; padding: 9px 0; cursor: pointer;" style-active="transform: scale(0.97)">Log it</div>
+            <div style="flex: 1; text-align: center; font-size: 12px; font-weight: 600; color: #cdd8ea; border: 1px solid rgba(255,255,255,0.12); border-radius: 999px; padding: 9px 0; cursor: pointer;" style-active="transform: scale(0.97)">Not quite…</div>
+          </div>
+        </div>
+        <!-- usual meals -->
+        <div style="font-size: 10px; color: #6b7585; margin: 12px 2px 6px;">Or one-tap a usual lunch</div>
+        <div style="display: flex; flex-wrap: wrap; gap: 6px;">
+          <span style="font-size: 11.5px; font-weight: 600; color: #cdd8ea; border: 1px solid rgba(255,255,255,0.14); border-radius: 999px; padding: 7px 12px; cursor: pointer;" style-hover="border-color: rgba(255,255,255,0.35)" style-active="transform: scale(0.94)">Chicken bowl <span style="color: #6b7585; font-size: 9.5px;">×8</span></span>
+          <span style="font-size: 11.5px; font-weight: 600; color: #cdd8ea; border: 1px solid rgba(255,255,255,0.14); border-radius: 999px; padding: 7px 12px; cursor: pointer;" style-hover="border-color: rgba(255,255,255,0.35)" style-active="transform: scale(0.94)">Eggs + toast <span style="color: #6b7585; font-size: 9.5px;">×6</span></span>
+          <span style="font-size: 11.5px; font-weight: 600; color: #cdd8ea; border: 1px solid rgba(255,255,255,0.14); border-radius: 999px; padding: 7px 12px; cursor: pointer;" style-hover="border-color: rgba(255,255,255,0.35)" style-active="transform: scale(0.94)">Poke bowl <span style="color: #6b7585; font-size: 9.5px;">×4</span></span>
+        </div>
+      </div>
+    </div>
+    </sc-if>
+
+    <!-- bottom nav -->
+    <div style="flex: none; height: 82px; border-top: 1px solid rgba(255,255,255,0.07); background: rgba(7,11,17,0.86); backdrop-filter: blur(14px); display: flex; align-items: flex-start; padding: 12px 10px 0; box-shadow: 0 -22px 50px -18px rgba(0,0,0,0.55); position: relative;">
+      <div onClick="{{ goToday }}" style="flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px; cursor: pointer;">
+        <div style="width: 44px; height: 28px; border-radius: 999px; background: {{ todayPillBg }}; display: flex; align-items: center; justify-content: center;">
+          <svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="{{ todayColor }}" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="8"></circle><circle cx="12" cy="12" r="2.5" fill="{{ todayColor }}" stroke="none"></circle></svg>
+        </div>
+        <span style="font-size: 10px; font-weight: 700; color: {{ todayColor }};">Today</span>
+      </div>
+      <div onClick="{{ goCoach }}" style="flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px; cursor: pointer;">
+        <div style="width: 44px; height: 28px; border-radius: 999px; background: {{ coachPillBg }}; display: flex; align-items: center; justify-content: center;">
+          <svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="{{ coachColor }}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6 h16 v10 h-9 l-4 4 v-4 h-3 z"></path></svg>
+        </div>
+        <span style="font-size: 10px; font-weight: 700; color: {{ coachColor }};">Coach</span>
+      </div>
+      <div onClick="{{ goLog }}" style="flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px; cursor: pointer;">
+        <div style="width: 44px; height: 28px; border-radius: 999px; background: {{ logPillBg }}; display: flex; align-items: center; justify-content: center;">
+          <svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="{{ logColor }}" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="8.5"></circle><path d="M12 8.5 v7 M8.5 12 h7"></path></svg>
+        </div>
+        <span style="font-size: 10px; font-weight: 700; color: {{ logColor }};">Log</span>
+      </div>
+      <div onClick="{{ goMe }}" style="flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px; cursor: pointer;">
+        <div style="width: 44px; height: 28px; border-radius: 999px; background: {{ mePillBg }}; display: flex; align-items: center; justify-content: center;">
+          <svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="{{ meColor }}" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="8" r="3.5"></circle><path d="M5 20 c1.5 -4 4 -5.5 7 -5.5 s5.5 1.5 7 5.5"></path></svg>
+        </div>
+        <span style="font-size: 10px; font-weight: 700; color: {{ meColor }};">Me</span>
+      </div>
+    </div>
+
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;: {&quot;width&quot;: 390, &quot;height&quot;: 880}, &quot;accent&quot;: {&quot;editor&quot;: &quot;color&quot;, &quot;default&quot;: &quot;#22C7C0&quot;, &quot;tsType&quot;: &quot;string&quot;, &quot;options&quot;: [&quot;#22C7C0&quot;, &quot;#F83058&quot;, &quot;#5BA9F0&quot;, &quot;#B78BFA&quot;], &quot;section&quot;: &quot;Theme&quot;}, &quot;motion&quot;: {&quot;editor&quot;: &quot;boolean&quot;, &quot;default&quot;: true, &quot;tsType&quot;: &quot;boolean&quot;, &quot;section&quot;: &quot;Theme&quot;}}">
+class Component extends DCLogic {
+  componentDidMount() {
+    this.applyAccent();
+    if (this.props.motion === false) return;
+    const ease = 'cubic-bezier(.4,0,.2,1)';
+    // staggered card entrance
+    document.querySelectorAll('[data-hx-rise]').forEach((el) => {
+      const i = +el.getAttribute('data-hx-rise');
+      el.animate(
+        [{ opacity: 0, transform: 'translateY(14px)' }, { opacity: 1, transform: 'translateY(0)' }],
+        { duration: 500, delay: 80 * i, easing: ease, fill: 'backwards' }
+      );
+    });
+    // ring sweeps
+    document.querySelectorAll('[data-hx-ring]').forEach((el) => {
+      el.animate(
+        [{ strokeDashoffset: 188.5 }, { strokeDashoffset: +el.getAttribute('data-hx-ring') }],
+        { duration: 900, delay: 200, easing: ease, fill: 'backwards' }
+      );
+    });
+    // macro bars grow
+    document.querySelectorAll('[data-hx-bar]').forEach((el) => {
+      el.animate([{ width: '0%' }, { width: el.getAttribute('data-hx-bar') + '%' }],
+        { duration: 700, delay: 350, easing: ease, fill: 'backwards' });
+    });
+    // number count-ups
+    document.querySelectorAll('[data-hx-count]').forEach((el) => {
+      const target = +el.getAttribute('data-hx-count');
+      const t0 = performance.now(), dur = 900;
+      const tick = (t) => {
+        const p = Math.min(1, (t - t0) / dur);
+        const e = 1 - Math.pow(1 - p, 3);
+        el.textContent = Math.round(target * e);
+        if (p < 1) requestAnimationFrame(tick);
+      };
+      requestAnimationFrame(tick);
+    });
+  }
+  componentDidUpdate() { this.applyAccent(); }
+  applyAccent() {
+    const map = {
+      '#22C7C0': ['#22C7C0', '#58E0D6', 'rgba(34,199,192,0.15)'],
+      '#F83058': ['#F83058', '#FF8098', 'rgba(248,48,88,0.15)'],
+      '#5BA9F0': ['#5BA9F0', '#8FC4F5', 'rgba(91,169,240,0.15)'],
+      '#B78BFA': ['#B78BFA', '#CDAFFB', 'rgba(183,139,250,0.15)'],
+    };
+    const [a, ink, soft] = map[this.props.accent] || map['#22C7C0'];
+    const r = document.documentElement.style;
+    r.setProperty('--hx-accent', a);
+    r.setProperty('--hx-accent-ink', ink);
+    r.setProperty('--hx-accent-soft', soft);
+  }
+  state = { tab: 'today', ctx: null, pickerOpen: false, plans: [{ id: 1, type: 'pickleball', hour: 18.5, note: 'unconfirmed · from chat' }] };
+  movePlan(id, dh) {
+    this.setState((s) => ({ plans: s.plans.map((p) => p.id === id ? Object.assign({}, p, { hour: Math.min(21.5, Math.max(15, p.hour + dh)) }) : p) }));
+  }
+  addPlan(type) {
+    const def = { pickleball: 18.5, run: 18, strength: 17.5, sauna: 20.5, drinks: 20, dinner: 19.5 };
+    this.setState((s) => ({ plans: s.plans.concat([{ id: Date.now(), type, hour: def[type] }]) }));
+  }
+  renderVals() {
+    const tab = this.state.tab;
+    // --- evening planner ---
+    const X = (h) => Math.round(((h - 6) / 18) * 330);
+    const fmt = (h) => Math.floor(h) + ':' + (h % 1 ? '30' : '00');
+    const kinds = {
+      pickleball: { label: 'Pickleball', color: '#B78BFA', peakY: 34, load: 7, cat: 'mixed', training: true },
+      run: { label: 'Easy run', color: '#5BA9F0', peakY: 30, load: 8, cat: 'cardio', training: true },
+      strength: { label: 'Strength', color: '#22C7C0', peakY: 28, load: 10, cat: 'strength', training: true },
+      sauna: { label: 'Sauna', color: '#5FD17A', peakY: 58, load: 2, cat: 'recovery', training: false },
+      drinks: { label: 'Drinks', color: '#FF6B6B', peakY: 50, load: 0, cat: '', training: false },
+      dinner: { label: 'Dinner out', color: '#F5C451', peakY: 52, load: 0, cat: '', training: false },
+    };
+    const sorted = this.state.plans.slice().sort((a, b) => a.hour - b.hour);
+    let sleepHour = 22.5;
+    let forecast = 74;
+    let hasDrinks = false;
+    sorted.forEach((p) => {
+      const k = kinds[p.type];
+      if (k.training) { sleepHour = Math.max(sleepHour, p.hour + 4); forecast -= Math.max(0, p.hour - 17.5) * 4; }
+      if (p.type === 'sauna') forecast += 2;
+      if (p.type === 'drinks') { hasDrinks = true; forecast -= 7 + Math.max(0, p.hour - 18); }
+      if (p.type === 'dinner' && p.hour >= 20) forecast -= 1;
+    });
+    sleepHour = Math.min(24, sleepHour);
+    forecast = Math.round(Math.min(78, Math.max(42, forecast)));
+    const endY = Math.round(Math.min(92, Math.max(72, 84 + (74 - forecast) * 0.5)));
+    let sleepX = X(sleepHour);
+    const sleepDotY = endY - 6;
+    const arcPastD = 'M0,64 C 30,30 55,22 85,26 C 98,28 108,32 118,36';
+    let d = 'M118,36 C 132,42 146,46 160,48';
+    let px = 160, py = 48;
+    sorted.forEach((p) => {
+      const k = kinds[p.type];
+      const x = Math.max(px + 10, X(p.hour));
+      const mx = Math.round(px + (x - px) / 2);
+      d += ' C ' + mx + ',' + py + ' ' + mx + ',' + k.peakY + ' ' + x + ',' + k.peakY;
+      px = x; py = k.peakY;
+    });
+    sleepX = Math.max(px + 10, sleepX);
+    const smx = Math.round(px + (sleepX - px) / 2);
+    d += ' C ' + smx + ',' + py + ' ' + smx + ',' + sleepDotY + ' ' + sleepX + ',' + sleepDotY;
+    if (sleepX < 328) d += ' C ' + (sleepX + 10) + ',' + (endY - 3) + ' 320,' + endY + ' 330,' + endY;
+    const arcCoachMsg = hasDrinks
+      ? 'Drinks tonight — expect ~15% less deep sleep and +2 bpm resting HR. Water between rounds and a 23:00 cutoff contains the damage. Forecast ' + forecast + '.'
+      : sorted.length === 0
+        ? 'Nothing planned — a quiet evening and 22:30 lights-out is your fastest flip for a 62-recovery day. Forecast ' + forecast + '.'
+        : forecast >= 70
+          ? 'Light evening. Lights-out around ' + fmt(sleepHour) + ' and tomorrow rebounds to ~' + forecast + '. Room for a bit more if you feel good.'
+          : forecast >= 63
+            ? 'Manageable — but finish the hard stuff early. Every 30 min later costs ~2\u20133 recovery points. Forecast ' + forecast + '.'
+            : 'That\u2019s a heavy evening on a 62-recovery day — your HR won\u2019t settle before bed. Forecast ' + forecast + '. I\u2019d move or drop one.';
+    const planRows = sorted.map((p) => {
+      const k = kinds[p.type];
+      return {
+        label: k.label,
+        note: p.note || '',
+        color: k.color,
+        time: fmt(p.hour),
+        chipLabel: k.label.toLowerCase() + (p.note ? '?' : ''),
+        leftPct: ((Math.max(168, X(p.hour)) / 330) * 100).toFixed(1) + '%',
+        topPct: ((k.peakY / 96) * 100).toFixed(1) + '%',
+        earlier: () => this.movePlan(p.id, -0.5),
+        later: () => this.movePlan(p.id, 0.5),
+        remove: () => this.setState((s) => ({ plans: s.plans.filter((q) => q.id !== p.id) })),
+      };
+    });
+    const freq = { strength: '×14', run: '×9', pickleball: '×7', sauna: '×5', dinner: '×4', drinks: '×3' };
+    const presets = Object.keys(kinds)
+      .sort((a, b) => parseInt(freq[b].slice(1)) - parseInt(freq[a].slice(1)))
+      .map((t) => ({ label: kinds[t].label, color: kinds[t].color, freq: freq[t], add: () => this.addPlan(t) }));
+    // --- coach context threads ---
+    const ctxMap = {
+      stress: { dot: '#FF6B6B', label: 'Stress', value: '82 \u00b7 high, sympathetic',
+        msg: 'That 82 tracks with your morning: strength at 6:19, two espressos by 9:40, and no real break since. It\u2019s sympathetic drive, not danger — but stacked on 62 recovery it\u2019s worth discharging before pickleball. Got 3 minutes for a physiological-sigh reset?',
+        chip1: 'Guide me through it now', chip2: 'Is this hurting tonight\u2019s sleep?' },
+      battery: { dot: '#cdd8ea', label: 'Body Battery', value: '34% \u00b7 draining fast',
+        msg: 'You\u2019re burning charge ~20% faster than a typical Thursday — the 6 am session plus this morning\u2019s stress is the combo. Protect a quiet block from 14:30\u201315:00 and you\u2019ll walk into pickleball with ~25% instead of ~15%.',
+        chip1: 'Block 14:30 in my calendar', chip2: 'What drains me most?' },
+      load: { dot: '#5FD17A', label: 'Load', value: '46 of 62 \u00b7 on track',
+        msg: 'You\u2019ve banked 31 of today\u2019s 38-point budget — the morning session was the big spend. If pickleball happens at 18:30 you\u2019ll land right at the ceiling, which is fine once. It\u2019s doing it three days straight that digs the hole.',
+        chip1: 'Show my 7-day trend', chip2: 'Plan a deload day' },
+      sleep: { dot: '#82a0da', label: 'Sleep', value: '74 \u00b7 debt \u22122h04',
+        msg: 'The debt built up over three short nights, not one bad one — that\u2019s why you feel it in the afternoons. You don\u2019t need to repay it all: two nights at your 22:40 lights-out clears ~80% of the performance cost.',
+        chip1: 'Build my repayment plan', chip2: 'Why do I wake at 4am?' },
+      hrv: { dot: '#FF6B6B', label: 'HRV', value: '38.3 ms \u00b7 12% under band',
+        msg: 'Your HRV slide lines up with the 18% jump in training load — it\u2019s adaptation strain, not illness (skin temp and resp rate would move together if it were). Hold aerobic-only until it re-enters your band; based on past blocks that\u2019s 2\u20133 easy days.',
+        chip1: 'Show me past blocks like this', chip2: 'What if it keeps dropping?' },
+      spo2w: { dot: '#5BA9F0', label: 'SpO\u2082 \u00d7 Weight', value: 'r \u22120.55 \u00b7 90 nights',
+        msg: 'Every kilo above 86 costs you overnight oxygen: your SpO\u2082 minimums drop as weight rises, and below 86 kg the 91\u201392% dips almost disappear. That pattern (with your snoring reports) is worth a sleep-apnea conversation with your doctor \u2014 and it makes the last 2 kg less about the mirror, more about breathing.',
+        chip1: 'What flips first if I lose 1 kg?', chip2: 'Prep questions for my doctor' },
+      rhrrec: { dot: '#FF6B6B', label: 'Resting HR \u00d7 Recovery', value: 'r \u22120.89 \u00b7 14 days',
+        msg: 'This is your tightest pattern: every 1 bpm your resting HR rises, recovery drops ~7 points the same morning. RHR moves before you feel anything \u2014 so an evening reading of 56+ is your early warning to cancel the morning session before your body cancels it for you.',
+        chip1: 'Alert me when RHR hits 56', chip2: 'What drives my RHR up?' },
+      recovery: { dot: '#F5C451', label: 'Recovery', value: '62 \u00b7 below base',
+        msg: '62 isn\u2019t a rest-day verdict — it\u2019s a keep-it-aerobic day. The drivers: 1h12 sleep debt and an 18% overnight HR dip (your norm is 25%). One early night usually flips this; your rebound pattern is strong.',
+        chip1: 'What flips it fastest?', chip2: 'Plan my evening' },
+    };
+    const ctx = ctxMap[this.state.ctx];
+    const active = 'var(--hx-accent-ink)', idle = '#8b95a3';
+    // Category palette — every sport maps to one of four categories.
+    const catColor = { strength: 'var(--hx-accent)', cardio: '#5BA9F0', mixed: '#B78BFA', recovery: '#5FD17A' };
+    const budget = 38;
+    const raw = [
+      { label: 'Gym · strength 06:19', category: 'strength', load: 18, planned: false },
+      { label: 'Walks · 4 × 15 min', category: 'cardio', load: 6, planned: false },
+    ];
+    sorted.forEach((p) => {
+      const k = kinds[p.type];
+      if (k.load > 0) raw.push({ label: k.label + (p.note ? '?' : '') + ' · ' + fmt(p.hour) + (p.note ? ' · unconfirmed' : ''), category: k.cat, load: k.load, planned: true });
+    });
+    const used = raw.reduce((s, a) => s + a.load, 0);
+    const left = budget - used;
+    // --- plain-language metric insights ---
+    const metricInfo = {
+      rhr: { label: 'Resting HR', value: '54', unit: ' bpm', delta: '\u25b2 2 bpm vs baseline', deltaColor: '#F5C451',
+        what: 'Your heart rate at complete rest, measured while you sleep. It rises when your body is working on something \u2014 training load, alcohol, short sleep, illness.',
+        means: '2 bpm above your usual 52 is a mild elevation. Together with the HRV dip it reads as \u201cstill absorbing the training block\u201d \u2014 not illness. One easy evening usually brings it back.' },
+      rec: { label: 'HR recovery', value: '31', unit: ' bpm/min', delta: '\u25b2 3 vs baseline', deltaColor: '#5FD17A',
+        what: 'How fast your heart rate falls in the first minute after hard effort. Faster drop = fitter, better-recovered heart.',
+        means: 'Up 3 on your baseline \u2014 your aerobic engine is improving even while HRV dips. That combination is the signature of productive training, not overreaching.' },
+      bp: { label: 'Blood pressure', value: '118/76', unit: '', delta: 'in your band \u2713', deltaColor: '#8b95a3',
+        what: 'Artery pressure when your heart beats (118) and rests (76). The metric here that matters most for long-term heart health \u2014 and the least about today.',
+        means: 'Squarely in your normal band. Helix watches the 90-day trend, not single readings \u2014 nothing to act on.' },
+      dur: { label: 'Sleep duration', value: '6h48', unit: '', delta: '\u25bc 42 min vs need', deltaColor: '#F5C451',
+        what: 'Time actually asleep last night \u2014 not time in bed. Your personal need, learned from your rebounds, is ~7h30.',
+        means: '42 minutes short. One short night is noise; it\u2019s the third in a row that\u2019s pushing your debt \u2014 which is why afternoons feel heavy.' },
+      debt: { label: 'Sleep debt (7 d)', value: '\u22122h04', unit: '', delta: 'growing', deltaColor: '#F5C451',
+        what: 'The running gap between the sleep you needed and the sleep you got over the last 7 nights. It behaves like a loan \u2014 it compounds, but you don\u2019t have to repay all of it.',
+        means: 'Two nights at your 22:40 lights-out clears ~80% of the performance cost. You don\u2019t need a 10-hour catch-up sleep.' },
+      eff: { label: 'Sleep efficiency', value: '91', unit: ' %', delta: '\u25b2 2% vs baseline', deltaColor: '#5FD17A',
+        what: 'The share of time in bed you were actually asleep. Above ~85% means falling asleep and staying asleep is not your problem.',
+        means: '91% says your sleep quality is fine \u2014 your issue is purely quantity. Earlier lights-out, not sleep hygiene, is your lever.' },
+      cons: { label: 'Sleep consistency', value: '68', unit: ' /100', delta: '\u25bc 9 vs baseline', deltaColor: '#FF6B6B',
+        what: 'How similar your bed and wake times are day to day. Your body clock rewards regularity almost as much as duration.',
+        means: 'The slide comes from two late nights this week. Irregular timing blunts deep sleep even when total hours look OK \u2014 this is your cheapest win.' },
+      vo2: { label: 'VO\u2082 max', value: '46.8', unit: '', delta: '\u25b2 0.4 this month', deltaColor: '#5FD17A',
+        what: 'The maximum oxygen your body can use per minute \u2014 the single best fitness number for long-term health. It moves slowly, over months.',
+        means: '46.8 puts you in the top ~20% for your age. The +0.4 says the training block is working; this is what you\u2019re buying with the HRV dip.' },
+      load7: { label: 'Training load (7 d)', value: '212', unit: '', delta: '\u25b2 18% vs your norm', deltaColor: '#F5C451',
+        what: 'Total training stress over the last 7 days, weighted by intensity. Compared against your 28-day norm \u2014 ramping faster than ~10% is where injuries live.',
+        means: '+18% is a sharp ramp, and it\u2019s the biggest driver of your HRV dip. Hold load flat this week and the recovery numbers follow.' },
+      steps: { label: 'Steps', value: '7,412', unit: '', delta: 'on pace \u2713', deltaColor: '#8b95a3',
+        what: 'Background movement outside workouts. For you it mostly matters as a proxy for not sitting all day.',
+        means: 'On pace for your usual ~10k. No action needed \u2014 your walks are already doing the job.' },
+      energy: { label: 'Active energy', value: '486', unit: ' kcal', delta: '\u25b2 9% vs baseline', deltaColor: '#5FD17A',
+        what: 'Calories burned through movement, above what your body burns at rest.',
+        means: 'Running ~9% hot this week \u2014 consistent with the heavier block. Worth matching with food: your protein target today assumes this burn.' },
+      weight: { label: 'Weight', value: '78.2', unit: ' kg', delta: '\u25bc 0.4 kg (30 d)', deltaColor: '#5FD17A',
+        what: 'Morning weight, smoothed over days \u2014 single readings swing \u00b11 kg on water alone, so Helix only trends it.',
+        means: 'A slow \u22120.4 kg over a heavy block while HR recovery improves = you\u2019re losing fat, not muscle. Right direction, right speed.' },
+      fat: { label: 'Body fat', value: '14.6', unit: ' %', delta: 'in your band \u2713', deltaColor: '#8b95a3',
+        what: 'Estimated fat share of body weight. Noisy day to day \u2014 only the monthly trend means anything.',
+        means: 'Stable in your band. Combined with the weight trend, your composition is quietly improving.' },
+      temp: { label: 'Skin temp', value: '+0.3', unit: ' \u00b0C dev', deltaColor: '#F5C451', delta: '\u25b2 0.3\u00b0 above band',
+        what: 'How far your overnight skin temperature sits from your personal norm. It jumps 1\u20132 days before you feel a cold coming.',
+        means: '+0.3\u00b0 alone is noise \u2014 a hot room or late meal does this. It only becomes signal if HRV and resp rate move with it tonight; Helix checks all three at 6 am.' },
+      resp: { label: 'Resp rate', value: '13.8', unit: ' /min', delta: 'in your band \u2713', deltaColor: '#8b95a3',
+        what: 'Breaths per minute while you sleep. Extremely stable for each person \u2014 which is why a small rise is one of the earliest illness flags.',
+        means: 'Dead in your band. This is the metric quietly ruling out illness while HRV and skin temp wobble.' },
+    };
+    // --- day history ---
+    const history = [
+      { key: 'fri', dow: 'Fri', date: 'Jul 3', rec: 78, recColor: '#5FD17A', sleep: '7h41', load: 21, note: 'Best day of the week — full night, easy run, HRV back in band.', gap: null },
+      { key: 'sat', dow: 'Sat', date: 'Jul 4', rec: 71, recColor: '#5FD17A', sleep: '7h12', load: 34, note: 'Strength + pickleball. Load at ceiling but recovery held.', gap: 'dinner not logged' },
+      { key: 'sun', dow: 'Sun', date: 'Jul 5', rec: 66, recColor: '#F5C451', sleep: '6h58', load: 12, note: 'Rest day, but late dinner (21:40) cut deep sleep 22%.', gap: null },
+      { key: 'mon', dow: 'Mon', date: 'Jul 6', rec: 64, recColor: '#F5C451', sleep: '6h51', load: 28, note: 'Debt starts here — first of three short nights.', gap: 'lunch not logged' },
+      { key: 'tue', dow: 'Tue', date: 'Jul 7', rec: 60, recColor: '#F5C451', sleep: '6h44', load: 31, note: 'Evening strength at 19:30 pushed lights-out to 23:50.', gap: null },
+      { key: 'wed', dow: 'Wed', date: 'Jul 8', rec: 58, recColor: '#FF6B6B', sleep: '6h39', load: 30, note: 'HRV first dropped out of band. Coach flagged the load ramp.', gap: 'no meals logged' },
+    ];
+    const hd = history.find((h) => h.key === this.state.histDay) || null;
+    const dayChips = history.map((h) => ({
+      dow: h.dow,
+      dotColor: h.recColor,
+      bg: hd && hd.key === h.key ? '#1a212c' : 'transparent',
+      border: hd && hd.key === h.key ? 'rgba(255,255,255,0.25)' : 'rgba(255,255,255,0.10)',
+      pick: () => this.setState({ histDay: h.key }),
+    }));
+    // --- suggested patterns (AI hypothesis queue) ---
+    const patDefs = [
+      { key: 'caff', pair: 'Caffeine after 14:00 × deep sleep', conf: 'strong signal', confColor: '#FF6B6B',
+        hyp: 'On the 9 days you had caffeine past 14:00, deep sleep averaged 31% lower that night.',
+        detail: 'Effect size ~−14 min of deep sleep per late coffee, and your 4 am wakes cluster on those nights. Your queued experiment (13:00 cutoff → HRV) will confirm causality — want me to also track deep sleep as an outcome?' },
+      { key: 'sauna', pair: 'Sauna evenings × next-day HRV', conf: 'promising', confColor: '#5FD17A',
+        hyp: 'After your 5 sauna evenings, HRV came in +4 ms above forecast the next morning.',
+        detail: 'Small sample (5 nights) but consistent direction every time. Two more sessions and I can call it. Cheapest recovery lever you have on the menu right now.' },
+      { key: 'dinner', pair: 'Dinner after 20:30 × overnight HR', conf: 'worth testing', confColor: '#F5C451',
+        hyp: 'Late dinners line up with a shallower overnight HR dip (16–18% vs your 25% norm).',
+        detail: 'Digestion is metabolic work — if your body is still processing food at 23:00, HR can\u2019t settle. A 19:30 kitchen-close for one week would give me a clean answer.' },
+      { key: 'walk', pair: 'Afternoon walks × stress score', conf: 'emerging', confColor: '#5BA9F0',
+        hyp: 'Days with a 15-min walk between 14:00–16:00 show stress ~11 points lower by evening.',
+        detail: 'Only 12 matched days so far, and walks might just mark lighter workdays. I can control for meeting load if you connect your calendar.' },
+    ];
+    const dismissed = this.state.patDismissed || [];
+    const patVisible = patDefs.filter((p) => dismissed.indexOf(p.key) < 0).slice(0, 2);
+    const patSuggestions = patVisible.map((p) => ({
+      pair: p.pair, conf: p.conf, confColor: p.confColor, hyp: p.hyp, detail: p.detail,
+      isOpen: this.state.patOpen === p.key,
+      toggle: () => this.setState((s) => ({ patOpen: s.patOpen === p.key ? null : p.key })),
+      dismiss: () => this.setState((s) => ({ patDismissed: (s.patDismissed || []).concat([p.key]), patOpen: null })),
+    }));
+    // --- editable sections ---
+    const secDefs = [
+      { key: 'status', label: 'Body status' },
+      { key: 'coach', label: 'Coach insight' },
+      { key: 'day', label: 'Your day, as a curve' },
+      { key: 'training', label: 'Training' },
+      { key: 'movement', label: 'Movement & sitting' },
+      { key: 'stress', label: 'Stress & Energy' },
+      { key: 'experiments', label: 'Experiments' },
+      { key: 'nutrition', label: 'Nutrition' },
+      { key: 'monitor', label: 'Health Monitor' },
+      { key: 'patterns', label: 'Patterns in your data' },
+    ];
+    const secOrder = this.state.secOrder || secDefs.map((s) => s.key);
+    const secHidden = this.state.secHidden || {};
+    const sec = {};
+    secDefs.forEach((s) => {
+      sec[s.key] = { order: secOrder.indexOf(s.key) + 1, disp: secHidden[s.key] ? 'none' : 'block' };
+    });
+    const secRows = secOrder.map((k, i) => {
+      const def = secDefs.find((s) => s.key === k);
+      const move = (dir) => this.setState((st) => {
+        const o = (st.secOrder || secDefs.map((s) => s.key)).slice();
+        const j = i + dir;
+        if (j < 0 || j >= o.length) return {};
+        const t = o[i]; o[i] = o[j]; o[j] = t;
+        return { secOrder: o };
+      });
+      return {
+        label: def.label,
+        hidden: !!secHidden[k],
+        eye: secHidden[k] ? 'show' : 'hide',
+        eyeColor: secHidden[k] ? '#6b7585' : '#5FD17A',
+        labelColor: secHidden[k] ? '#6b7585' : '#f1f4f8',
+        toggle: () => this.setState((st) => {
+          const h = Object.assign({}, st.secHidden || {});
+          h[k] = !h[k];
+          return { secHidden: h };
+        }),
+        up: () => move(-1),
+        down: () => move(1),
+        dragStart: (e) => {
+          this._dragFrom = i;
+          if (e && e.dataTransfer) { e.dataTransfer.effectAllowed = 'move'; try { e.dataTransfer.setData('text/plain', ''); } catch (err) {} }
+        },
+        dragOver: (e) => {
+          if (e && e.preventDefault) e.preventDefault();
+          const from = this._dragFrom;
+          if (from == null || from === i) return;
+          this._dragFrom = i;
+          this.setState((st) => {
+            const o = (st.secOrder || secDefs.map((s) => s.key)).slice();
+            const m = o.splice(from, 1)[0];
+            o.splice(i, 0, m);
+            return { secOrder: o };
+          });
+        },
+        drop: (e) => { if (e && e.preventDefault) e.preventDefault(); this._dragFrom = null; },
+      };
+    });
+    // proven pattern dismissal
+    const pd = this.state.provenDismissed || {};
+    const om = {};
+    Object.keys(metricInfo).forEach((k) => { om[k] = () => this.setState({ sheet: 'metric', metricKey: k }); });
+    const mi = metricInfo[this.state.metricKey] || metricInfo.rhr;
+    return {
+      om,
+      dayChips,
+      patSuggestions,
+      noPatLeft: patVisible.length === 0,
+      sec,
+      secRows,
+      showSectionsSheet: this.state.sheet === 'sections',
+      openSections: () => this.setState({ sheet: 'sections' }),
+      resetSections: () => this.setState({ secOrder: null, secHidden: null }),
+      showPatA: !pd.a,
+      showPatB: !pd.b,
+      dismissPatA: () => this.setState((s) => ({ provenDismissed: Object.assign({}, s.provenDismissed, { a: true }) })),
+      dismissPatB: () => this.setState((s) => ({ provenDismissed: Object.assign({}, s.provenDismissed, { b: true }) })),
+      showHist: !!hd,
+      histDow: hd ? hd.dow : '', histDate: hd ? hd.date : '',
+      histRec: hd ? hd.rec : '', histRecColor: hd ? hd.recColor : '#8b95a3',
+      histSleep: hd ? hd.sleep : '', histLoad: hd ? hd.load : '',
+      histNote: hd ? hd.note : '',
+      histGap: hd ? hd.gap : null,
+      hasGap: !!(hd && hd.gap),
+      backToToday: () => this.setState({ histDay: null }),
+      askSpo2w: () => this.setState({ tab: 'coach', ctx: 'spo2w' }),
+      askRhrRec: () => this.setState({ tab: 'coach', ctx: 'rhrrec' }),
+      showMetricSheet: this.state.sheet === 'metric',
+      miLabel: mi.label, miValue: mi.value, miUnit: mi.unit, miDelta: mi.delta, miDeltaColor: mi.deltaColor,
+      miWhat: mi.what, miMeans: mi.means,
+      showToday: tab === 'today',
+      showCoach: tab === 'coach',
+      showLog: tab === 'log',
+      showMe: tab === 'me',
+      showSettings: tab === 'settings',
+      goSettings: () => this.setState({ tab: 'settings' }),
+      goToday: () => this.setState({ tab: 'today' }),
+      goCoach: () => this.setState({ tab: 'coach', ctx: null, sheet: null }),
+      askStress: () => this.setState({ tab: 'coach', ctx: 'stress' }),
+      askBattery: () => this.setState({ tab: 'coach', ctx: 'battery' }),
+      askRecovery: () => this.setState({ tab: 'coach', ctx: 'recovery' }),
+      askLoad: () => this.setState({ tab: 'coach', ctx: 'load' }),
+      askSleep: () => this.setState({ tab: 'coach', ctx: 'sleep' }),
+      hasCtx: !!ctx,
+      noCtx: !ctx,
+      ctxDot: ctx ? ctx.dot : '#8b95a3',
+      ctxLabel: ctx ? ctx.label : '',
+      ctxValue: ctx ? ctx.value : '',
+      ctxMsg: ctx ? ctx.msg : '',
+      ctxChip1: ctx ? ctx.chip1 : '',
+      ctxChip2: ctx ? ctx.chip2 : '',
+      plans: planRows,
+      noPlans: planRows.length === 0,
+      presets,
+      pickerOpen: this.state.pickerOpen,
+      pickerToggleLabel: this.state.pickerOpen ? 'Done' : '+ Plan something',
+      togglePicker: () => this.setState((s) => ({ pickerOpen: !s.pickerOpen })),
+      sleepX, sleepDotY,
+      sleepTime: fmt(sleepHour),
+      forecast,
+      forecastColor: forecast >= 70 ? '#5FD17A' : forecast >= 63 ? '#F5C451' : '#FF6B6B',
+      arcCoachMsg,
+      arcPastD,
+      arcLineD: d,
+      arcFillD: arcPastD + d.replace('M118,36', '') + ' L330,96 L0,96 Z',
+      goLog: () => this.setState({ tab: 'log' }),
+      showMealSheet: !!this.state.mealSheet,
+      openMeal: () => this.setState({ mealSheet: true }),
+      closeMeal: () => this.setState({ mealSheet: false }),
+      confirmMeal: () => this.setState({ mealSheet: false, mealLogged: true }),
+      showPlanSheet: this.state.sheet === 'plan',
+      showHrvSheet: this.state.sheet === 'hrv',
+      openPlan: () => this.setState({ sheet: 'plan' }),
+      openHrv: () => this.setState({ sheet: 'hrv' }),
+      closeSheet: () => this.setState({ sheet: null }),
+      askHrv: () => this.setState({ sheet: null, tab: 'coach', ctx: 'hrv' }),
+      mealLogged: !!this.state.mealLogged,
+      logCount: this.state.mealLogged ? '5' : '4',
+      bar5: this.state.mealLogged ? 'var(--hx-accent)' : '#1a212c',
+      kcalToday: this.state.mealLogged ? '820' : '0',
+      nutriStatus: this.state.mealLogged ? 'lunch logged 12:40' : 'not logged today',
+      nutriStatusColor: this.state.mealLogged ? '#5FD17A' : '#FF6B6B',
+      inW: this.state.mealLogged ? '32%' : '2%',
+      outW: '73%',
+      netNote: this.state.mealLogged
+        ? 'On pace for a \u2212450 kcal day \u2014 inside your \u2212300 to \u2212500 band for the 85 kg goal. Protein is the gap to watch, not calories.'
+        : 'Burned ~1,890 kcal so far, but nothing logged on the "in" side \u2014 log lunch and I can tell you if today moves the 85 kg goal.',
+      pW: this.state.mealLogged ? '30%' : '7%', pLabel: this.state.mealLogged ? '54 / 180g' : '12 / 180g',
+      cW: this.state.mealLogged ? '48%' : '4%', cLabel: this.state.mealLogged ? '105 / 220g' : '9 / 220g',
+      fW: this.state.mealLogged ? '40%' : '5%', fLabel: this.state.mealLogged ? '32 / 80g' : '4 / 80g',
+      goMe: () => this.setState({ tab: 'me' }),
+      todayColor: tab === 'today' ? active : idle,
+      coachColor: tab === 'coach' ? active : idle,
+      logColor: tab === 'log' ? active : idle,
+      meColor: tab === 'me' ? active : idle,
+      todayPillBg: tab === 'today' ? 'var(--hx-accent-soft)' : 'transparent',
+      coachPillBg: tab === 'coach' ? 'var(--hx-accent-soft)' : 'transparent',
+      logPillBg: tab === 'log' ? 'var(--hx-accent-soft)' : 'transparent',
+      mePillBg: tab === 'me' ? 'var(--hx-accent-soft)' : 'transparent',
+      loadUsed: used,
+      loadBudget: budget,
+      loadLeftLabel: left > 0 ? left + ' left — keep it easy' : 'at ceiling',
+      activities: raw.map(a => ({
+        label: a.label,
+        category: a.category,
+        color: catColor[a.category],
+        pct: Math.round((a.load / budget) * 100) + '%',
+        opacity: a.planned ? 0.45 : 1,
+        load: (a.planned ? '~+' : '+') + a.load,
+      })),
+    };
+  }
+}
+</script>
+</body>
+</html>
