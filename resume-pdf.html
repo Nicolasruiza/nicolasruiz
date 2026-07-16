@@ -18,6 +18,7 @@
   <h1>Nicolas Ruiz — Resume</h1>
   <p id="status">Preparing your PDF…</p>
   <button onclick="makePdf()">Download again</button>
+  <p style="margin:18px 0 0;"><a href="Home.dc.html" style="color:#0071e3;font-size:14px;text-decoration:none;">← Back home</a></p>
 </div>
 <script>
 function makePdf(){
@@ -57,10 +58,17 @@ function makePdf(){
     text(role, 10, {color:GRAY, after:6});
     bullets.forEach(bullet);
   }
-  // Header
-  text('Nicolas Ruiz', 22, {bold:true, after:2});
-  text('Sr. Product Owner — Payments', 12, {color:BLUE, after:2});
-  text('Tangerine · Milton, Ontario, Canada · +1 647 883 2626 · nicolasruiz@gmail.com · linkedin.com/in/nicolasmruiz', 9.5, {color:GRAY, after:6});
+  // Header — name/title left, contact block right
+  doc.setFont('helvetica','bold'); doc.setFontSize(22); doc.setTextColor(...DARK);
+  doc.text('Nicolas Ruiz', M, y+6);
+  doc.setFont('helvetica','normal'); doc.setFontSize(9); doc.setTextColor(...GRAY);
+  const contact = ['Milton, ON · +1 647 883 2626', 'nicolasruiz@gmail.com', 'linkedin.com/in/nicolasmruiz', 'www.nicolasruiz.net'];
+  let cy = y - 6;
+  contact.forEach(l=>{ doc.text(l, M+CW, cy, {align:'right'}); cy += 11.5; });
+  y += 24;
+  doc.setFont('helvetica','normal'); doc.setFontSize(12); doc.setTextColor(...BLUE);
+  doc.text('Sr. Product Owner — Payments', M, y);
+  y = Math.max(y, cy - 11.5) + 14;
 
   heading('Profile');
   text('Senior Product Owner with 17 years of cross-industry delivery across Canada and Latin America, including 10 years in SAP consulting and 7+ years in Product Ownership roles within banking and fintech. Known for identifying operational patterns across data, process, and organizational structure, and translating them into roadmaps and operating models built to outlast the initiatives that created them — including the Scotiabank International Banking data consolidation model, the Technisys company-wide delivery methodology, and the Claro Colombia procurement redesign, all still active today. Consulting background instilled a discipline for structured thinking and risk management in environments with zero tolerance for failure, shaping a Product Owner practice grounded equally in analytical rigor and business pragmatism.', 10, {color:DARK});
@@ -74,8 +82,7 @@ function makePdf(){
   job('Tangerine','Mar 2025 – present','Sr. Product Owner — Payments',[
     'Delivered VISA OCT for domestic and cross-border transfers on time using VISA rails, guiding a newly formed team through MVP and incremental delivery to build platform expertise as the initiative progressed.',
     "Leading Tangerine's implementation of Payments Canada's Real-Time Rail (RTR) industry initiative — delivering incremental upgrades for Send and Receive 3.6, now advancing to 3.7.",
-    'Pioneered a centralized SharePoint documentation hub for the Payments team — synced with Teams (Calendar, Planner) and used as the model for adoption across the organization; produces newsletters recognized for clarity and engagement.',
-    'Built Claude-based artifacts for project estimation, status reporting, and newsletter production, reducing manual reporting effort.']);
+    'Pioneered a centralized SharePoint documentation hub for the Payments team, adopted as a model across the organization, with newsletters recognized for clarity and engagement. Extended the practice using Claude-based artifacts for project estimation and status reporting.']);
   job('Scotiabank','Mar 2023 – Mar 2025','Sr. Product Owner — Data & Analytics',[
     'Delivered a data consolidation initiative — previously attempted and abandoned multiple times — successfully integrating retail data from 9 Latin American countries into Canada and designing the operating model now being adopted as the standard across International Banking.',
     'Initiative drove the creation of new Retail analytics departments and is actively expanding into Risk, Wealth, and Commercial; analysis surfaced CAD 47M (4%) in expense reductions incorporated into the F25 Plan and shareholder reports. Also pioneered a centralized SharePoint documentation model — later adopted as a team standard.']);
@@ -88,7 +95,11 @@ function makePdf(){
   job('SAP Consulting','2006 – 2017','Business Consultant & CoE Supervisor',[
     'Re-engineered procurement and reverse logistics at Claro Colombia — cut procurement times by 66%, saving $750K USD/year in logistics and $180K USD in warehouse costs.',
     'Built and led a high-performing SAP support team, growing CSAT from 70% to 90% and eliminating a 2-year open backlog within months.']);
-  text('10 years of ERP implementations across telecoms, pharma, food processing, and financial services in Argentina, Colombia, Peru, Mexico, Chile, and Uruguay — every project delivered successfully.', 9.5, {italic:true, color:GRAY});
+  y += 2; ensure(30);
+  doc.setDrawColor(...BLUE); doc.setLineWidth(2);
+  const noteStart = y - 9;
+  text('10 years of ERP implementations across telecoms, pharma, food processing, and financial services in Argentina, Colombia, Peru, Mexico, Chile, and Uruguay — every project delivered successfully.', 9.5, {italic:true, color:GRAY, x:M+14, width:CW-14, after:4});
+  doc.line(M+3, noteStart, M+3, y-14);
 
   heading('Skills');
   text('Product: product ownership, roadmapping, backlog management, design thinking, UX discovery, impact mapping', 10);
