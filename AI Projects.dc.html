@@ -24,10 +24,8 @@
   a { color: #3E6AE1; text-decoration: none; }
   a:hover { color: #2d57cc; }
   @media (max-width: 760px) {
-    [data-nav] { padding: 0 16px !important; height: 48px !important; }
-    [data-nav-name] { letter-spacing: 0.12em !important; font-size: 11px !important; font-weight: 600 !important; }
-    [data-nav-links] { gap: 4px !important; }
-    [data-nav-links] a { padding: 6px 11px !important; font-size: 12px !important; }
+    [data-nav] { padding: 0 16px !important; height: auto !important; min-height: 48px !important; flex-wrap: wrap !important; gap: 8px !important; padding-top: 8px !important; padding-bottom: 8px !important; }
+    [data-nav-links] { gap: 12px !important; flex-wrap: wrap !important; }
     [data-head] { padding: 44px 20px 36px !important; }
     [data-head] h1 { font-size: 28px !important; margin-bottom: 12px !important; }
     [data-head] p { font-size: 14px !important; }
@@ -51,13 +49,13 @@
 </helmet>
 <div style="background:#fff;color:#393C41;font-size:14px;line-height:1.5;">
 
-  <nav data-nav style="position:sticky;top:0;z-index:200;background:rgba(255,255,255,0.78);backdrop-filter:blur(16px);border-bottom:1px solid #EEEEEE;height:52px;display:flex;align-items:center;justify-content:space-between;padding:0 52px;">
-    <span data-nav-name style="font-size:14px;font-weight:500;color:#171A20;letter-spacing:0.28em;">NICOLAS&nbsp;&nbsp;RUIZ</span>
-    <div data-nav-links style="display:flex;gap:8px;align-items:center;">
-      <a href="Home.dc.html" style="font-size:14px;font-weight:500;color:#5C5E62;padding:4px 14px;border-radius:4px;" style-hover="color:#171A20;background:#F4F4F4;">home</a>
-      <a href="AI Projects.dc.html" style="font-size:14px;font-weight:500;color:#171A20;background:#F4F4F4;padding:4px 14px;border-radius:4px;">ai projects</a>
-      <a href="mailto:nicolasruiz@gmail.com" style="font-size:14px;font-weight:500;color:#5C5E62;padding:4px 14px;border-radius:4px;" style-hover="color:#171A20;background:#F4F4F4;">let's talk</a>
-      <a href="resume-pdf.html" style="font-size:14px;font-weight:500;color:#fff;background:#171A20;padding:6px 16px;border-radius:4px;" style-hover="background:#393C41;color:#fff;">resume</a>
+  <nav data-nav style="position:sticky;top:0;z-index:200;background:rgba(0,0,0,0.8);backdrop-filter:saturate(180%) blur(20px);height:48px;display:flex;align-items:center;justify-content:space-between;padding:0 32px;">
+    <span style="font-size:14px;font-weight:600;color:#fff;letter-spacing:-0.28px;">Nicolas Ruiz</span>
+    <div data-nav-links style="display:flex;gap:24px;align-items:center;">
+      <a href="Home.dc.html" style="font-size:12px;color:rgba(255,255,255,0.8);" style-hover="color:#fff;">Home</a>
+      <a href="AI Projects.dc.html" style="font-size:12px;color:#fff;">AI Projects</a>
+      <a href="Home.dc.html#contact" style="font-size:12px;color:rgba(255,255,255,0.8);" style-hover="color:#fff;">Let's talk</a>
+      <a href="resume-pdf.html" style="display:inline-block;background:#0071e3;color:#fff;padding:4px 12px;border-radius:980px;font-size:12px;" style-hover="opacity:0.88;color:#fff;">Download PDF</a>
     </div>
   </nav>
 
