@@ -1,247 +1,30 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<script src="./support.js"></script>
-</head>
-<body>
-<x-dc>
-<helmet>
-<link rel="icon" href="/favicon.ico">
-<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png?v=2">
-<link rel="icon" type="image/png" sizes="16x16" href="favicon-16.png?v=2">
-<link rel="icon" type="image/svg+xml" href="favicon.svg?v=2">
-<link rel="apple-touch-icon" href="apple-touch-icon.png?v=2">
-<script>document.title = 'Me · Home';</script>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Nicolas Ruiz · Senior Product Owner</title>
+<link rel="icon" href="favicon.ico">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@500;600&display=swap" rel="stylesheet">
 <style>
-  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-font-smoothing: antialiased; }
-  body { background: #ffffff; font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Helvetica, Arial, sans-serif; }
-  a { color: #0066cc; text-decoration: none; }
-  a:hover { color: #0071e3; }
-  html { scroll-behavior: smooth; }
-  @media (max-width: 760px) {
-    [data-nav] { padding: 0 16px !important; height: auto !important; min-height: 48px !important; flex-wrap: wrap !important; gap: 8px !important; padding-top: 8px !important; padding-bottom: 8px !important; }
-    [data-nav-links] { gap: 12px !important; flex-wrap: wrap !important; }
-    [data-head] { padding: 64px 20px 56px !important; }
-    [data-head] h1 { font-size: 40px !important; }
-    [data-head] p { font-size: 16px !important; }
-    [data-head] [data-cta-row] { flex-direction: column !important; align-items: center !important; }
-    [data-head] [data-cta-row] a { width: 100% !important; max-width: 320px !important; justify-content: center !important; }
-    [data-head] [data-contact-row] { flex-direction: column !important; gap: 10px !important; }
-    [data-h2] { font-size: 28px !important; }
-    [data-stats] { flex-direction: column !important; max-width: 420px !important; }
-    [data-jobcard] { grid-template-columns: 1fr !important; gap: 6px !important; padding: 22px 20px !important; }
-    [data-jobcard] [data-period] { white-space: normal !important; }
-    [data-teasers] { grid-template-columns: 1fr !important; }
-    [data-modal-outer] { padding: 16px !important; }
-    [data-modal-inner] { padding: 30px 24px !important; }
-  }
+:root{--ink:#081a3a;--text:#34425a;--blue:#0b63f6;--blue2:#347ff8;--line:#e3eaf4;--soft:#f6f8fc;--white:#fff;--shadow:0 16px 46px rgba(10,35,80,.09)}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;font-family:'DM Sans',system-ui,sans-serif;color:var(--ink);background:#fff}a{text-decoration:none;color:inherit}.serif{font-family:'Playfair Display',Georgia,serif}.wrap{width:min(1180px,calc(100% - 64px));margin:auto}.nav{height:72px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #edf1f7;position:sticky;top:0;background:rgba(255,255,255,.92);backdrop-filter:blur(18px);z-index:50}.brand{display:flex;align-items:center;gap:12px;font-weight:700;letter-spacing:.02em}.mark{font-family:'Playfair Display';font-size:30px;color:var(--blue);letter-spacing:-.08em}.brand small{display:block;color:#7b879b;font-size:9px;letter-spacing:.18em;margin-top:2px}.links{display:flex;align-items:center;gap:30px;font-size:13px}.links a:hover{color:var(--blue)}.connect,.primary{background:var(--blue);color:#fff!important;border-radius:8px;padding:12px 18px;font-weight:600;box-shadow:0 8px 18px rgba(11,99,246,.18)}.hero{min-height:560px;position:relative;overflow:hidden}.hero:after{content:"";position:absolute;right:-12%;top:-30%;width:58%;height:135%;background:linear-gradient(135deg,transparent 30%,#f2f6fd 31%,#fff 72%);z-index:-1}.hero-grid{display:grid;grid-template-columns:1.08fr .92fr;align-items:end;min-height:560px;gap:48px}.eyebrow{font-size:12px;color:var(--blue);font-weight:700;letter-spacing:.13em;text-transform:uppercase;margin-bottom:18px}.hero h1{font-size:59px;line-height:1.03;letter-spacing:-.035em;margin:0 0 20px;max-width:650px;font-weight:500}.hero h1 em{font-style:normal;color:var(--blue)}.hero p{font-size:18px;line-height:1.65;color:var(--text);max-width:570px;margin:0}.actions{display:flex;align-items:center;gap:14px;margin-top:28px;flex-wrap:wrap}.secondary{border:1px solid #b8c8e2;border-radius:8px;padding:11px 18px;color:var(--ink);font-weight:600}.resume-link{font-size:13px;color:#6c7a91;text-decoration:underline;text-underline-offset:4px}.portrait{height:500px;display:flex;align-items:flex-end;justify-content:center}.portrait img{width:min(420px,100%);height:450px;object-fit:cover;object-position:center 16%;border-radius:36px 36px 0 0;filter:saturate(.92);box-shadow:0 22px 70px rgba(17,35,68,.13)}.trust{border-top:1px solid var(--line);border-bottom:1px solid var(--line);background:#fbfcfe}.trust-row{height:92px;display:grid;grid-template-columns:1.1fr repeat(4,1fr);align-items:center;text-align:center;gap:20px}.trust-label{font-size:10px;letter-spacing:.16em;color:#8b96a8;text-align:left}.org{font-size:22px;font-weight:700;color:#27344c}.org.scotia{color:#e51b2a}.org.tangerine{color:#f47721}.org.sofi{color:#16a8d5}.section{padding:76px 0}.title{text-align:center;font-size:34px;margin:0 0 34px;font-weight:500}.strengths{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}.strength{border:1px solid var(--line);border-radius:12px;padding:24px;background:#fff;min-height:152px}.icon{width:42px;height:42px;border-radius:50%;background:#edf4ff;color:var(--blue);display:grid;place-items:center;font-size:20px;margin-bottom:14px}.strength h3{font-family:'Playfair Display';font-size:19px;margin:0 0 9px}.strength p{font-size:13px;line-height:1.55;color:#69768b;margin:0}.timeline-section{padding:0 0 62px}.timeline{display:grid;grid-template-columns:repeat(4,1fr);position:relative;gap:20px}.timeline:before{content:"";position:absolute;left:7%;right:7%;top:15px;height:1px;background:#bccbe1}.job{position:relative;padding-top:37px;text-align:center}.job:before{content:"";position:absolute;width:11px;height:11px;border-radius:50%;top:10px;left:50%;transform:translateX(-50%);background:var(--blue);border:4px solid #eaf2ff}.job .years{color:var(--blue);font-size:12px;font-weight:700}.job h3{font-size:17px;margin:10px 0 4px}.job p{font-size:13px;color:#657188;margin:0}.achievements{padding:0 0 78px}.cards{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}.card{border:1px solid var(--line);border-left:3px solid var(--blue);border-radius:11px;padding:22px 20px;background:#fff;box-shadow:0 8px 28px rgba(20,47,88,.04)}.card h3{font-family:'Playfair Display';font-size:20px;line-height:1.18;margin:0 0 10px}.card strong{color:var(--blue)}.card p{font-size:13px;line-height:1.55;color:#6b778b;margin:0}.ai{background:linear-gradient(#fbfcff,#fff);border-top:1px solid var(--line);padding:70px 0}.ai-head{text-align:center;margin-bottom:26px}.ai-head h2{font-family:'Playfair Display';font-size:34px;margin:0 0 8px;font-weight:500}.ai-head p{margin:0;color:#738097;font-size:14px}.projects{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}.project{border:1px solid var(--line);border-radius:12px;background:#fff;padding:18px;min-height:126px;transition:.2s}.project:hover{transform:translateY(-3px);box-shadow:var(--shadow);border-color:#c8d8f1}.project .tag{font-size:10px;color:var(--blue);text-transform:uppercase;letter-spacing:.1em;font-weight:700}.project h3{font-family:'Playfair Display';font-size:17px;margin:10px 0 6px}.project p{font-size:12px;line-height:1.45;color:#768197;margin:0}.contact{padding:34px 0 60px}.contactbox{background:linear-gradient(120deg,#061936,#083678);color:#fff;border-radius:18px;padding:34px 40px;display:grid;grid-template-columns:1.15fr .9fr .9fr;gap:34px;align-items:center;overflow:hidden;position:relative}.contactbox:after{content:"";position:absolute;width:300px;height:100px;border:1px solid rgba(89,148,255,.22);border-radius:50%;bottom:-80px;left:44%;transform:rotate(-8deg)}.contactbox h2{font-size:32px;line-height:1.1;margin:0;font-weight:500}.contactbox h2 em{color:#4e8cff;font-style:normal}.contactbox p,.contactbox a{font-size:13px;color:#d9e3f4;line-height:1.9}.mobile-toggle{display:none}.footer{text-align:center;color:#9aa4b4;font-size:11px;padding:8px 0 30px}
+@media(max-width:900px){.wrap{width:min(100% - 34px,760px)}.links{display:none}.mobile-toggle{display:block;border:0;background:none;font-size:24px}.hero-grid{grid-template-columns:1fr;min-height:auto;padding-top:60px}.hero{min-height:auto}.hero h1{font-size:46px}.portrait{height:auto;margin-top:12px}.portrait img{height:380px;width:100%;max-width:430px}.trust-row{grid-template-columns:repeat(2,1fr);height:auto;padding:24px 0}.trust-label{grid-column:1/-1;text-align:center}.strengths,.cards{grid-template-columns:1fr 1fr}.timeline{grid-template-columns:1fr;gap:0}.timeline:before{left:10px;right:auto;top:6px;bottom:6px;width:1px;height:auto}.job{text-align:left;padding:0 0 26px 34px}.job:before{left:10px;top:5px}.projects{grid-template-columns:1fr 1fr}.contactbox{grid-template-columns:1fr}}
+@media(max-width:560px){.nav{height:62px}.hero-grid{padding-top:42px}.hero h1{font-size:39px}.hero p{font-size:16px}.portrait img{height:320px}.section{padding:58px 0}.strengths,.cards,.projects{grid-template-columns:1fr}.trust-row{grid-template-columns:1fr 1fr}.org{font-size:17px}.title,.ai-head h2{font-size:29px}.contactbox{padding:28px 24px}.contactbox h2{font-size:28px}}
 </style>
-</helmet>
-<div style="background:#fff;color:#1d1d1f;font-size:17px;line-height:1.47;letter-spacing:-0.374px;">
-
-  <nav data-nav style="position:sticky;top:0;z-index:200;background:rgba(0,0,0,0.8);backdrop-filter:saturate(180%) blur(20px);height:48px;display:flex;align-items:center;justify-content:space-between;padding:0 32px;">
-    <span style="font-size:14px;font-weight:600;color:#fff;letter-spacing:-0.28px;">Nicolas Ruiz</span>
-    <div data-nav-links style="display:flex;gap:24px;align-items:center;">
-      <a href="Home.dc.html" style="font-size:12px;color:#fff;">Home</a>
-      <a href="AI Projects.dc.html" style="font-size:12px;color:rgba(255,255,255,0.8);" style-hover="color:#fff;">AI Projects</a>
-      <a href="#contact" style="font-size:12px;color:rgba(255,255,255,0.8);" style-hover="color:#fff;">Let's talk</a>
-      <a href="resume-pdf.html" style="display:inline-block;background:#0071e3;color:#fff;padding:4px 12px;border-radius:980px;font-size:12px;" style-hover="opacity:0.88;color:#fff;">Download PDF</a>
-    </div>
-  </nav>
-
-  <!-- HERO — black, cinematic -->
-  <header data-head data-fx="rise" style="background:#000;color:#fff;text-align:center;padding:110px 32px 96px;">
-    <div style="font-size:17px;font-weight:600;color:#2997ff;letter-spacing:-0.374px;margin-bottom:14px;">Senior Product Owner</div>
-    <h1 style="font-family:'Inter',sans-serif;font-size:64px;font-weight:600;line-height:1.07;letter-spacing:-0.28px;color:#fff;">Nicolas Ruiz</h1>
-    <p style="font-size:21px;font-weight:400;line-height:1.38;letter-spacing:0.231px;color:rgba(255,255,255,0.8);max-width:640px;margin:22px auto 0;">18 years of product delivery across banking and fintech.<br>In my spare time, I build working products with AI.</p>
-    <div data-cta-row style="display:flex;gap:14px;justify-content:center;margin-top:34px;">
-      <a href="resume-pdf.html" style="display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:0 22px;background:#0071e3;color:#fff;font-size:17px;border-radius:980px;" style-hover="opacity:0.9;color:#fff;">Download resume (PDF)</a>
-      <a href="AI Projects.dc.html" style="display:inline-flex;align-items:center;gap:6px;min-height:44px;padding:0 22px;font-size:17px;color:#2997ff;border:1px solid rgba(255,255,255,0.28);border-radius:980px;" style-hover="border-color:#fff;color:#2997ff;">See my AI projects ›</a>
-    </div>
-    <div data-contact-row style="display:flex;gap:26px;justify-content:center;margin-top:26px;font-size:14px;letter-spacing:-0.224px;">
-      <a href="mailto:nicolasruiz@gmail.com" style="color:rgba(255,255,255,0.65);" style-hover="color:#fff;">nicolasruiz@gmail.com</a>
-      <a href="https://www.linkedin.com/in/nicolasmruiz" target="_blank" style="color:rgba(255,255,255,0.65);" style-hover="color:#fff;">linkedin/nicolasmruiz</a>
-      <sc-if value="{{ showPhone }}" hint-placeholder-val="{{ true }}"><span style="color:rgba(255,255,255,0.65);">+1 647 883 2626</span></sc-if>
-    </div>
-  </header>
-
-  <!-- WHO I AM — light gray -->
-  <section id="about" style="background:#f5f5f7;padding:104px 32px;">
-    <div style="max-width:700px;margin:0 auto;text-align:center;">
-      <h2 data-h2 data-fx="rise" style="font-size:40px;font-weight:600;line-height:1.1;letter-spacing:normal;color:#1d1d1f;margin-bottom:26px;">Product delivery,<br>grounded in evidence.</h2>
-      <p data-fx="rise" style="font-size:19px;color:rgba(0,0,0,0.8);line-height:1.5;margin-bottom:18px;">Senior Product Owner with 18 years of cross-industry delivery across Canada and Latin America. My work sits between business and technology: roadmaps grounded in evidence, and operating models designed to keep working after the project ends.</p>
-      <p data-fx="rise" style="font-size:17px;color:rgba(0,0,0,0.56);line-height:1.5;">A decade of SAP consulting across six countries, then eight years as a Product Owner at Scotiabank, Technisys, and Tangerine — from a next-gen CRM vision to a nine-country data consolidation.</p>
-    </div>
-    <div data-stats style="display:flex;gap:16px;justify-content:center;max-width:900px;margin:56px auto 0;">
-      <div data-fx="rise" data-fx-delay="0" style="flex:1;background:#fff;border-radius:18px;padding:34px 28px;text-align:center;box-shadow:rgba(0,0,0,0.06) 3px 5px 30px 0px;">
-        <div style="font-size:48px;font-weight:600;line-height:1.07;color:#1d1d1f;">18 yrs</div>
-        <div style="font-size:14px;color:rgba(0,0,0,0.48);letter-spacing:-0.224px;margin-top:8px;">product delivery, banking &amp; fintech</div>
-      </div>
-      <div data-fx="rise" data-fx-delay="120" style="flex:1;background:#fff;border-radius:18px;padding:34px 28px;text-align:center;box-shadow:rgba(0,0,0,0.06) 3px 5px 30px 0px;">
-        <div style="font-size:48px;font-weight:600;line-height:1.07;color:#1d1d1f;">$47M</div>
-        <div style="font-size:14px;color:rgba(0,0,0,0.48);letter-spacing:-0.224px;margin-top:8px;">savings surfaced through data analysis</div>
-      </div>
-      <div data-fx="rise" data-fx-delay="240" style="flex:1;background:#fff;border-radius:18px;padding:34px 28px;text-align:center;box-shadow:rgba(0,0,0,0.06) 3px 5px 30px 0px;">
-        <div style="font-size:48px;font-weight:600;line-height:1.07;color:#1d1d1f;">6</div>
-        <div style="font-size:14px;color:rgba(0,0,0,0.48);letter-spacing:-0.224px;margin-top:8px;">countries delivered in, every project shipped</div>
-      </div>
-    </div>
-  </section>
-
-  <!-- EXPERIENCE — light -->
-  <section id="experience" style="background:#fff;padding:104px 32px;">
-    <div style="max-width:820px;margin:0 auto;">
-      <h2 data-h2 data-fx="rise" style="font-size:40px;font-weight:600;line-height:1.1;color:#1d1d1f;text-align:center;margin-bottom:52px;">Experience</h2>
-      <sc-for list="{{ jobs }}" as="j" hint-placeholder-count="5">
-        <div onClick="{{ j.open }}" data-jobcard data-fx="rise" style="background:#fff;border-radius:18px;padding:28px 32px;margin-bottom:14px;display:grid;grid-template-columns:170px 1fr;gap:26px;box-shadow:rgba(0,0,0,0.05) 3px 5px 30px 0px;cursor:pointer;" style-hover="box-shadow:rgba(0,0,0,0.12) 3px 8px 34px 0px;">
-          <div data-period style="font-size:14px;color:rgba(0,0,0,0.48);letter-spacing:-0.224px;white-space:nowrap;">{{ j.period }}</div>
-          <div>
-            <div style="display:flex;justify-content:space-between;align-items:baseline;gap:12px;">
-              <div style="font-size:21px;font-weight:600;line-height:1.19;color:#1d1d1f;">{{ j.company }}</div>
-              <span style="font-size:13px;color:#0066cc;letter-spacing:-0.224px;white-space:nowrap;">Details ›</span>
-            </div>
-            <div style="font-size:14px;color:rgba(0,0,0,0.48);letter-spacing:-0.224px;margin:3px 0 10px;">{{ j.role }}</div>
-            <p style="font-size:15px;color:rgba(0,0,0,0.8);line-height:1.47;">{{ j.line }}</p>
-          </div>
-        </div>
-      </sc-for>
-      <sc-if value="{{ modalJob }}" hint-placeholder-val="{{ false }}">
-        <div data-modal-outer onClick="{{ closeModal }}" style="position:fixed;inset:0;z-index:500;background:rgba(0,0,0,0.5);backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:center;padding:32px;">
-          <div onClick="{{ stopClick }}" style="background:#fff;border-radius:24px;max-width:640px;width:100%;max-height:80vh;overflow:auto;padding:44px 48px;box-shadow:rgba(0,0,0,0.3) 0 24px 80px;">
-            <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:16px;">
-              <div>
-                <div style="font-size:28px;font-weight:600;line-height:1.14;color:#1d1d1f;">{{ modalJob.company }}</div>
-                <div style="font-size:15px;color:rgba(0,0,0,0.48);margin-top:4px;">{{ modalJob.role }} · {{ modalJob.period }}</div>
-              </div>
-              <button onClick="{{ closeModal }}" style="border:none;background:#f5f5f7;color:#1d1d1f;width:32px;height:32px;border-radius:980px;font-size:15px;cursor:pointer;flex:none;">✕</button>
-            </div>
-            <div style="margin-top:22px;display:flex;flex-direction:column;gap:14px;">
-              <sc-for list="{{ modalJob.bullets }}" as="b" hint-placeholder-count="2">
-                <div style="display:flex;gap:12px;">
-                  <span style="width:6px;height:6px;border-radius:99px;background:#0071e3;flex:none;margin-top:8px;"></span>
-                  <p style="font-size:15px;color:rgba(0,0,0,0.8);line-height:1.47;">{{ b }}</p>
-                </div>
-              </sc-for>
-            </div>
-            <a href="resume-pdf.html" style="display:inline-flex;align-items:center;margin-top:26px;font-size:14px;color:#0066cc;">Full resume (PDF) ›</a>
-          </div>
-        </div>
-      </sc-if>
-      <div data-fx="rise" style="text-align:center;margin-top:36px;">
-        <a href="resume-pdf.html" style="display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:0 22px;background:#1d1d1f;color:#fff;font-size:17px;border-radius:980px;" style-hover="opacity:0.85;color:#fff;">Download resume (PDF)</a>
-      </div>
-    </div>
-  </section>
-
-  <!-- AI PROJECTS — black, cinematic tiles -->
-  <section style="background:#000;padding:104px 32px;">
-    <div style="max-width:980px;margin:0 auto;">
-      <div data-fx="rise" style="text-align:center;margin-bottom:14px;">
-        <h2 data-h2 style="font-size:40px;font-weight:600;line-height:1.1;color:#fff;">Built on my own time.</h2>
-        <p style="font-size:19px;color:rgba(255,255,255,0.56);margin-top:14px;">Personal projects, designed and built end-to-end with AI.</p>
-        <a href="AI Projects.dc.html" style="display:inline-block;margin-top:10px;font-size:17px;color:#2997ff;">See all case studies ›</a>
-      </div>
-      <div data-teasers style="display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:44px;">
-        <sc-for list="{{ teasers }}" as="p" hint-placeholder-count="6">
-          <a href="{{ p.href }}" data-fx="rise" data-fx-delay="{{ p.delay }}" style="display:block;background:#1a1a1c;border-radius:18px;padding:34px 30px;color:inherit;" style-hover="background:#242426;color:inherit;">
-            <div style="font-size:12px;font-weight:600;color:#2997ff;letter-spacing:0.4px;text-transform:uppercase;margin-bottom:10px;">{{ p.kind }}</div>
-            <div style="font-size:24px;font-weight:600;line-height:1.14;color:#fff;margin-bottom:10px;">{{ p.name }}</div>
-            <p style="font-size:14px;color:rgba(255,255,255,0.56);line-height:1.43;letter-spacing:-0.224px;">{{ p.blurb }}</p>
-          </a>
-        </sc-for>
-      </div>
-    </div>
-  </section>
-
-  <!-- CONTACT — black -->
-  <section id="contact" style="background:#000;padding:104px 32px;text-align:center;">
-    <h2 data-h2 data-fx="rise" style="font-size:40px;font-weight:600;line-height:1.1;color:#fff;margin-bottom:14px;">Let's talk.</h2>
-    <p data-fx="rise" style="font-size:19px;color:rgba(255,255,255,0.56);margin-bottom:34px;">Open to remote Sr. Product Owner roles.</p>
-    <div data-fx="rise" style="display:flex;gap:14px;justify-content:center;flex-wrap:wrap;">
-      <a href="mailto:nicolasruiz@gmail.com" style="display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:0 24px;background:#0071e3;color:#fff;font-size:17px;border-radius:980px;" style-hover="opacity:0.9;color:#fff;">Email me</a>
-      <a href="https://www.linkedin.com/in/nicolasmruiz" target="_blank" style="display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:0 24px;color:#2997ff;font-size:17px;border:1px solid rgba(255,255,255,0.28);border-radius:980px;" style-hover="border-color:#fff;color:#2997ff;">LinkedIn</a>
-    </div>
-    <sc-if value="{{ showPhone }}" hint-placeholder-val="{{ true }}"><div data-fx="rise" style="margin-top:24px;font-size:14px;color:rgba(255,255,255,0.48);letter-spacing:-0.224px;">+1 647 883 2626 · Milton, Ontario · Canada</div></sc-if>
-  </section>
-
-  <footer style="background:#f5f5f7;padding:20px 32px;display:flex;justify-content:space-between;align-items:center;">
-    <span style="font-size:12px;color:rgba(0,0,0,0.48);letter-spacing:-0.12px;">Nicolas Ruiz — 2026</span>
-    <span style="font-size:12px;color:rgba(0,0,0,0.48);letter-spacing:-0.12px;">Milton, Ontario · Canada</span>
-  </footer>
-</div>
-</x-dc>
-<script type="text/x-dc" data-dc-script data-props="{&quot;showPhone&quot;: {&quot;editor&quot;: &quot;boolean&quot;, &quot;default&quot;: true, &quot;tsType&quot;: &quot;boolean&quot;, &quot;section&quot;: &quot;Contact&quot;}}">
-class Component extends DCLogic {
-  state = { modal: null };
-  componentDidMount() {
-    const els = Array.from(document.querySelectorAll('[data-fx]'));
-    els.forEach(el => {
-      el.style.opacity = '0';
-      el.style.transform = 'translateY(34px)';
-      el.style.transition = 'opacity .9s cubic-bezier(.25,.1,.25,1), transform .9s cubic-bezier(.25,.1,.25,1)';
-    });
-    const io = new IntersectionObserver(entries => {
-      entries.forEach(e => {
-        if (!e.isIntersecting) return;
-        const el = e.target, d = parseInt(el.getAttribute('data-fx-delay') || '0', 10);
-        setTimeout(() => { el.style.opacity = '1'; el.style.transform = 'none'; }, d);
-        io.unobserve(el);
-      });
-    }, { threshold: 0.15 });
-    els.forEach(el => io.observe(el));
-  }
-  renderVals() {
-    const teasers = [
-      { kind: 'Health · iOS concept', name: 'Cadence', anchor: 'cadence', blurb: 'Reads bloodwork, sleep, and activity together and turns them into one clear daily plan.' },
-      { kind: 'Health · AI coach', name: 'Helix', anchor: 'helix', blurb: 'Tracks recovery, training load, and supplements through conversation, with staged confirm-before-write logging.' },
-      { kind: 'Health · Data analysis', name: 'Bloodwork Analysis', anchor: 'bloodwork', blurb: 'Eight lab panels from 2021–2026 consolidated into per-marker cards, trends, and a prioritized action plan.' },
-      { kind: 'Delivery tooling', name: 'Initiative Cost Estimator', anchor: 'estimator', blurb: 'Team composition, timelines, and cost scenarios with an exportable client-ready report.' },
-      { kind: 'Analytics', name: 'Executive Dashboard', anchor: 'dashboard', blurb: 'Sprint-level status, risks, and trends computed from raw input files.' },
-      { kind: 'Personal finance', name: 'P&L Dashboard', anchor: 'pnl', blurb: 'Personal P&L computed from raw bank statements, with budget tracking and an advisor panel.' },
-    ].map((t, i) => ({ ...t, delay: (i % 2) * 120, href: 'AI Projects.dc.html#' + t.anchor }));
-    const anchors = ['tangerine', 'scotiabank-data', 'technisys', 'scotiabank-crm', 'sap'];
-    const jobs = [
-      { period: 'Mar 2025 – present', company: 'Tangerine', role: 'Sr. Product Owner — Payments',
-        line: 'Leading payments for Tangerine\'s digital bank.' },
-      { period: 'Mar 2023 – Mar 2025', company: 'Scotiabank', role: 'Sr. Product Owner — Data & Analytics',
-        line: 'Led the retail data consolidation of 9 Latin American countries into Canada.' },
-      { period: 'Jul 2021 – Feb 2023', company: 'Technisys', role: 'Agile Coach',
-        line: 'Co-owned the company-wide agile delivery methodology.' },
-      { period: 'May 2017 – Jul 2021', company: 'Scotiabank', role: 'Product Owner & Scrum Master — Retail CRM',
-        line: 'Led product and agile practice for Retail CRM across international banking.' },
-      { period: '2006 – 2017', company: 'SAP Consulting', role: 'Business Consultant & CoE Supervisor',
-        line: 'A decade of ERP consulting across six countries in Latin America.' },
-    ];
-    const bullets = [
-      ['Delivered VISA OCT for domestic and cross-border transfers on time using VISA rails, guiding a newly formed team through MVP and incremental delivery to build platform expertise as the initiative progressed.',
-       "Leading the implementation of Payments Canada's Real-Time Rail (RTR) industry initiative — delivering incremental upgrades for Send and Receive 3.6, now advancing to 3.7.",
-       'Pioneered a centralized SharePoint documentation hub for the Payments team — synced with Teams and used as the model for adoption across the organization.',
-       'Built Claude-based artifacts for project estimation, status reporting, and newsletter production, reducing manual reporting effort.'],
-      ['Delivered a data consolidation initiative — previously attempted and abandoned multiple times — integrating retail data from 9 Latin American countries into Canada and designing the operating model now adopted as the standard across International Banking.',
-       'Analysis surfaced CAD 47M (4%) in expense reductions incorporated into the F25 Plan and shareholder reports; initiative drove new Retail analytics departments, now expanding into Risk, Wealth, and Commercial.'],
-      ["Designed and documented the organization's end-to-end delivery methodology — adopted company-wide — compressing client Discovery from 5 months to 2–3 weeks and reducing per-project costs by USD 30K/quarter.",
-       'Methodology drove customer satisfaction to 90%+ while a multi-country estimation model cut time and cost deviations by 50%.'],
-      ['As Scrum Master, elevated a high-potential team\'s agile practice through hands-on coaching — earning top-5 recognition among all agile teams at Scotiabank.',
-       'As Product Owner, conceived a next-generation CRM vision — cross-channel leads, AI-driven next best action — secured CAD 3M in funding, deployed in Chile and expanding regionally.'],
-      ['10 years of ERP implementations across telecoms, pharma, food processing, and financial services in six countries — every project delivered successfully.',
-       'Re-engineered procurement and reverse logistics at Claro Colombia — cut procurement times by 66%, saving $750K USD/year in logistics and $180K USD in warehouse costs.',
-       'Built and led a high-performing SAP support team, growing CSAT from 70% to 90% and eliminating a 2-year backlog within months.'],
-    ];
-    const withOpen = jobs.map((j, i) => ({ ...j, bullets: bullets[i], open: () => this.setState({ modal: i }) }));
-    const modalJob = this.state.modal != null ? withOpen[this.state.modal] : null;
-    return {
-      teasers, jobs: withOpen, modalJob, never: false,
-      closeModal: () => this.setState({ modal: null }),
-      stopClick: (e) => e.stopPropagation(),
-      showPhone: this.props.showPhone ?? true,
-    };
-  }
-}
-</script>
+</head>
+<body>
+<nav class="nav"><div class="wrap" style="display:flex;align-items:center;justify-content:space-between"><a class="brand" href="#home"><span class="mark">NR</span><span>NICOLAS RUIZ<small>PRODUCT LEADER</small></span></a><div class="links"><a href="#home">Home</a><a href="#experience">Experience</a><a href="#achievements">Achievements</a><a href="AI Projects.dc.html">AI Projects</a><a href="resume-pdf.html">Resume</a><a href="#contact">Contact</a><a class="connect" href="mailto:nicolasruiz@gmail.com">Let's connect →</a></div><button class="mobile-toggle" onclick="document.getElementById('mobileNav').hidden=!document.getElementById('mobileNav').hidden">☰</button></div></nav>
+<div id="mobileNav" hidden style="position:sticky;top:62px;z-index:49;background:#fff;border-bottom:1px solid #e8edf5;padding:16px 22px"><div style="display:grid;gap:14px;font-size:14px"><a href="#experience">Experience</a><a href="#achievements">Achievements</a><a href="AI Projects.dc.html">AI Projects</a><a href="resume-pdf.html">Resume</a><a href="#contact">Contact</a></div></div>
+<header class="hero" id="home"><div class="wrap hero-grid"><div style="align-self:center;padding-bottom:28px"><div class="eyebrow">Senior Product Owner</div><h1 class="serif">Building products that create <em>measurable impact.</em></h1><p>18 years across banking and fintech, turning complex problems into clear product strategy, aligned teams, and measurable business results.</p><div class="actions"><a class="primary" href="#experience">View experience →</a><a class="secondary" href="AI Projects.dc.html">Explore AI projects →</a></div><div style="margin-top:18px"><a class="resume-link" href="resume-pdf.html">↓ Download resume</a></div></div><div class="portrait"><img src="https://avatars.githubusercontent.com/u/141341194?v=4" alt="Nicolas Ruiz"></div></div></header>
+<section class="trust"><div class="wrap trust-row"><div class="trust-label">TRUSTED BY LEADING ORGANIZATIONS</div><div class="org scotia">Scotiabank</div><div class="org tangerine">Tangerine</div><div class="org">Technisys</div><div class="org sofi">SoFi</div></div></section>
+<section class="section"><div class="wrap"><h2 class="title serif">Core strengths</h2><div class="strengths"><div class="strength"><div class="icon">⌖</div><h3>Strategy & Discovery</h3><p>Turning research, data and stakeholder needs into clear product direction.</p></div><div class="strength"><div class="icon">◎</div><h3>Product Leadership</h3><p>Aligning cross-functional teams around outcomes, priorities and customer value.</p></div><div class="strength"><div class="icon">↗</div><h3>Execution & Delivery</h3><p>Moving from idea to shipped capability with disciplined, incremental delivery.</p></div><div class="strength"><div class="icon">▥</div><h3>Data-Driven Impact</h3><p>Using evidence to surface opportunities, make decisions and measure results.</p></div></div></div></section>
+<section class="timeline-section" id="experience"><div class="wrap"><h2 class="title serif">Career timeline</h2><div class="timeline"><div class="job"><div class="years">2017–2021</div><h3>Scotiabank</h3><p>iCRM / Product Owner</p></div><div class="job"><div class="years">2021–2023</div><h3>Technisys / SoFi</h3><p>Agile Coach / Product Owner</p></div><div class="job"><div class="years">2023–2025</div><h3>Scotiabank</h3><p>Data / Analytics Product Owner</p></div><div class="job"><div class="years">2025–Present</div><h3>Tangerine</h3><p>Product Owner</p></div></div></div></section>
+<section class="achievements" id="achievements"><div class="wrap"><h2 class="title serif">Selected achievements</h2><div class="cards"><div class="card"><h3><strong>CAD 3M</strong> iCRM investment in Chile</h3><p>Created the next-generation CRM vision and secured cross-border backing for rollout.</p></div><div class="card"><h3>Discovery from <strong>5 months to 2–3 weeks</strong></h3><p>Designed an end-to-end delivery methodology adopted across Technisys.</p></div><div class="card"><h3>Surfaced <strong>CAD 47M</strong> in expense reductions</h3><p>Led analysis around a nine-country data consolidation and operating model.</p></div><div class="card"><h3>Delivered payments change at <strong>Tangerine</strong></h3><p>Shipped VISA OCT and now leading incremental Real-Time Rail delivery.</p></div></div></div></section>
+<section class="ai"><div class="wrap"><div class="ai-head"><h2>AI Projects</h2><p>Personal products and tools I design and build on my own time.</p></div><div class="projects"><a class="project" href="AI Projects.dc.html#cadence"><div class="tag">Health · iOS</div><h3>Cadence</h3><p>Bloodwork, sleep and activity translated into a daily health plan.</p></a><a class="project" href="AI Projects.dc.html#helix"><div class="tag">Health · AI coach</div><h3>Helix</h3><p>Conversational recovery, training-load and supplement tracking.</p></a><a class="project" href="AI Projects.dc.html#bloodwork"><div class="tag">Health · Analytics</div><h3>Bloodwork Analysis Dashboard</h3><p>Multi-year lab trends, context and prioritized actions in one view.</p></a><a class="project" href="AI Projects.dc.html#estimator"><div class="tag">Delivery tooling</div><h3>Initiative Cost Estimator</h3><p>Team, timeline and cost scenarios with an exportable report.</p></a><a class="project" href="AI Projects.dc.html#dashboard"><div class="tag">Analytics</div><h3>Executive Dashboard</h3><p>Sprint-level status, risk and trends from raw input files.</p></a><a class="project" href="AI Projects.dc.html#worldcup"><div class="tag">Sports</div><h3>World Cup 2026 Companion</h3><p>Schedules, standings, match links and finished-game highlights.</p></a><a class="project" href="AI Projects.dc.html#pnl"><div class="tag">Personal finance</div><h3>P&amp;L Dashboard</h3><p>Net worth, budgets and spending analysis from raw statements.</p></a><a class="project" href="AI Projects.dc.html"><div class="tag">Explore</div><h3>See all AI work →</h3><p>Working prototypes, screens and additional GitHub experiments.</p></a></div></div></section>
+<section class="contact" id="contact"><div class="wrap"><div class="contactbox"><h2 class="serif">Let's build something <em>meaningful together.</em></h2><div><p><a href="mailto:nicolasruiz@gmail.com">✉ nicolasruiz@gmail.com</a><br><a target="_blank" href="https://www.linkedin.com/in/nicolasmruiz">in linkedin.com/in/nicolasmruiz</a></p></div><div><p>Open to meaningful product conversations and collaborations.</p><a class="connect" href="mailto:nicolasruiz@gmail.com" style="display:inline-block;margin-top:4px">Let's connect →</a></div></div></div></section>
+<div class="footer">© 2026 Nicolas Ruiz</div>
 </body>
 </html>
