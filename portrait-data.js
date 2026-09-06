@@ -149,4 +149,24 @@
     panel.querySelectorAll('a').forEach(a => a.addEventListener('click', closeMenu));
     document.addEventListener('keydown', e => { if (e.key === 'Escape') closeMenu(); });
   }
+
+  const projectRail = document.querySelector('.projects-grid');
+  const projectCards = projectRail ? [...projectRail.querySelectorAll('.project')] : [];
+  if (projectCards.length) {
+    const focusProject = card => projectCards.forEach(item => item.classList.toggle('marquee-active', item === card));
+    focusProject(projectCards[0]);
+    let projectTimer;
+    projectRail.addEventListener('scroll', () => {
+      if (!matchMedia('(max-width:560px)').matches) return;
+      clearTimeout(projectTimer);
+      projectTimer = setTimeout(() => {
+        const center = projectRail.getBoundingClientRect().left + projectRail.clientWidth / 2;
+        const focused = projectCards.reduce((best, card) =>
+          Math.abs(card.getBoundingClientRect().left + card.offsetWidth / 2 - center) <
+          Math.abs(best.getBoundingClientRect().left + best.offsetWidth / 2 - center) ? card : best
+        );
+        focusProject(focused);
+      }, 90);
+    }, { passive: true });
+  }
 })();
