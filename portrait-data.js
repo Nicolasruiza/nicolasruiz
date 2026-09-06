@@ -80,9 +80,9 @@
         width:100%!important;
         height:100%!important;
         object-fit:cover!important;
-        object-position:center 16%!important;
-        transform:scale(1.18)!important;
-        transform-origin:center 18%!important;
+        object-position:center top!important;
+        transform:scale(1.08)!important;
+        transform-origin:center top!important;
         -webkit-mask-image:none!important;
         mask-image:none!important;
       }
