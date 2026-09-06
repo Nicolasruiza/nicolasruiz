@@ -150,6 +150,40 @@
     document.addEventListener('keydown', e => { if (e.key === 'Escape') closeMenu(); });
   }
 
+  const worldCupCard = document.getElementById('world-cup');
+  if (worldCupCard) {
+    worldCupCard.classList.add('application-card');
+
+    if (!worldCupCard.querySelector('.status-pill.live')) {
+      const pill = document.createElement('span');
+      pill.className = 'status-pill live';
+      pill.textContent = 'Live application';
+      worldCupCard.prepend(pill);
+    }
+
+    const directImage = [...worldCupCard.children].find(el => el.tagName === 'IMG');
+    if (directImage && !worldCupCard.querySelector(':scope > .project-media')) {
+      const media = document.createElement('div');
+      media.className = 'project-media';
+      directImage.before(media);
+      media.appendChild(directImage);
+    }
+
+    const body = worldCupCard.querySelector('.project-body');
+    if (body && !body.querySelector('.open-app')) {
+      const open = document.createElement('span');
+      open.className = 'open-app';
+      open.textContent = 'Open application →';
+      const tags = body.querySelector('.tags');
+      if (tags) body.insertBefore(open, tags);
+      else body.appendChild(open);
+    }
+
+    worldCupCard.querySelectorAll('.tag').forEach(tag => {
+      if (/open live site/i.test(tag.textContent || '')) tag.remove();
+    });
+  }
+
   const projectRail = document.querySelector('.projects-grid');
   const projectCards = projectRail ? [...projectRail.querySelectorAll('.project')] : [];
   if (projectCards.length) {
