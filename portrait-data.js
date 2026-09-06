@@ -63,12 +63,15 @@
       .hero-grid{gap:0!important;}
       .hero-copy{position:relative;z-index:2;padding-bottom:0!important;}
       .hero-actions{position:relative;z-index:3;}
-      .portrait{height:330px!important;margin-top:-18px!important;overflow:visible!important;position:relative;z-index:1;}
+      .portrait{height:300px!important;margin-top:0!important;overflow:hidden!important;position:relative;z-index:1;}
       .portrait img[data-portrait]{
-        transform:scale(1.18)!important;
-        object-position:center 14%!important;
-        -webkit-mask-image:linear-gradient(to bottom,transparent 0%,rgba(0,0,0,.35) 5%,#000 16%,#000 100%);
-        mask-image:linear-gradient(to bottom,transparent 0%,rgba(0,0,0,.35) 5%,#000 16%,#000 100%);
+        width:100%!important;
+        height:100%!important;
+        object-fit:contain!important;
+        object-position:center bottom!important;
+        transform:none!important;
+        -webkit-mask-image:none!important;
+        mask-image:none!important;
       }
     }
   `;
