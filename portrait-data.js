@@ -63,13 +63,14 @@
       .hero-grid{gap:0!important;}
       .hero-copy{position:relative;z-index:2;padding-bottom:0!important;}
       .hero-actions{position:relative;z-index:3;}
-      .portrait{height:300px!important;margin-top:0!important;overflow:hidden!important;position:relative;z-index:1;}
+      .portrait{height:285px!important;margin-top:0!important;overflow:hidden!important;position:relative;z-index:1;}
       .portrait img[data-portrait]{
         width:100%!important;
         height:100%!important;
-        object-fit:contain!important;
-        object-position:center bottom!important;
-        transform:none!important;
+        object-fit:cover!important;
+        object-position:center 18%!important;
+        transform:scale(1.18)!important;
+        transform-origin:center 18%!important;
         -webkit-mask-image:none!important;
         mask-image:none!important;
       }
