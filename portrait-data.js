@@ -1,9 +1,9 @@
 (() => {
   const files = [
-    'profile-inline.txt',
-    'profile-inline-2.txt',
-    'profile-inline-3.txt',
-    'profile-inline-4.txt'
+    'profile-inline.txt?v=20260930-1',
+    'profile-inline-2.txt?v=20260930-1',
+    'profile-inline-3.txt?v=20260930-1',
+    'profile-inline-4.txt?v=20260930-1'
   ];
 
   const portraits = document.querySelectorAll('[data-portrait]');
