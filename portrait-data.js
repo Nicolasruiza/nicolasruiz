@@ -74,15 +74,15 @@
       .hero-copy{position:relative;z-index:2;padding-bottom:0!important;}
       .hero-actions,.actions,.cta-actions{position:relative;z-index:3;gap:10px!important;}
       .hero-actions .btn,.actions .btn,.cta-actions .btn{min-height:47px;padding:12px 16px;}
-      .portrait{height:285px!important;margin-top:0!important;overflow:hidden!important;position:relative;z-index:1;}
+      .portrait{height:320px!important;margin-top:0!important;overflow:hidden!important;position:relative;z-index:1;}
       .hero-copy:has(.hero-actions)+.portrait{margin-top:24px!important;}
       .portrait img[data-portrait]{
         width:100%!important;
         height:100%!important;
-        object-fit:cover!important;
-        object-position:center top!important;
-        transform:scale(1.08)!important;
-        transform-origin:center top!important;
+        object-fit:contain!important;
+        object-position:center bottom!important;
+        transform:scale(1.03)!important;
+        transform-origin:center bottom!important;
         -webkit-mask-image:none!important;
         mask-image:none!important;
       }
