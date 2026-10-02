@@ -50,4 +50,5 @@ jobs:
             exit 0
           fi
           git commit -m "Refresh generated resume PDF"
+          git pull --rebase origin main
           git push
