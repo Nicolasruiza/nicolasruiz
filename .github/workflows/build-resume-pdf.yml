@@ -1,0 +1,53 @@
+name: Build Resume PDF
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "resume-print.html"
+      - ".github/workflows/build-resume-pdf.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Generate PDF from resume HTML
+        shell: bash
+        run: |
+          set -euo pipefail
+          CHROME="$(command -v google-chrome || command -v google-chrome-stable || command -v chromium || command -v chromium-browser || true)"
+          if [ -z "$CHROME" ]; then
+            sudo apt-get update
+            sudo apt-get install -y chromium-browser || sudo apt-get install -y chromium
+            CHROME="$(command -v chromium-browser || command -v chromium)"
+          fi
+          mkdir -p output/pdf
+          "$CHROME" \
+            --headless \
+            --no-sandbox \
+            --disable-gpu \
+            --no-pdf-header-footer \
+            --virtual-time-budget=8000 \
+            --print-to-pdf="$GITHUB_WORKSPACE/output/pdf/Nicolas-Ruiz-Resume.pdf" \
+            "file://$GITHUB_WORKSPACE/resume-print.html"
+          test -s output/pdf/Nicolas-Ruiz-Resume.pdf
+
+      - name: Commit refreshed PDF
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add output/pdf/Nicolas-Ruiz-Resume.pdf
+          if git diff --cached --quiet; then
+            echo "PDF unchanged"
+            exit 0
+          fi
+          git commit -m "Refresh generated resume PDF"
+          git push
