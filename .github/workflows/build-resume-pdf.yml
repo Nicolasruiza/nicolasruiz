@@ -37,11 +37,6 @@ jobs:
             --print-to-pdf="$GITHUB_WORKSPACE/output/pdf/Nicolas-Ruiz-Resume.pdf" \
             "file://$GITHUB_WORKSPACE/resume-print.html"
           test -s output/pdf/Nicolas-Ruiz-Resume.pdf
-          sudo apt-get update
-          sudo apt-get install -y poppler-utils
-          rm -f output/pdf/resume-preview*.png
-          pdftoppm -png -r 120 output/pdf/Nicolas-Ruiz-Resume.pdf output/pdf/resume-preview
-          test -s output/pdf/resume-preview-1.png
 
       - name: Commit refreshed PDF
         shell: bash
@@ -49,7 +44,7 @@ jobs:
           set -euo pipefail
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add -A output/pdf/Nicolas-Ruiz-Resume.pdf output/pdf/resume-preview*.png
+          git add output/pdf/Nicolas-Ruiz-Resume.pdf
           if git diff --cached --quiet; then
             echo "PDF unchanged"
             exit 0
