@@ -1,5 +1,6 @@
 # Site editing instructions
 
+- Distinguish a request to critique or retrospect from a request to change the site. Do not edit or publish the site in response to feedback unless the user asks for a change.
 - Translate each user request into a short acceptance checklist before editing. Preserve exact constraints such as count, proportions, wording, and whether a claim is verified.
 - Inspect the actual source and assets before changing content or layout. Do not invent product capabilities, employment facts, or download behavior.
 - For visual changes, render and inspect the affected section at desktop, tablet, and phone widths. Check the whole card, neighboring content, text contrast, clipping, and horizontal overflow. Do not treat dimensions or a successful build as visual approval.
