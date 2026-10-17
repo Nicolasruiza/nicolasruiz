@@ -16,6 +16,7 @@ try {
           await route.fulfill({ status: response.status, headers: Object.fromEntries(response.headers), body: Buffer.from(await response.arrayBuffer()) });
         });
         const page = await context.newPage();
+        const heroMeasurements = {};
         for (const path of ['/', '/contact.html']) {
           await page.goto(`https://portfolio.test${path}`);
           await page.evaluate(() => document.fonts.ready);
@@ -25,11 +26,24 @@ try {
           if (country === 'CA' && path !== '/') assert.ok(!/colombia/i.test(body), name);
           const bounds = await page.evaluate(() => {
             const hero = document.querySelector('.hero').getBoundingClientRect();
+            const grid = document.querySelector('.hero-grid').getBoundingClientRect();
             const copy = document.querySelector('.hero-copy, .contact-card').getBoundingClientRect();
+            const eyebrow = document.querySelector('.eyebrow').getBoundingClientRect();
             const portrait = document.querySelector('.portrait').getBoundingClientRect();
-            return { hero: hero.bottom, copy: copy.bottom, portrait: portrait.bottom, width: document.documentElement.scrollWidth, viewport: innerWidth };
+            return {
+              hero: hero.bottom,
+              gridHeight: grid.height,
+              contentTop: eyebrow.top - grid.top,
+              copyBottom: copy.bottom,
+              portraitHeight: portrait.height,
+              portraitBottom: portrait.bottom,
+              portraitBottomInGrid: grid.bottom - portrait.bottom,
+              width: document.documentElement.scrollWidth,
+              viewport: innerWidth,
+            };
           });
-          assert.ok(bounds.hero >= bounds.copy - 1 && bounds.hero >= bounds.portrait - 1, `${name}: hero clipping ${JSON.stringify(bounds)}`);
+          heroMeasurements[path] = bounds;
+          assert.ok(bounds.hero >= bounds.copyBottom - 1 && bounds.hero >= bounds.portraitBottom - 1, `${name}: hero clipping ${JSON.stringify(bounds)}`);
           assert.ok(bounds.width <= bounds.viewport + 1, `${name}: horizontal overflow`);
           // Explicitly check the changed blocks and adjacent actions in print too.
           await page.emulateMedia({ media: 'print' });
@@ -42,6 +56,24 @@ try {
             await page.screenshot({ path: `test-results/${name}-no-background.png`, fullPage: true });
           }
           console.log(`PASS ${name}`);
+        }
+        assert.ok(
+          Math.abs(heroMeasurements['/'].portraitHeight - heroMeasurements['/contact.html'].portraitHeight) <= 1,
+          `home/contact portrait height mismatch: ${JSON.stringify(heroMeasurements)}`,
+        );
+        if (country === 'CA' && width > 900) {
+          assert.ok(
+            Math.abs(heroMeasurements['/'].gridHeight - heroMeasurements['/contact.html'].gridHeight) <= 1,
+            `home/contact desktop hero height mismatch: ${JSON.stringify(heroMeasurements)}`,
+          );
+          assert.ok(
+            Math.abs(heroMeasurements['/'].contentTop - heroMeasurements['/contact.html'].contentTop) <= 1,
+            `home/contact desktop top spacing mismatch: ${JSON.stringify(heroMeasurements)}`,
+          );
+          assert.ok(
+            Math.abs(heroMeasurements['/'].portraitBottomInGrid - heroMeasurements['/contact.html'].portraitBottomInGrid) <= 1,
+            `home/contact desktop portrait alignment mismatch: ${JSON.stringify(heroMeasurements)}`,
+          );
         }
         await context.close();
       }
