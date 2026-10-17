@@ -6,17 +6,24 @@ Repository: `Nicolasruiza/nicolasruiz` (not `sofia-agudelo`).
 Public URL: **https://nicolasruiz.net**.
 
 Inspection on 2026-10-16 found GitHub Pages serving the domain directly
-(`Server: GitHub.com`, GitHub Pages A records, GoDaddy nameservers).
-The repo has a `CNAME`, `.nojekyll`, and a workflow generating the resume PDF.
-There is no existing server or geolocation layer. GitHub Pages cannot execute
-this Worker. **Merging this change alone does not activate geolocation.**
-Until the hosting cutover, the root HTML is a neutral Canadian fallback.
-The Colombia fallback for unknown countries is implemented in the Worker.
+(`Server: GitHub.com`, GitHub Pages A records, GoDaddy nameservers). The repo
+has a `CNAME`, `.nojekyll`, and a workflow generating the resume PDF.
 
-The implementation is ready for Cloudflare Workers with Static Assets.
-No Cloudflare account/domain connection has been provided; production cutover
-and real-IP verification remain pending. No live DNS or hosting settings have
-been changed by this implementation.
+On 2026-10-16, the domain was moved to Cloudflare nameservers and the
+`nicolasruiz-portfolio` Worker was deployed with Static Assets. Cloudflare
+Custom Domains now point both `nicolasruiz.net` and `www.nicolasruiz.net` to
+the Worker. The previous GitHub Pages A records and `www` CNAME were removed;
+the `_dmarc` TXT record was retained. Production version at cutover:
+`e95baf1b-d340-44de-8e27-20774abe5872`.
+
+Live verification from Toronto confirmed that the Canadian Home and Contact
+responses contain no relocation, 2027, Colombian residence, market slots or
+Colombia positioning. Both hostnames returned the Worker response with
+`private, no-store`, `CDN-Cache-Control: no-store` and
+`Cloudflare-CDN-Cache-Control: no-store`. The public authoritative nameservers
+and public resolvers returned the Worker custom-domain address. The deterministic
+runtime suite covers Colombia and unknown-country behavior because client
+headers intentionally cannot override Cloudflare's production country metadata.
 
 ## Behavior
 
@@ -64,7 +71,7 @@ The PR workflow repeats tests and a deployment dry run, and saves screenshots.
 `pnpm dev` serves the Worker locally; tests are the deterministic way to select
 each country. Do not test by adding `CF-IPCountry` to a browser request.
 
-## Activate on the same domain
+## Reproduce or move the deployment
 
 1. Create a Cloudflare account and add `nicolasruiz.net`. Review/import the
    existing DNS zone, preserving unrelated records such as mail records. Update
