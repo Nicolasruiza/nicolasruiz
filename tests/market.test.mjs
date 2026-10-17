@@ -29,8 +29,13 @@ for (const country of ['CA', 'CO', 'US', 'XX', '', undefined]) {
       if (country === 'CA') assert.doesNotMatch(html, /2027|Colombian residence|roles across Colombia/);
       if (path.startsWith('/contact')) {
         assert.equal(html.includes('Colombian residence'), country !== 'CA');
-        if (country === 'CA') assert.doesNotMatch(html, /colombia/i);
-        assert.match(html, /Canadian citizenship/);
+        if (country === 'CA') {
+          assert.doesNotMatch(html, /colombia|citizenship|<section class="prototype-card"/i);
+        } else {
+          assert.match(html, /prototype-card/);
+          assert.match(html, /Argentine citizenship/);
+          assert.match(html, /Canadian citizenship/);
+        }
       }
       assert.equal(response.headers.get('cache-control'), 'private, no-store');
       assert.equal(response.headers.get('cloudflare-cdn-cache-control'), 'no-store');
