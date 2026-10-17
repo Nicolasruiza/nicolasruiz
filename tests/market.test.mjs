@@ -1,0 +1,102 @@
+import { after, before, test } from 'node:test';
+import assert from 'node:assert/strict';
+import { readFile, readdir } from 'node:fs/promises';
+import { createRuntime } from './runtime.mjs';
+import { marketForCountry } from '../server/market-blocks.mjs';
+
+let runtime;
+before(async () => { runtime = await createRuntime(); });
+after(async () => { await runtime?.dispose(); });
+const fetchPage = (path, country, options = {}) => runtime.dispatchFetch(`https://nicolasruiz.net${path}`, {
+  ...options, cf: country === undefined ? {} : { country },
+});
+const relocation = /Preparing to relocate to Colombia in 2027/;
+
+test('only Canada selects Canada; every other or unknown country selects Colombia', () => {
+  for (const value of ['CA', 'ca', ' CA ']) assert.equal(marketForCountry(value), 'canada');
+  for (const value of ['CO', 'US', 'AR', 'XX', 'T1', '', undefined, null, 42]) assert.equal(marketForCountry(value), 'colombia');
+});
+
+for (const country of ['CA', 'CO', 'US', 'XX', '', undefined]) {
+  for (const path of ['/', '/index.html', '/index', '/contact.html', '/contact', '/%69ndex.html', '/contact.html?country=CA']) {
+    test(`${country ?? 'missing'} receives the correct raw HTML at ${path}`, async () => {
+      const response = await fetchPage(path, country);
+      assert.equal(response.status, 200);
+      assert.equal(response.headers.get('location'), null);
+      const html = await response.text();
+      assert.equal(relocation.test(html), country !== 'CA');
+      assert.doesNotMatch(html, /data-market-slot/);
+      if (country === 'CA') assert.doesNotMatch(html, /2027|Colombian residence|roles across Colombia/);
+      if (path.startsWith('/contact')) {
+        assert.equal(html.includes('Colombian residence'), country !== 'CA');
+        if (country === 'CA') assert.doesNotMatch(html, /colombia/i);
+        assert.match(html, /Canadian citizenship/);
+      }
+      assert.equal(response.headers.get('cache-control'), 'private, no-store');
+      assert.equal(response.headers.get('cloudflare-cdn-cache-control'), 'no-store');
+      assert.equal(response.headers.get('etag'), null);
+      assert.equal(response.headers.get('last-modified'), null);
+    });
+  }
+}
+
+test('spoofed headers, cookies and URL parameters cannot select the country', async () => {
+  const options = { headers: { 'cf-ipcountry': 'CO', 'x-vercel-ip-country': 'CO', cookie: 'country=CO', 'accept-language': 'es-CO' } };
+  const response = await fetchPage('/?country=CO', 'CA', options);
+  assert.doesNotMatch(await response.text(), relocation);
+  const unknown = await fetchPage('/', undefined, { headers: { 'cf-ipcountry': 'CA' } });
+  assert.match(await unknown.text(), relocation);
+});
+
+test('alternating countries and conditional/range requests cannot reuse regional HTML', async () => {
+  for (const country of ['CO', 'CA', 'CO', 'CA']) {
+    const response = await fetchPage('/', country, { headers: {
+      'if-none-match': '*', 'if-modified-since': 'Wed, 01 Jan 2031 00:00:00 GMT', range: 'bytes=0-300',
+    } });
+    assert.equal(response.status, 200);
+    assert.equal(relocation.test(await response.text()), country === 'CO');
+  }
+});
+
+test('HEAD has the same non-cacheable HTML headers and no body', async () => {
+  const response = await fetchPage('/contact.html', 'CA', { method: 'HEAD' });
+  assert.equal(response.status, 200);
+  assert.equal(response.headers.get('cache-control'), 'private, no-store');
+  assert.equal(await response.text(), '');
+});
+
+test('historical experience, achievements and resume pages are unchanged for both countries', async () => {
+  for (const path of ['experience.html', 'achievements.html', 'resume.html', 'resume-print.html', 'resume-pdf.html', 'AI Projects.dc.html', 'Home.dc.html']) {
+    const source = await readFile(path, 'utf8');
+    for (const country of ['CA', 'CO']) {
+      const response = await fetchPage(`/${encodeURI(path)}`, country);
+      assert.equal(response.status, 200);
+      assert.equal(await response.text(), source);
+    }
+  }
+});
+
+test('navigation, downloads and canonical URLs are identical across markets', async () => {
+  for (const path of ['/', '/contact.html']) {
+    const ca = await (await fetchPage(path, 'CA')).text();
+    const co = await (await fetchPage(path, 'CO')).text();
+    const links = html => [...html.matchAll(/(?:href|src)="([^"]+)"/g)].map(match => match[1]);
+    assert.deepEqual(links(ca), links(co));
+    assert.match(ca, /rel="canonical" href="https:\/\/nicolasruiz.net\//);
+    assert.match(ca, /name="description"/);
+  }
+  for (const path of ['/profile-transparent.png', '/portrait-data.js', '/output/pdf/Nicolas-Ruiz-Resume.pdf?v=profile-20261011', '/projects/cost-estimator.html']) {
+    const response = await fetchPage(path, 'CA');
+    assert.equal(response.status, 200);
+    assert.ok((await response.arrayBuffer()).byteLength > 0);
+  }
+});
+
+test('server blocks and configuration are not exposed as public files', async () => {
+  const entries = await readdir('.assets');
+  for (const name of ['server', 'tests', 'scripts', 'node_modules', 'package.json', 'wrangler.jsonc', 'AGENTS.md']) assert.ok(!entries.includes(name));
+  for (const path of ['/server/market-blocks.mjs', '/server/worker.mjs', '/.git/config', '/wrangler.jsonc', '/does-not-exist']) {
+    assert.equal((await fetchPage(path, 'CA')).status, 404);
+  }
+  assert.equal((await fetchPage('/', 'CA', { method: 'POST' })).status, 405);
+});
