@@ -1,5 +1,35 @@
 import { colombiaBlocks, marketForCountry } from './market-blocks.mjs';
 
+export function fitsUpstreamUrl(value) {
+  const incoming = value instanceof URL ? value : new URL(value);
+  const suffix = incoming.pathname.slice('/fits'.length) || '/';
+  const upstream = new URL(`https://nicolasruiza.github.io/Fits${suffix}`);
+  upstream.search = incoming.search;
+  return upstream;
+}
+
+async function serveFits(request, url) {
+  const upstream = await fetch(fitsUpstreamUrl(url), {
+    method: request.method,
+    headers: {
+      Accept: request.headers.get('accept') || '*/*',
+      'Accept-Language': request.headers.get('accept-language') || 'en',
+    },
+    redirect: 'follow',
+  });
+  const response = new Response(request.method === 'HEAD' ? null : upstream.body, upstream);
+  for (const name of ['content-length', 'content-encoding']) response.headers.delete(name);
+  if (!response.headers.get('content-type')?.includes('text/html') || request.method === 'HEAD') return response;
+  response.headers.set('Cache-Control', 'private, no-store');
+  response.headers.set('CDN-Cache-Control', 'no-store');
+  response.headers.set('Cloudflare-CDN-Cache-Control', 'no-store');
+  return new HTMLRewriter().on('head', {
+    element(element) {
+      element.prepend('<base href="/fits/"><link rel="canonical" href="https://nicolasruiz.net/fits">', { html: true });
+    },
+  }).transform(response);
+}
+
 export default {
   async fetch(request, env) {
     if (!['GET', 'HEAD'].includes(request.method)) {
@@ -10,6 +40,7 @@ export default {
     // query parameter, cookie, browser locale or a third-party geolocation API.
     const market = marketForCountry(request.cf?.country);
     const url = new URL(request.url);
+    if (url.pathname === '/fits' || url.pathname.startsWith('/fits/')) return serveFits(request, url);
     // Preserve the existing public .html URLs and also support extensionless aliases.
     if (url.pathname === '/' || url.pathname === '/index') url.pathname = '/index.html';
     if (url.pathname === '/contact') url.pathname = '/contact.html';

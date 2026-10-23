@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import { readFile, readdir } from 'node:fs/promises';
 import { createRuntime } from './runtime.mjs';
 import { marketForCountry } from '../server/market-blocks.mjs';
+import { fitsUpstreamUrl } from '../server/worker.mjs';
 
 let runtime;
 before(async () => { runtime = await createRuntime(); });
@@ -15,6 +16,11 @@ const relocation = /Preparing to relocate to Colombia in 2027/;
 test('only Canada selects Canada; every other or unknown country selects Colombia', () => {
   for (const value of ['CA', 'ca', ' CA ']) assert.equal(marketForCountry(value), 'canada');
   for (const value of ['CO', 'US', 'AR', 'XX', 'T1', '', undefined, null, 42]) assert.equal(marketForCountry(value), 'colombia');
+});
+
+test('FITS paths remain under the portfolio URL while mapping to GitHub Pages', () => {
+  assert.equal(fitsUpstreamUrl('https://nicolasruiz.net/fits').href, 'https://nicolasruiza.github.io/Fits/');
+  assert.equal(fitsUpstreamUrl('https://nicolasruiz.net/fits/home-v2.css?v=26').href, 'https://nicolasruiza.github.io/Fits/home-v2.css?v=26');
 });
 
 for (const country of ['CA', 'CO', 'US', 'XX', '', undefined]) {
