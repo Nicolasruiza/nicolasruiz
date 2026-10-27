@@ -1,0 +1,540 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Receipts Autopilot · Nicolas Ruiz</title>
+<meta name="description" content="Snap a receipt; Claude reads it, picks the expense category and files it in Google Drive. Live, private, open source.">
+<link rel="icon" href="../favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+  /* Layout: hero = story left, live phone demo right; pipeline + Drive + log below, mirroring the real data flow. */
+  :root {
+    --bg: #ffffff;
+    --ink: #1d1d1f;
+    --muted: #6e6e73;
+    --hair: #e6e6eb;
+    --fill: #f5f5f7;
+    --blue: #0071e3;
+    --green: #1f9d48;
+    --green-fill: #30d158;
+    --amber: #b26a00;
+    --amber-fill: #fff4e0;
+    --paper: #fffdf8;
+    --paper-ink: #2b2b2b;
+    --phone: #111114;
+    --font: "Instrument Sans", -apple-system, BlinkMacSystemFont, "Helvetica Neue", sans-serif;
+    --app: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Helvetica Neue", sans-serif;
+    --mono: "JetBrains Mono", ui-monospace, Menlo, monospace;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #0a0a0c; --ink: #f2f2f4; --muted: #9a9aa2; --hair: #26262b; --fill: #17171b;
+      --blue: #2f8fff; --green: #3ccf6a; --amber: #ffb84d; --amber-fill: #2a210f;
+      --paper: #f4f1ea; --paper-ink: #2b2b2b; --phone: #2a2a2e; color-scheme: dark;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #0a0a0c; --ink: #f2f2f4; --muted: #9a9aa2; --hair: #26262b; --fill: #17171b;
+    --blue: #2f8fff; --green: #3ccf6a; --amber: #ffb84d; --amber-fill: #2a210f;
+    --paper: #f4f1ea; --paper-ink: #2b2b2b; --phone: #2a2a2e; color-scheme: dark;
+  }
+
+  * { box-sizing: border-box; }
+  html, body { margin: 0; }
+  [hidden] { display: none !important; }
+  .back { max-width: 1080px; margin: 0 auto; padding-top: max(20px, env(safe-area-inset-top, 0px)); display: flex; justify-content: space-between; font-size: 15px; }
+  .back a { color: var(--blue); text-decoration: none; font-weight: 500; }
+  .back a:hover { text-decoration: underline; }
+  .back span { color: var(--muted); }
+  .wrap { padding-top: 32px; }
+
+  body {
+    background: var(--bg); color: var(--ink); font-family: var(--font);
+    font-size: 17px; line-height: 1.55; -webkit-font-smoothing: antialiased;
+    padding-left: max(16px, env(safe-area-inset-left, 0px));
+    padding-right: max(16px, env(safe-area-inset-right, 0px));
+  }
+  .wrap { max-width: 1080px; margin: 0 auto; padding-block: 56px 96px; display: flex; flex-direction: column; gap: 88px; }
+  h1, h2, h3, p { margin: 0; }
+  h2 { font-size: clamp(28px, 4vw, 36px); letter-spacing: -0.025em; line-height: 1.1; text-wrap: balance; }
+  h3 { font-size: 18px; letter-spacing: -0.01em; }
+  .lede { color: var(--muted); font-size: 19px; max-width: 36em; }
+  code, .mono { font-family: var(--mono); font-size: .85em; }
+  button:focus-visible { outline: 3px solid var(--blue); outline-offset: 3px; }
+
+  /* Hero */
+  .hero { display: grid; grid-template-columns: 1.1fr .9fr; gap: 56px; align-items: center; }
+  .hero-text { display: flex; flex-direction: column; gap: 22px; min-width: 0; }
+  .status { display: inline-flex; align-items: center; gap: 10px; font-size: 15px; font-weight: 500;
+    padding: 7px 14px 7px 12px; border: 1px solid var(--hair); border-radius: 999px; width: fit-content; }
+  .status .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--green-fill); box-shadow: 0 0 0 4px color-mix(in srgb, var(--green-fill) 25%, transparent); }
+  .status span.sep { color: var(--muted); }
+  .hero h1 { font-size: clamp(42px, 6.4vw, 72px); line-height: .98; letter-spacing: -0.04em; font-weight: 700; text-wrap: balance; }
+  .facts { display: flex; flex-wrap: wrap; gap: 28px; padding-top: 6px; }
+  .facts div { display: flex; flex-direction: column; }
+  .facts b { font-size: 22px; letter-spacing: -0.02em; }
+  .facts span { color: var(--muted); font-size: 14px; }
+  .try { color: var(--muted); font-size: 15px; display: flex; align-items: center; gap: 8px; }
+
+  /* Phone */
+  .stage { display: flex; justify-content: center; }
+  .phone { width: 300px; height: 612px; border-radius: 48px; background: var(--phone); padding: 12px; box-shadow: 0 40px 80px -30px rgba(0,0,0,.35); }
+  .screen { position: relative; width: 100%; height: 100%; border-radius: 37px; background: #fff; overflow: hidden;
+    font-family: var(--app); color: #1d1d1f; display: flex; flex-direction: column; padding: 46px 18px 22px; }
+  .notch { position: absolute; top: 10px; left: 50%; transform: translateX(-50%); width: 92px; height: 26px; border-radius: 20px; background: #000; }
+  .screen h4 { margin: 0; font-size: 28px; font-weight: 700; letter-spacing: -0.02em; }
+  .screen .date { font-size: 14px; color: #86868b; }
+  .s-main { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px; }
+  .badge { position: relative; width: 92px; height: 92px; border-radius: 50%; background: #f5f5f7; display: grid; place-items: center; transition: background-color .3s; }
+  .badge > svg { position: absolute; }
+  .badge .doc { width: 40px; height: 40px; color: #86868b; transition: opacity .2s; }
+  .badge .ring { inset: -7px; width: calc(100% + 14px); height: calc(100% + 14px); opacity: 0; transform: rotate(-90deg); }
+  .badge .ring circle { fill: none; stroke: #0071e3; stroke-width: 3; stroke-linecap: round; stroke-dasharray: 90 400; }
+  .badge.busy .ring { opacity: 1; animation: spin 1s linear infinite; }
+  .badge.busy .doc { color: #0071e3; }
+  .badge .check { width: 44px; height: 44px; opacity: 0; }
+  .badge .check path { fill: none; stroke: #fff; stroke-width: 6; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 60; stroke-dashoffset: 60; }
+  .badge.done { background: #30d158; }
+  .badge.done .doc { opacity: 0; }
+  .badge.done .check { opacity: 1; }
+  .badge.done .check path { animation: draw .45s .05s cubic-bezier(.65,0,.35,1) forwards; }
+  @keyframes draw { to { stroke-dashoffset: 0; } }
+  @keyframes spin { from { transform: rotate(-90deg); } to { transform: rotate(270deg); } }
+  .s-status { font-size: 19px; font-weight: 600; text-align: center; min-height: 24px; }
+  .s-hint { font-size: 13px; color: #86868b; text-align: center; min-height: 18px; margin-top: -10px; }
+  .s-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .s-btn { height: 112px; border-radius: 20px; border: 0; font: 600 15px var(--app); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 9px; cursor: pointer; transition: transform .15s; }
+  .s-btn svg { width: 32px; height: 32px; }
+  .s-btn:active { transform: scale(.96); }
+  .s-btn.primary { background: #0071e3; color: #fff; }
+  .s-btn.secondary { background: #f5f5f7; color: #0071e3; }
+  .s-btn[disabled] { opacity: .45; cursor: default; }
+  .flash { position: absolute; inset: 0; background: #fff; opacity: 0; pointer-events: none; }
+  .flash.on { animation: flash .35s ease-out; }
+  @keyframes flash { 0% { opacity: .95; } 100% { opacity: 0; } }
+
+  /* Proof */
+  .proof { margin-top: -24px; }
+  .shots { display: grid; grid-template-columns: 1fr; gap: 22px; }
+  .shot { margin: 0; display: flex; flex-direction: column; gap: 10px; min-width: 0; }
+  .shot .chrome { display: flex; align-items: center; gap: 6px; padding: 10px 14px; background: var(--fill);
+    border: 1px solid var(--hair); border-bottom: 0; border-radius: 14px 14px 0 0; font-size: 13px; color: var(--muted); }
+  .shot .chrome i { width: 10px; height: 10px; border-radius: 50%; background: var(--hair); }
+  .shot .chrome span { margin-left: 8px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .shot img { display: block; width: 100%; height: auto; background: #fff; border: 1px solid var(--hair);
+    border-radius: 0 0 14px 14px; margin-top: -10px; box-shadow: 0 24px 48px -32px rgba(0,0,0,.35); }
+  .shot figcaption { font-size: 15px; color: var(--muted); }
+  .source { font-size: 13px; color: var(--muted); margin-top: 18px; }
+
+  /* Section heads */
+  .head { display: flex; flex-direction: column; gap: 12px; margin-bottom: 28px; }
+
+  /* Pipeline */
+  .pipeline { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0; border: 1px solid var(--hair); border-radius: 22px; overflow: hidden; }
+  .step { padding: 22px 20px 24px; display: flex; flex-direction: column; gap: 10px; min-width: 0; position: relative; transition: background-color .3s; }
+  .step + .step { border-left: 1px solid var(--hair); }
+  .step .n { width: 28px; height: 28px; border-radius: 50%; border: 1.5px solid var(--hair); display: grid; place-items: center; font-size: 13px; font-weight: 600; color: var(--muted); transition: all .3s; }
+  .step p { color: var(--muted); font-size: 15px; line-height: 1.45; }
+  .step .where { font-family: var(--mono); font-size: 12px; color: var(--muted); margin-top: auto; padding-top: 6px; }
+  .step.active { background: color-mix(in srgb, var(--blue) 7%, var(--bg)); }
+  .step.active .n { border-color: var(--blue); color: var(--blue); }
+  .step.done .n { background: var(--blue); border-color: var(--blue); color: #fff; }
+
+  /* Extraction card */
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 20px; }
+  .panel { border: 1px solid var(--hair); border-radius: 22px; padding: 22px; min-width: 0; display: flex; flex-direction: column; gap: 16px; }
+  .panel-title { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; }
+  .panel-title span { color: var(--muted); font-size: 14px; }
+  .read { display: grid; grid-template-columns: 112px 1fr; gap: 18px; align-items: start; }
+  .receipt { background: var(--paper); color: var(--paper-ink); font-family: var(--mono); font-size: 8.5px; line-height: 1.5;
+    padding: 12px 10px 16px; border-radius: 3px; box-shadow: 0 6px 18px -8px rgba(0,0,0,.3);
+    -webkit-mask: radial-gradient(5px at 50% 100%, #0000 98%, #000) 50% / 10px 100%;
+            mask: radial-gradient(5px at 50% 100%, #0000 98%, #000) 50% / 10px 100%; }
+  .receipt .m { font-weight: 500; text-align: center; font-size: 10px; margin-bottom: 4px; }
+  .receipt .r { display: flex; justify-content: space-between; }
+  .receipt .t { border-top: 1px dashed #999; margin-top: 5px; padding-top: 4px; font-weight: 500; }
+  .receipt.faded { filter: blur(1.1px) contrast(.55); }
+  .json { font-family: var(--mono); font-size: 13px; line-height: 1.75; background: var(--fill); border-radius: 14px; padding: 14px 16px; overflow-x: auto; min-height: 168px; white-space: pre; }
+  .json .k { color: var(--muted); }
+  .json .low { color: var(--amber); }
+  .empty { color: var(--muted); font-size: 15px; }
+
+  /* Drive tree */
+  .tree { font-family: var(--mono); font-size: 13px; line-height: 1.85; background: var(--fill); border-radius: 14px; padding: 14px 16px; overflow-x: auto; white-space: pre; min-height: 168px; }
+  .tree .dim { color: var(--muted); }
+  .tree .new { color: var(--green); font-weight: 500; animation: pop .6s ease-out; }
+  .tree .rev { color: var(--amber); font-weight: 500; animation: pop .6s ease-out; }
+  @keyframes pop { from { background: color-mix(in srgb, var(--green) 18%, transparent); } to { background: transparent; } }
+
+  /* Log table */
+  .logwrap { overflow-x: auto; border: 1px solid var(--hair); border-radius: 18px; margin-top: 20px; }
+  table { border-collapse: collapse; width: 100%; font-size: 14px; min-width: 640px; }
+  th, td { text-align: left; padding: 11px 14px; border-bottom: 1px solid var(--hair); white-space: nowrap; }
+  th { color: var(--muted); font-weight: 500; background: var(--fill); }
+  tbody tr:last-child td { border-bottom: 0; }
+  td.num { font-variant-numeric: tabular-nums; text-align: right; }
+  .pill { display: inline-block; padding: 2px 10px; border-radius: 999px; font-size: 12.5px; font-weight: 600; }
+  .pill.ok { background: color-mix(in srgb, var(--green) 15%, transparent); color: var(--green); }
+  .pill.rv { background: var(--amber-fill); color: var(--amber); }
+  tr.fresh td { animation: pop .9s ease-out; }
+
+  /* Decisions */
+  .decisions { display: grid; grid-template-columns: repeat(2, 1fr); gap: 36px 48px; }
+  .decisions div { display: flex; flex-direction: column; gap: 8px; }
+  .decisions p { color: var(--muted); }
+
+  /* Stack */
+  .stack { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
+  .stack div { background: var(--fill); border-radius: 18px; padding: 18px; display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+  .stack span { color: var(--muted); font-size: 14px; line-height: 1.4; }
+
+  .oss { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; align-items: center;
+    background: var(--fill); border-radius: 28px; padding: 44px; }
+  .oss-text { display: flex; flex-direction: column; gap: 16px; min-width: 0; }
+  .oss .status { background: var(--bg); }
+  .oss-actions { display: flex; flex-direction: column; gap: 12px; min-width: 0; }
+  .cta { display: flex; flex-direction: column; gap: 2px; padding: 18px 22px; border-radius: 18px;
+    background: var(--bg); color: var(--ink); text-decoration: none; border: 1px solid var(--hair); transition: transform .15s, border-color .15s; }
+  .cta[hidden] { display: none; }
+  .cta:hover { border-color: var(--blue); }
+  .cta:active { transform: scale(.98); }
+  .cta:focus-visible { outline: 3px solid var(--blue); outline-offset: 3px; }
+  .cta b { font-size: 17px; }
+  .cta span { font-size: 14px; color: var(--muted); }
+  .cta.primary { background: var(--blue); border-color: var(--blue); color: #fff; }
+  .cta.primary span { color: rgba(255,255,255,.8); }
+  @media (max-width: 900px) { .oss { grid-template-columns: 1fr; padding: 28px 22px; gap: 28px; } }
+
+  .role { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; border-top: 1px solid var(--hair); padding-top: 40px; }
+  .role p { color: var(--muted); }
+  footer { color: var(--muted); font-size: 14px; }
+
+  @media (max-width: 900px) {
+    .hero { grid-template-columns: 1fr; }
+    .pipeline { grid-template-columns: 1fr 1fr; }
+    .step:nth-child(3) { border-left: 0; }
+    .step:nth-child(n+3) { border-top: 1px solid var(--hair); }
+    .grid2, .decisions, .role { grid-template-columns: 1fr; }
+    .stack { grid-template-columns: 1fr 1fr; }
+  }
+  @media (max-width: 520px) {
+    .pipeline, .stack { grid-template-columns: 1fr; }
+    .step + .step { border-left: 0; border-top: 1px solid var(--hair); }
+    .read { grid-template-columns: 1fr; }
+    .receipt { max-width: 140px; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation-duration: .01ms !important; transition: none !important; }
+    .badge.done .check path { stroke-dashoffset: 0; }
+  }
+</style>
+
+</head>
+<body>
+<nav class="back"><a href="../AI%20Projects.dc.html">← AI Projects</a><span>Nicolas Ruiz</span></nav>
+<div class="wrap">
+  <section class="hero">
+    <div class="hero-text">
+      <div class="status"><span class="dot"></span>Live <span class="sep">·</span> private use at NENS Services Inc.</div>
+      <h1>Snap the receipt. It files itself.</h1>
+      <p class="lede">One tap on the phone. Claude reads the receipt, picks the tax category and files it in Google Drive.</p>
+      <div class="facts">
+        <div><b>2 taps</b><span>From receipt to filed</span></div>
+        <div><b>14</b><span>CRA-aligned categories</span></div>
+        <div><b>$0</b><span>Hosting and servers</span></div>
+      </div>
+      <p class="try">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 11V5a2 2 0 0 1 4 0v5"/><path d="M13 10V8a2 2 0 0 1 4 0v4a7 7 0 0 1-7 7h-1a6 6 0 0 1-5.2-3l-1.7-3a1.6 1.6 0 0 1 2.7-1.6L9 13"/></svg>
+        Try it: tap Take photo. The demo uses sample receipts.
+      </p>
+    </div>
+
+    <div class="stage">
+      <div class="phone" aria-label="Interactive demo of the Receipts app">
+        <div class="screen">
+          <div class="notch"></div>
+          <h4>Receipts</h4>
+          <div class="date" id="pDate"></div>
+          <div class="s-main">
+            <div class="badge" id="badge" aria-hidden="true">
+              <svg class="ring" viewBox="0 0 128 128"><circle cx="64" cy="64" r="61"/></svg>
+              <svg class="doc" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h12v18l-2-1.3-2 1.3-2-1.3-2 1.3-2-1.3L6 21z"/><path d="M9 8h6M9 11.5h6M9 15h3.5"/></svg>
+              <svg class="check" viewBox="0 0 52 52"><path d="M14 27l8 8 16-17"/></svg>
+            </div>
+            <div class="s-status" id="pStatus" role="status" aria-live="polite">Ready</div>
+            <div class="s-hint" id="pHint">Receipts get sorted automatically</div>
+          </div>
+          <div class="s-actions">
+            <button class="s-btn primary" id="snap" type="button">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8.5A2.5 2.5 0 0 1 5.5 6h1.6l1.3-1.9A1.5 1.5 0 0 1 9.6 3.5h4.8a1.5 1.5 0 0 1 1.2.6L16.9 6h1.6A2.5 2.5 0 0 1 21 8.5v9a2.5 2.5 0 0 1-2.5 2.5h-13A2.5 2.5 0 0 1 3 17.5z"/><circle cx="12" cy="12.5" r="3.8"/></svg>
+              Take photo
+            </button>
+            <button class="s-btn secondary" id="imp" type="button">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="3"/><circle cx="8.5" cy="9.5" r="1.6"/><path d="M21 16l-5-5-9 9"/></svg>
+              Import
+            </button>
+          </div>
+          <div class="flash" id="flash"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="proof">
+    <div class="head">
+      <h2>In production</h2>
+      <p class="lede">A paper receipt from May, photographed in October. Filed under May.</p>
+    </div>
+    <div class="shots">
+      <figure class="shot">
+        <div class="chrome"><i></i><i></i><i></i><span>Google Drive · NENS Receipts › 2026 › 05-May</span></div>
+        <img src="../shots/receipts-drive.png" alt="Google Drive folder 2026 / 05-May containing the file 2026-05-29_office_staples.jpg" width="1746" height="440">
+        <figcaption>Renamed by the receipt's own date, category and merchant.</figcaption>
+      </figure>
+      <figure class="shot">
+        <div class="chrome"><i></i><i></i><i></i><span>Google Sheets · NENS Receipts - Log</span></div>
+        <img src="../shots/receipts-log.png" alt="Expense log row: receipt date 2026-05-29, merchant Staples, category office, total 41.21 CAD, confidence 0.85, status OK" width="1695" height="150">
+        <figcaption>Every receipt becomes a row: date, merchant, category, total, confidence.</figcaption>
+      </figure>
+    </div>
+    <p class="source">Real screenshots from the first production run, October 27, 2026. Avatar blurred.</p>
+  </section>
+
+  <section>
+    <div class="head">
+      <h2>What happens after the tap</h2>
+      <p class="lede">The phone only uploads. The AI runs later, in a batch. The demo above compresses the hourly wait into seconds.</p>
+    </div>
+
+    <div class="pipeline" id="pipeline">
+      <div class="step" data-i="0"><div class="n">1</div><h3>Capture</h3><p>Resized on the phone, sent with a private key.</p><div class="where">iPhone · Safari web app</div></div>
+      <div class="step" data-i="1"><div class="n">2</div><h3>Inbox</h3><p>Saved as is. "Uploaded" in about a second.</p><div class="where">Drive / _Inbox</div></div>
+      <div class="step" data-i="2"><div class="n">3</div><h3>Read</h3><p>Hourly, Claude extracts date, merchant, total and category.</p><div class="where">Apps Script → Claude API</div></div>
+      <div class="step" data-i="3"><div class="n">4</div><h3>File and log</h3><p>Renamed, moved to Year › Month, logged.</p><div class="where">Drive + Google Sheets</div></div>
+    </div>
+
+    <div class="grid2">
+      <div class="panel">
+        <div class="panel-title"><h3>What Claude reads</h3><span id="readNote">Step 3</span></div>
+        <div id="readBody"><p class="empty">Take a photo in the demo to see the extraction.</p></div>
+      </div>
+      <div class="panel">
+        <div class="panel-title"><h3>Google Drive</h3><span>Step 4</span></div>
+        <div class="tree" id="tree"></div>
+      </div>
+    </div>
+
+    <div class="logwrap">
+      <table>
+        <thead><tr><th>Receipt date</th><th>Merchant</th><th>Category</th><th style="text-align:right">Total</th><th style="text-align:right">Confidence</th><th>Status</th><th>File</th></tr></thead>
+        <tbody id="log"><tr><td colspan="7" style="color:var(--muted)">The expense log fills in as receipts are filed.</td></tr></tbody>
+      </table>
+    </div>
+  </section>
+
+  <section>
+    <div class="head"><h2>Product decisions</h2></div>
+    <div class="decisions">
+      <div><h3>File by the receipt's date</h3><p>A backlog photographed in one night still lands in the right months.</p></div>
+      <div><h3>Unsure means review</h3><p>Under 0.6 confidence goes to _Review. A wrong category costs more than an unfiled one.</p></div>
+      <div><h3>Batch, not real time</h3><p>Nobody waits on the AI, and failed calls retry next hour.</p></div>
+      <div><h3>A link key, not logins</h3><p>Two people, one business account, no Google sign-in on the phone. The key can upload, never read.</p></div>
+    </div>
+  </section>
+
+  <section>
+    <div class="head"><h2>Built on what was already there</h2></div>
+    <div class="stack">
+      <div><h3>Apps Script</h3><span>Web app, upload endpoint, hourly trigger</span></div>
+      <div><h3>Claude API</h3><span>Vision extraction and merchant-based categories</span></div>
+      <div><h3>Google Drive</h3><span>Inbox, review queue, Year › Month archive</span></div>
+      <div><h3>Google Sheets</h3><span>Expense log, ready for a dashboard</span></div>
+    </div>
+  </section>
+
+  <section class="oss">
+    <div class="oss-text">
+      <div class="status"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 18l6-6-6-6M8 6l-6 6 6 6"/></svg>Open source · MIT license</div>
+      <h2>Run it on your own Drive</h2>
+      <p class="lede">Free to copy. It runs in your Google account, so your receipts never touch mine. You only pay Claude a few cents per receipt.</p>
+    </div>
+    <div class="oss-actions">
+      <a class="cta primary" id="ctaTemplate" href="#" target="_blank" rel="noopener" hidden>
+        <b>Copy the template</b><span>Google Apps Script project, ready to copy</span>
+      </a>
+      <a class="cta" id="ctaGuide" href="#" target="_blank" rel="noopener" hidden>
+        <b>Setup guide</b><span>8 steps, about 15 minutes</span>
+      </a>
+      <a class="cta" id="ctaCode" href="#" target="_blank" rel="noopener" hidden>
+        <b>Source code</b><span>GitHub repository</span>
+      </a>
+    </div>
+  </section>
+
+  <section class="role">
+    <div><h3 style="margin-bottom:10px">My role</h3><p>Product owner and builder. Set the rules (CRA categories, naming, review threshold, access) and shipped it with Claude as engineering partner, idea to daily use in two days.</p></div>
+    <div><h3 style="margin-bottom:10px">What's next</h3><p>A dashboard on the log: spend by category, review queue, year-end export for the accountant.</p></div>
+  </section>
+
+  <footer>The live app is private to NENS Services Inc. This page runs a simulation with sample receipts; no data is uploaded.</footer>
+</div>
+
+<script>
+// Public links. Leave a value empty to hide that button.
+const LINKS = {
+  template: '',
+  guide: 'https://claude.ai/artifact/67Cz12983AWvSmMpnhtAYs',
+  code: ''
+};
+[['ctaTemplate', LINKS.template], ['ctaGuide', LINKS.guide], ['ctaCode', LINKS.code]].forEach(([id, url]) => {
+  const a = document.getElementById(id);
+  if (url) { a.href = url; a.hidden = false; }
+});
+if (!LINKS.template) {
+  const g = document.getElementById('ctaGuide');
+  g.classList.add('primary');
+}
+(() => {
+  const $ = id => document.getElementById(id);
+  const SAMPLES = [
+    { merchant: 'Starbucks', slug: 'starbucks', date: '2026-10-25', cat: 'meals', total: 14.62, conf: 0.96,
+      lines: [['Oat Latte Grande', '6.45'], ['Croissant', '4.25'], ['Cold Brew Tall', '3.25']] },
+    { merchant: 'Petro-Canada', slug: 'petro-canada', date: '2026-10-03', cat: 'fuel', total: 78.40, conf: 0.98,
+      lines: [['Regular 47.2 L', '69.38'], ['Pump 4', ''], ['HST', '9.02']] },
+    { merchant: 'Staples', slug: 'staples', date: '2026-05-29', cat: 'office', total: 43.17, conf: 0.94,
+      lines: [['Copy paper 500', '12.99'], ['Gel pens 12pk', '14.49'], ['Folders', '10.72']] },
+    { merchant: null, slug: 'unknown', date: null, cat: null, total: null, conf: 0.31, faded: true, note: 'blurry photo',
+      lines: [['?????? ????', '?.??'], ['?? ????', '??.??'], ['', '']] }
+  ];
+  const MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+  let idx = 0, running = false;
+  const filed = {}; const review = []; let lastNew = null;
+
+  const now = new Date();
+  $('pDate').textContent = now.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' });
+
+  const sleep = ms => new Promise(r => setTimeout(r, matchMedia('(prefers-reduced-motion: reduce)').matches ? Math.min(ms, 80) : ms));
+  const badge = $('badge'), pS = $('pStatus'), pH = $('pHint'), snap = $('snap'), imp = $('imp');
+  const steps = [...document.querySelectorAll('.step')];
+
+  function phone(state, s, h) { badge.className = 'badge' + (state ? ' ' + state : ''); pS.textContent = s; pH.textContent = h || ''; }
+  function setStep(i) { steps.forEach((el, j) => { el.classList.toggle('active', j === i); el.classList.toggle('done', j < i); }); }
+  function fname(r) {
+    return r.date ? `${r.date}_${r.cat}_${r.slug}.jpg` : `no-date_no-category_${r.slug}.jpg`;
+  }
+  function esc(s) { return String(s).replace(/[&<>]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c])); }
+
+  function renderTree() {
+    let out = 'NENS Receipts/\n';
+    out += '├── <span class="dim">_Inbox/</span>\n';
+    out += '├── <span class="dim">_Review/</span>\n';
+    review.forEach((f, i) => {
+      const cls = f === lastNew ? 'rev' : 'dim';
+      out += `│   ${i === review.length - 1 ? '└──' : '├──'} <span class="${cls}">${esc(f)}</span>\n`;
+    });
+    out += '├── <span class="dim">Expense log (Sheet)</span>\n';
+    const years = Object.keys(filed).sort();
+    if (!years.length) out += '└── <span class="dim">(year folders appear as receipts are filed)</span>';
+    years.forEach((y, yi) => {
+      const lastY = yi === years.length - 1;
+      out += `${lastY ? '└──' : '├──'} ${y}/\n`;
+      const months = Object.keys(filed[y]).sort();
+      months.forEach((m, mi) => {
+        const lastM = mi === months.length - 1;
+        const pre = lastY ? '    ' : '│   ';
+        out += `${pre}${lastM ? '└──' : '├──'} ${m}-${MONTHS[+m - 1]}/\n`;
+        filed[y][m].forEach((f, fi) => {
+          const pre2 = pre + (lastM ? '    ' : '│   ');
+          out += `${pre2}${fi === filed[y][m].length - 1 ? '└──' : '├──'} <span class="${f === lastNew ? 'new' : 'dim'}">${esc(f)}</span>\n`;
+        });
+      });
+    });
+    $('tree').innerHTML = out.replace(/\n$/, '');
+  }
+
+  function receiptHTML(r) {
+    const rows = r.lines.map(([a, b]) => `<div class="r"><span>${esc(a)}</span><span>${esc(b)}</span></div>`).join('');
+    const d = r.date ? r.date.split('-').reverse().join('/') : '??/??/????';
+    return `<div class="receipt${r.faded ? ' faded' : ''}"><div class="m">${esc((r.merchant || '???????').toUpperCase())}</div>
+      <div class="r"><span>${d}</span><span>#${Math.floor(1000 + Math.random() * 8999)}</span></div>${rows}
+      <div class="r t"><span>TOTAL</span><span>${r.total != null ? r.total.toFixed(2) : '??.??'}</span></div></div>`;
+  }
+
+  async function typeJSON(el, r) {
+    const fields = [
+      ['date', r.date ? `"${r.date}"` : 'null'],
+      ['merchant', r.merchant ? `"${r.merchant}"` : 'null'],
+      ['category', r.cat ? `"${r.cat}"` : 'null'],
+      ['total', r.total != null ? r.total.toFixed(2) : 'null'],
+      ['currency', '"CAD"'],
+      ['confidence', r.conf.toFixed(2)]
+    ];
+    let html = '{\n';
+    for (let i = 0; i < fields.length; i++) {
+      const [k, v] = fields[i];
+      const low = k === 'confidence' && r.conf < 0.6;
+      html += `  <span class="k">"${k}":</span> <span class="${low ? 'low' : ''}">${esc(v)}</span>${i < fields.length - 1 ? ',' : ''}\n`;
+      el.innerHTML = html + '}';
+      await sleep(170);
+    }
+  }
+
+  function addLog(r, f) {
+    const tb = $('log');
+    if (tb.dataset.started !== '1') { tb.innerHTML = ''; tb.dataset.started = '1'; }
+    const ok = !!r.date && r.conf >= 0.6;
+    const tr = document.createElement('tr');
+    tr.className = 'fresh';
+    tr.innerHTML = `<td>${r.date || '—'}</td><td>${esc(r.merchant || '—')}</td><td>${r.cat || '—'}</td>
+      <td class="num">${r.total != null ? '$' + r.total.toFixed(2) : '—'}</td><td class="num">${r.conf.toFixed(2)}</td>
+      <td><span class="pill ${ok ? 'ok' : 'rv'}">${ok ? 'OK' : 'REVIEW (' + r.note + ')'}</span></td><td class="mono">${esc(f)}</td>`;
+    tb.prepend(tr);
+  }
+
+  async function run(fromImport) {
+    if (running) return;
+    running = true; snap.disabled = imp.disabled = true;
+    const r = SAMPLES[idx % SAMPLES.length]; idx++;
+
+    if (!fromImport) { const fl = $('flash'); fl.classList.remove('on'); void fl.offsetWidth; fl.classList.add('on'); }
+    setStep(0);
+    phone('busy', 'Uploading…', '');
+    await sleep(900);
+    setStep(1);
+    phone('done', 'Uploaded', 'Ready for the next one');
+    await sleep(900);
+
+    setStep(2);
+    $('readNote').textContent = 'Hourly run · sped up';
+    $('readBody').innerHTML = `<div class="read">${receiptHTML(r)}<div class="json" id="json"></div></div>`;
+    await typeJSON($('json'), r);
+    await sleep(500);
+
+    setStep(3);
+    const f = fname(r);
+    lastNew = f;
+    const ok = !!r.date && r.conf >= 0.6;
+    if (ok) {
+      const [y, m] = r.date.split('-');
+      ((filed[y] = filed[y] || {})[m] = filed[y][m] || []).push(f);
+      filed[y][m].sort();
+    } else review.push(f);
+    renderTree();
+    addLog(r, f);
+    await sleep(700);
+    steps.forEach(el => { el.classList.remove('active'); el.classList.add('done'); });
+
+    phone('', 'Ready', 'Receipts get sorted automatically');
+    running = false; snap.disabled = imp.disabled = false;
+  }
+
+  snap.addEventListener('click', () => run(false));
+  imp.addEventListener('click', () => run(true));
+  renderTree();
+})();
+</script>
+
+</body>
+</html>
