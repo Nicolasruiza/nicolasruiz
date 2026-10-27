@@ -99,12 +99,12 @@
       ['index.html','Home'],
       ['experience.html','Experience'],
       ['achievements.html','Achievements'],
-      ['AI Projects.dc.html','AI Projects'],
+      ['/ai-projects','AI Projects'],
       ['resume-pdf.html','Resume'],
       ['contact.html','Contact']
     ];
     panel.innerHTML = links.map(([href,label]) => {
-      const active = decodeURIComponent(current) === href.toLowerCase() ? ' class="active"' : '';
+      const active = decodeURIComponent(current) === href.replace(/^\//,'').toLowerCase() ? ' class="active"' : '';
       return `<a href="${href}"${active}><span>${label}</span><span aria-hidden="true">→</span></a>`;
     }).join('') + '<a class="mobile-connect" href="mailto:nicolasruiz@gmail.com">Let\'s connect →</a>';
     document.body.appendChild(panel);

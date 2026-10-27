@@ -41,6 +41,11 @@ export default {
     const market = marketForCountry(request.cf?.country);
     const url = new URL(request.url);
     if (url.pathname === '/fits' || url.pathname.startsWith('/fits/')) return serveFits(request, url);
+    // Clean URL for AI Projects; the old file URL and a trailing slash redirect to it.
+    if (url.pathname === '/AI%20Projects.dc.html' || url.pathname === '/AI Projects.dc.html' || url.pathname === '/ai-projects/') {
+      return Response.redirect(new URL(`/ai-projects${url.search}`, url), 301);
+    }
+    if (url.pathname === '/ai-projects') url.pathname = '/AI%20Projects.dc.html';
     // Preserve the existing public .html URLs and also support extensionless aliases.
     if (url.pathname === '/' || url.pathname === '/index') url.pathname = '/index.html';
     if (url.pathname === '/contact') url.pathname = '/contact.html';

@@ -77,7 +77,7 @@ test('HEAD has the same non-cacheable HTML headers and no body', async () => {
 });
 
 test('historical experience, achievements and resume pages are unchanged for both countries', async () => {
-  for (const path of ['experience.html', 'achievements.html', 'resume.html', 'resume-print.html', 'resume-pdf.html', 'AI Projects.dc.html', 'Home.dc.html']) {
+  for (const path of ['experience.html', 'achievements.html', 'resume.html', 'resume-print.html', 'resume-pdf.html', 'Home.dc.html']) {
     const source = await readFile(path, 'utf8');
     for (const country of ['CA', 'CO']) {
       const response = await fetchPage(`/${encodeURI(path)}`, country);
@@ -110,4 +110,18 @@ test('server blocks and configuration are not exposed as public files', async ()
     assert.equal((await fetchPage(path, 'CA')).status, 404);
   }
   assert.equal((await fetchPage('/', 'CA', { method: 'POST' })).status, 405);
+});
+
+test('AI Projects is served at a clean URL and old URLs redirect to it', async () => {
+  const source = await readFile('AI Projects.dc.html', 'utf8');
+  for (const country of ['CA', 'CO']) {
+    const response = await fetchPage('/ai-projects', country);
+    assert.equal(response.status, 200);
+    assert.equal(await response.text(), source);
+  }
+  for (const path of ['/AI%20Projects.dc.html', '/ai-projects/', '/AI%20Projects.dc.html?x=1']) {
+    const response = await fetchPage(path, 'CA', { redirect: 'manual' });
+    assert.equal(response.status, 301);
+    assert.equal(new URL(response.headers.get('location')).pathname, '/ai-projects');
+  }
 });
