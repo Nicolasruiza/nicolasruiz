@@ -125,7 +125,8 @@
   }
 
   const worldCupCard = document.getElementById('world-cup');
-  if (worldCupCard) {
+  // The AI Projects discovery board styles its own cards; only patch the legacy card layout.
+  if (worldCupCard && !worldCupCard.classList.contains('kb-card')) {
     worldCupCard.classList.add('application-card');
 
     if (!worldCupCard.querySelector('.status-pill.live')) {
