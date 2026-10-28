@@ -167,11 +167,12 @@ function open(id,{toggle=false,scroll=false}={}){const card=byId(id);if(!card)re
  openId=(toggle&&mq.matches&&openId===cid)?null:cid;
  if(mq.matches)setStage(card.closest('.kb-col').dataset.stage);
  render();if(scroll&&openId)requestAnimationFrame(()=>(mq.matches?card:pv).scrollIntoView({block:'start',behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'}));}
-cards.forEach(c=>c.querySelector('.kb-head').addEventListener('click',()=>{const id=c.dataset.card;open(id,{toggle:true,scroll:true});if(!mq.matches&&openId){history.replaceState(null,'','#'+id)}}));
+cards.forEach(c=>c.querySelector('.kb-head').addEventListener('click',()=>{const id=c.dataset.card;open(id,{toggle:true,scroll:true})}));
 tabs.forEach((t,i)=>{t.addEventListener('click',()=>{setStage(t.dataset.stage)});t.addEventListener('keydown',e=>{if(e.key!=='ArrowRight'&&e.key!=='ArrowLeft')return;const n=tabs[(i+(e.key==='ArrowRight'?1:tabs.length-1))%tabs.length];n.focus();n.click()})});
 const fromHash=()=>{const id=decodeURIComponent(location.hash.slice(1));return id&&byId(id)?id:null};
 const start=fromHash()||'fits';setStage(byId(start).closest('.kb-col').dataset.stage);open(start);
-if(fromHash())addEventListener('load',()=>setTimeout(()=>open(fromHash(),{scroll:true}),120));
+if('scrollRestoration' in history)history.scrollRestoration='manual';
+if(fromHash())addEventListener('load',()=>setTimeout(()=>scrollTo(0,0),0));
 addEventListener('hashchange',()=>{const id=fromHash();if(id)open(id,{scroll:true})});
 mq.addEventListener('change',()=>{const card=openId&&byId(openId);setStage(card?card.closest('.kb-col').dataset.stage:'live');render()});
 })();
