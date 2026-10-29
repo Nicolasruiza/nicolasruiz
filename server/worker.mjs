@@ -49,6 +49,8 @@ export default {
     // Preserve the existing public .html URLs and also support extensionless aliases.
     if (url.pathname === '/' || url.pathname === '/index') url.pathname = '/index.html';
     if (url.pathname === '/contact') url.pathname = '/contact.html';
+    // The Helix prototype linked from AI Projects ("View prototype").
+    if (url.pathname === '/helix' || url.pathname === '/helix/') url.pathname = '/helix/index.html';
     const headers = new Headers(request.headers);
     // A 304 could reuse another country's HTML in a browser/proxy cache.
     headers.delete('if-none-match');
