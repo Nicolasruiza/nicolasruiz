@@ -76,8 +76,8 @@ test('HEAD has the same non-cacheable HTML headers and no body', async () => {
   assert.equal(await response.text(), '');
 });
 
-test('historical experience, achievements and resume pages are unchanged for both countries', async () => {
-  for (const path of ['experience.html', 'achievements.html', 'resume.html', 'resume-print.html', 'resume-pdf.html', 'Home.dc.html']) {
+test('historical achievements and resume pages are unchanged for both countries', async () => {
+  for (const path of ['achievements.html', 'resume.html', 'resume-print.html', 'resume-pdf.html', 'Home.dc.html']) {
     const source = await readFile(path, 'utf8');
     for (const country of ['CA', 'CO']) {
       const response = await fetchPage(`/${encodeURI(path)}`, country);
@@ -141,4 +141,24 @@ test('every app icon referenced on AI Projects exists', async () => {
   const icons = [...new Set([...source.matchAll(/shots\/apps\/[a-z0-9-]+\.png/g)].map(m => m[0]))];
   assert.ok(icons.length >= 7);
   for (const icon of icons) assert.equal((await fetchPage(`/${icon}`, 'CA')).status, 200, icon);
+});
+
+test('Experience stats name the countries only in the Colombian version', async () => {
+  const canada = await (await fetchPage('/experience.html', 'CA')).text();
+  assert.match(canada, /years in Agile<br>delivery<\/p>/);
+  assert.match(canada, /years of SAP<br>consulting<\/p>/);
+  assert.doesNotMatch(canada, /in Argentina and Colombia<\/p>/);
+  assert.doesNotMatch(canada, /delivery<br>in Canada/);
+  assert.doesNotMatch(canada, /data-market-slot/);
+  // Apart from the stats block, the page is the shared source for both markets.
+  const source = await readFile('experience.html', 'utf8');
+  const open = '<div data-market-slot="experienceStats">';
+  const start = source.indexOf(open);
+  const cardEnd = source.indexOf('</p></div></div></div>', start) + '</p></div></div>'.length;
+  assert.equal(canada, source.slice(0, start) + source.slice(start + open.length, cardEnd) + source.slice(cardEnd + '</div>'.length));
+  for (const country of ['CO', 'US', undefined]) {
+    const colombia = await (await fetchPage('/experience.html', country)).text();
+    assert.match(colombia, /years in Agile delivery<br>in Canada/);
+    assert.match(colombia, /years of SAP consulting<br>in Argentina and Colombia/);
+  }
 });
