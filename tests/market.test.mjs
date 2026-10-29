@@ -125,3 +125,20 @@ test('AI Projects is served at a clean URL and old URLs redirect to it', async (
     assert.equal(new URL(response.headers.get('location')).pathname, '/ai-projects');
   }
 });
+
+test('the Helix prototype linked from AI Projects is served, with its app icon', async () => {
+  for (const path of ['/helix', '/helix/']) {
+    const response = await fetchPage(path, 'CA');
+    assert.equal(response.status, 200);
+    assert.match(await response.text(), /apple-touch-icon" href="\/shots\/apps\/helix\.png"/);
+  }
+  const icon = await fetchPage('/shots/apps/helix.png', 'CA');
+  assert.equal(icon.status, 200);
+});
+
+test('every app icon referenced on AI Projects exists', async () => {
+  const source = await readFile('AI Projects.dc.html', 'utf8');
+  const icons = [...new Set([...source.matchAll(/shots\/apps\/[a-z0-9-]+\.png/g)].map(m => m[0]))];
+  assert.ok(icons.length >= 7);
+  for (const icon of icons) assert.equal((await fetchPage(`/${icon}`, 'CA')).status, 200, icon);
+});
