@@ -2,6 +2,9 @@
 // Historical employment and achievements remain in the shared pages.
 export const colombiaBlocks = {
   relocation: '<div data-nosnippet><p class="market-note">Preparing to relocate to Colombia in 2027.</p></div>',
+  // Experience page intro: the Colombian version names the countries; Canada's
+  // fallback (in experience.html) keeps the same years without them.
+  experienceIntro: '<p>20 years of professional experience: 10 years in Agile delivery in Canada, following 10 years of SAP consulting while living and working in Argentina and Colombia.</p>',
   // Experience page stats: the Colombian version names the countries; Canada's
   // fallback (in experience.html) states the same years without them.
   experienceStats: '<div class="card stats"><div class="stat"><div class="num">20</div><p>years of professional<br>experience</p></div><div class="stat"><div class="num">10</div><p>years in Agile delivery<br>in Canada</p></div><div class="stat"><div class="num">10</div><p>years of SAP consulting<br>in Argentina and Colombia</p></div></div>',

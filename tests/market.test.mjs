@@ -155,10 +155,22 @@ test('Experience stats name the countries only in the Colombian version', async 
   const open = '<div data-market-slot="experienceStats">';
   const start = source.indexOf(open);
   const cardEnd = source.indexOf('</p></div></div></div>', start) + '</p></div></div>'.length;
-  assert.equal(canada, source.slice(0, start) + source.slice(start + open.length, cardEnd) + source.slice(cardEnd + '</div>'.length));
+  let expected = source.slice(0, start) + source.slice(start + open.length, cardEnd) + source.slice(cardEnd + '</div>'.length);
+  expected = expected.replace(/<div data-market-slot="experienceIntro">(<p>[^<]*<\/p>)<\/div>/, '$1');
+  assert.equal(canada, expected);
   for (const country of ['CO', 'US', undefined]) {
     const colombia = await (await fetchPage('/experience.html', country)).text();
     assert.match(colombia, /years in Agile delivery<br>in Canada/);
     assert.match(colombia, /years of SAP consulting<br>in Argentina and Colombia/);
+  }
+});
+
+test('Experience intro names the countries only in the Colombian version', async () => {
+  const canada = await (await fetchPage('/experience.html', 'CA')).text();
+  assert.match(canada, /<p>20 years of professional experience: 10 years in Agile delivery, following 10 years of SAP consulting\.<\/p>/);
+  assert.doesNotMatch(canada, /living and working in Argentina and Colombia/);
+  for (const country of ['CO', 'US', undefined]) {
+    const colombia = await (await fetchPage('/experience.html', country)).text();
+    assert.match(colombia, /10 years in Agile delivery in Canada, following 10 years of SAP consulting while living and working in Argentina and Colombia\./);
   }
 });
