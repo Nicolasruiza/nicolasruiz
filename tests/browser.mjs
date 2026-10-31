@@ -57,10 +57,16 @@ try {
           }
           console.log(`PASS ${name}`);
         }
-        assert.ok(
-          Math.abs(heroMeasurements['/'].portraitHeight - heroMeasurements['/contact.html'].portraitHeight) <= 1,
-          `home/contact portrait height mismatch: ${JSON.stringify(heroMeasurements)}`,
-        );
+        if (width > 900) {
+          assert.ok(
+            Math.abs(heroMeasurements['/'].portraitHeight - heroMeasurements['/contact.html'].portraitHeight) <= 1,
+            `home/contact portrait height mismatch: ${JSON.stringify(heroMeasurements)}`,
+          );
+        } else {
+          // Phones and small tablets show the portrait on Home only.
+          assert.ok(heroMeasurements['/'].portraitHeight > 0, `home portrait missing: ${JSON.stringify(heroMeasurements)}`);
+          assert.equal(heroMeasurements['/contact.html'].portraitHeight, 0, `contact portrait should be hidden: ${JSON.stringify(heroMeasurements)}`);
+        }
         if (country === 'CA' && width > 900) {
           assert.ok(
             Math.abs(heroMeasurements['/'].gridHeight - heroMeasurements['/contact.html'].gridHeight) <= 1,
